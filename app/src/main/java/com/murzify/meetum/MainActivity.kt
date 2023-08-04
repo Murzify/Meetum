@@ -21,11 +21,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.murzify.meetum.feature.calendar.MeetumCalendar
+import com.murzify.meetum.navigation.MeetumNavHost
+import com.murzify.meetum.navigation.Screen
 import com.murzify.meetum.ui.theme.MeetumTheme
 
 class MainActivity : ComponentActivity() {
@@ -49,14 +48,11 @@ class MainActivity : ComponentActivity() {
 fun Navigation() {
     val navController = rememberNavController()
     Column(verticalArrangement = Arrangement.Bottom) {
-        NavHost(
+        MeetumNavHost(
             navController = navController,
             startDestination = "calendar",
             modifier = Modifier.weight(1f)
-        ) {
-            composable(Screen.Calendar.route) { MeetumCalendar() }
-            composable(Screen.Services.route) {  }
-        }
+        )
 
         val screenList = listOf(Screen.Calendar, Screen.Services)
 

@@ -69,9 +69,9 @@ fun MeetumCalendar() {
     }
 
     // TEST
-    repeat(15) {
-        records.add(Record("Murzify $it", "$it:00", "massage"))
-    }
+//    repeat(15) {
+//        records.add(Record("Murzify $it", "$it:00", "massage"))
+//    }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         HorizontalCalendar(
