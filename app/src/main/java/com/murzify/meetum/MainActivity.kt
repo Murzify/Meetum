@@ -26,7 +26,9 @@ import androidx.navigation.compose.rememberNavController
 import com.murzify.meetum.navigation.MeetumNavHost
 import com.murzify.meetum.navigation.Screen
 import com.murzify.meetum.ui.theme.MeetumTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

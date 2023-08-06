@@ -12,8 +12,12 @@ appcompat = "1.6.1"
 material = "1.9.0"
 navigation = "2.6.0"
 org-jetbrains-kotlin-jvm = "1.8.10"
-hilt-plugin = "2.44"
+hilt = "2.45"
+androidxHiltNavigationCompose = "1.0.0"
 calendar = "2.3.0"
+ksp = "1.8.10-1.0.9"
+room = "2.5.2"
+coroutines = "1.7.1"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -34,13 +38,20 @@ appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "a
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navigation"}
 calendar = { module = "com.kizitonwose.calendar:compose", version.ref = "calendar" }
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidxHiltNavigationCompose" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+inject = { module = "javax.inject:javax.inject", version = "1" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "org-jetbrains-kotlin-android" }
 com-android-library = { id = "com.android.library", version.ref = "agp" }
 org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org-jetbrains-kotlin-jvm" }
-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt-plugin"}
-
-[bundles]
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt"}
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 

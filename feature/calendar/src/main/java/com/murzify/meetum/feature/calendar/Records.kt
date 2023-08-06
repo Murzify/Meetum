@@ -29,9 +29,30 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.murzify.meetum.core.domain.model.Record
+import com.murzify.meetum.core.domain.model.Service
+import java.text.SimpleDateFormat
+import java.util.Currency
+import java.util.GregorianCalendar
+import java.util.Locale
+
+val serviceExample = Service(
+    "Massage",
+    200.toDouble(),
+    Currency.getInstance("rub")
+)
+
+val recordExample = Record(
+    "Misha",
+    GregorianCalendar(2023, 7, 6, 16, 0).time,
+    null,
+    serviceExample
+)
+
+
 
 @Composable
-fun RecordsList(records: List<Record>) {
+fun RecordsList(records: List<Record>, addRecord: () -> Unit) {
 
     val listState = rememberLazyListState()
     val fabVisibility = remember {
@@ -44,7 +65,7 @@ fun RecordsList(records: List<Record>) {
         contentAlignment = Alignment.BottomEnd,
         modifier = Modifier.fillMaxSize()
     ) {
-        LazyColumn(state = listState) {
+        LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
             items(records) {
                 RecordCard(it)
             }
@@ -64,7 +85,7 @@ fun RecordsList(records: List<Record>) {
         ) {
             FloatingActionButton(
                 modifier = Modifier.padding(end = 8.dp, bottom = 8.dp),
-                onClick = { }
+                onClick = { addRecord() }
             ) {
                 Icon(
                     painter = painterResource(id = com.murzify.ui.R.drawable.round_add_24),
@@ -79,7 +100,7 @@ fun RecordsList(records: List<Record>) {
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
-fun RecordCard(record: Record = Record("Misha", "12:00", "massage")) {
+fun RecordCard(record: Record = recordExample) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -92,14 +113,16 @@ fun RecordCard(record: Record = Record("Misha", "12:00", "massage")) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(Modifier.weight(1f)) {
-                Text(text = record.username, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(text = record.serviceName, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                record.clientName?.let {
+                    Text(text = it, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
+                Text(text = record.service.name, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
-            Text(text = record.time, modifier = Modifier.padding(start = 2.dp))
+            val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
+
+            Text(text = sdf.format(record.time), modifier = Modifier.padding(start = 2.dp))
         }
 
 
     }
 }
-
-data class Record(val username: String, val time: String, val serviceName: String)

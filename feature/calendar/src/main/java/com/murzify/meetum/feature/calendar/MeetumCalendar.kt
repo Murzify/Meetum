@@ -18,8 +18,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -28,9 +28,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.kizitonwose.calendar.compose.HorizontalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.core.CalendarDay
@@ -38,6 +38,7 @@ import com.kizitonwose.calendar.core.CalendarMonth
 import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
+import com.murzify.meetum.core.domain.model.Record
 import java.text.DateFormat
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -47,9 +48,28 @@ import java.time.format.TextStyle
 import java.util.Date
 import java.util.Locale
 
-@Preview(showBackground = true, showSystemUi = false, backgroundColor = 0xFFFFFFFF)
 @Composable
-fun MeetumCalendar() {
+internal fun MeetumCalendarRoute(
+    viewModel: CalendarViewModel = hiltViewModel()
+) {
+    val records by viewModel.records.collectAsState()
+    MeetumCalendar(
+        records = records,
+        getRecords = {
+            viewModel.getRecords(it)
+        },
+        addRecord = {
+            viewModel.addRecord(it)
+        }
+    )
+}
+
+@Composable
+internal fun MeetumCalendar(
+    records: List<Record>,
+    getRecords: (date: Date) -> Unit,
+    addRecord: (record: Record) -> Unit
+) {
 
     val currentMonth = remember { YearMonth.now() }
     val startMonth = remember { currentMonth.minusMonths(100) } // Adjust as needed
@@ -64,21 +84,19 @@ fun MeetumCalendar() {
     )
 
     var selectedDate by rememberSaveable { mutableStateOf<LocalDate?>(LocalDate.now()) }
-    val records = remember {
-        mutableStateListOf<Record>()
-    }
-
-    // TEST
-//    repeat(15) {
-//        records.add(Record("Murzify $it", "$it:00", "massage"))
-//    }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         HorizontalCalendar(
             state = state,
             dayContent = {
                 Day(it, isSelected = selectedDate == it.date) { day ->
-                    selectedDate = if (selectedDate == day.date) null else day.date
+                    if (selectedDate == day.date) {
+                        selectedDate = null
+                    } else {
+                        selectedDate = day.date
+                        val date = Date.from(selectedDate!!.atStartOfDay(ZoneId.systemDefault())?.toInstant())
+                        getRecords(date)
+                    }
                 }
             },
             monthHeader = {
@@ -89,17 +107,35 @@ fun MeetumCalendar() {
             },
             modifier = Modifier.padding(top = 8.dp)
         )
-        val f = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.getDefault())
-        val date = f.format(
-            Date.from(selectedDate?.atStartOfDay(ZoneId.systemDefault())?.toInstant())
-        )
-        Text(
-            text = date,
-            modifier = Modifier.padding(8.dp)
-        )
-        RecordsList(records = records)
-    }
+        selectedDate?.let {
+            val f = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.getDefault())
+            val date = Date.from(selectedDate!!.atStartOfDay(ZoneId.systemDefault())?.toInstant())
+            val dateFormatted = f.format(
+                date
+            )
+            getRecords(date)
+            Text(
+                text = dateFormatted,
+                modifier = Modifier.padding(8.dp)
+            )
+        }
 
+        RecordsList(records = records) {
+            selectedDate?.let {
+                val date = Date.from(selectedDate!!.atStartOfDay(ZoneId.systemDefault())?.toInstant())
+                // TODO edit
+                addRecord(
+                    Record(
+                        "Misha",
+                        date,
+                        null,
+                        serviceExample
+                    )
+                )
+            }
+
+        }
+    }
 
 }
 
@@ -150,7 +186,8 @@ private fun Month(month: CalendarMonth) {
     val monthText = month.yearMonth.month.getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault())
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
         Text(
-            text = monthText.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() },
+            text = monthText.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() },
             fontSize = 24.sp
         )
         Spacer(modifier = Modifier.width(8.dp))
