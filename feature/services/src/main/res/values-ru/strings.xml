@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="services_label">Услуги</string>
+    <string name="add_service">Добавить услугу</string>
+    <string name="service_name">Название услуги</string>
+    <string name="price">Цена</string>
+    <string name="currency">Валюта</string>
+    <string name="save">Сохранить</string>
+    <string name="back_button">Назад</string>
 </resources>

@@ -20,6 +20,6 @@ fun MeetumNavHost(
         modifier = modifier
     ) {
         calendarScreen()
-        servicesScreen()
+        servicesScreen(navController)
     }
 }

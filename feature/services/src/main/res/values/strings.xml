@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="services_label">Services</string>
+    <string name="add_service">Add service</string>
+    <string name="service_name">Service name</string>
+    <string name="price">Price</string>
+    <string name="currency">Currency</string>
+    <string name="save">Save</string>
+    <string name="back_button">Back</string>
 </resources>

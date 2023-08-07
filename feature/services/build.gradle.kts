@@ -2,6 +2,8 @@
 plugins {
     alias(libs.plugins.com.android.library)
     alias(libs.plugins.org.jetbrains.kotlin.android)
+    kotlin("kapt")
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -40,8 +42,8 @@ android {
 }
 
 dependencies {
-
     implementation(project(":core:ui"))
+    implementation(project(":core:domain"))
 
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
@@ -53,4 +55,8 @@ dependencies {
     implementation(libs.calendar)
     implementation(libs.material3)
     implementation(libs.navigation)
+
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
 }
