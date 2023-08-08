@@ -5,6 +5,7 @@ import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,18 +53,19 @@ val serviceExample = Service(
 
 @Composable
 internal fun ServicesListRoute(
-    navigateToAddService: () -> Unit,
+    navigateToAddService: (edit: Boolean) -> Unit,
     viewModel: ServicesViewModel = hiltViewModel()
 ) {
     val services by viewModel.services.collectAsState()
-    MeetumService(services, navigateToAddService)
+    MeetumService(services, navigateToAddService, viewModel::selectService)
 }
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 internal fun MeetumService(
     services: List<Service> = listOf(serviceExample, serviceExample),
-    navigateToAddService: () -> Unit = {}
+    navigateToAddService: (edit: Boolean) -> Unit = {},
+    selectService: (service: Service) -> Unit = {}
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -80,7 +83,10 @@ internal fun MeetumService(
             modifier = Modifier.fillMaxSize()
         ) {
             items(services) {
-                ServiceCard(it)
+                ServiceCard(it) { service ->
+                    selectService(service)
+                    navigateToAddService(true)
+                }
             }
         }
         val density = LocalDensity.current
@@ -98,7 +104,7 @@ internal fun MeetumService(
             FloatingActionButton(
                 modifier = Modifier.padding(end = 8.dp, bottom = 8.dp),
                 onClick = {
-                    navigateToAddService()
+                    navigateToAddService(false)
                 }
             ) {
                 Icon(
@@ -115,32 +121,49 @@ internal fun MeetumService(
     device = "spec:width=700px,height=700px,dpi=440"
 )
 @Composable
-internal fun ServiceCard(service: Service = serviceExample) {
+internal fun ServiceCard(
+    service: Service = serviceExample,
+    onClick: (service: Service) -> Unit = {}
+) {
     Card(
         modifier = Modifier
             .fillMaxSize()
             .aspectRatio(1f)
             .padding(8.dp)
-    ) {
-        Column(
-            Modifier
-                .padding(16.dp)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween,
 
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize()
+                .clickable {
+                    onClick(service)
+                }
         ) {
-            Text(text = service.name, fontSize = 20.sp)
-            val format = localStyleForeignFormat(Locale.getDefault())
-            format.currency = service.currency
-            val price = format.format(service.price)
-            Row(
-                horizontalArrangement = Arrangement.End,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = price, fontSize = 20.sp, textAlign = TextAlign.End)
+            Column(
+                Modifier
+                    .padding(16.dp)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween,
+
+                ) {
+                Text(
+                    text = service.name,
+                    fontSize = 20.sp,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f)
+                )
+
+                val format = localStyleForeignFormat(Locale.getDefault())
+                format.currency = service.currency
+                val price = format.format(service.price)
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = price, fontSize = 20.sp, textAlign = TextAlign.End)
+                }
             }
         }
-    }
+            }
 }
 
 fun localStyleForeignFormat(locale: Locale): NumberFormat {

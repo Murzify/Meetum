@@ -16,9 +16,11 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,28 +39,59 @@ import com.murzify.meetum.core.domain.model.Service
 import kotlinx.coroutines.launch
 import java.util.Currency
 import java.util.Locale
+import java.util.UUID
 
 @Composable
 internal fun AddServiceRoute(
     viewModel: ServicesViewModel = hiltViewModel(),
+    isEditing: Boolean,
     navigateToBack: () -> Unit
 ) {
-    AddServiceScreen(navigateToBack) {
-        viewModel.addService(it)
-    }
+    val editingService by viewModel.selectedService.collectAsState()
+    AddServiceScreen(
+        isEditing,
+        editingService,
+        navigateToBack,
+        save = {
+            if (isEditing) {
+                Log.d("edit", it.toString())
+                viewModel.editService(it)
+            } else {
+                viewModel.addService(it)
+            }
+        },
+        delete = {
+            editingService?.let { service -> viewModel.deleteService(service) }
+        }
+    )
 }
 
 @Preview
 @Composable
-internal fun AddServiceScreen(navigateToBack: () -> Unit = {}, save: (Service) -> Unit = {}) {
+internal fun AddServiceScreen(
+    isEditing: Boolean = false,
+    editingService: Service? = null,
+    navigateToBack: () -> Unit = {},
+    save: (Service) -> Unit = {},
+    delete: () -> Unit = {}
+) {
+    val nameDefault = if (isEditing) {
+        editingService?.name ?: ""
+    } else ""
     var name by rememberSaveable {
-        mutableStateOf("")
+        mutableStateOf(nameDefault)
     }
+    val priceDefault = if (isEditing) {
+        editingService?.price.toString()
+    } else ""
     var priceAmount by rememberSaveable {
-        mutableStateOf("")
+        mutableStateOf(priceDefault)
     }
+    val currencyDefault = if (isEditing) {
+        editingService?.currency
+    } else null
     var currency by rememberSaveable {
-        mutableStateOf<Currency?>(null)
+        mutableStateOf(currencyDefault)
     }
 
     var nameError by rememberSaveable {
@@ -109,7 +142,7 @@ internal fun AddServiceScreen(navigateToBack: () -> Unit = {}, save: (Service) -
                 isError = priceError
             )
 
-            CurrencyField() { c ->
+            CurrencyField(isEditing, currencyDefault) { c ->
                 currency = c
             }
         }
@@ -120,38 +153,60 @@ internal fun AddServiceScreen(navigateToBack: () -> Unit = {}, save: (Service) -
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
     ) {
-        FloatingActionButton(
-            modifier = Modifier.padding(16.dp),
-            onClick = {
-                nameError = name.isEmpty()
-                try {
-                    priceAmount.toDouble()
-                } catch (_: Throwable) {
-                    Log.d("price", "error")
-                    priceError = true
-                }
-                val c = if (currency == null) {
-                    Currency.getInstance(Locale.getDefault())
-                } else {
-                    currency
-                }
-
-                if (!nameError && !priceError) {
-                    save(
-                        Service(
-                            name,
-                            priceAmount.toDouble(),
-                            c!!
-                        )
+        Row(){
+            if (isEditing) {
+                FloatingActionButton(
+                    modifier = Modifier.padding(16.dp),
+                    onClick = {
+                        delete()
+                        navigateToBack()
+                    },
+                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.error
+                ) {
+                    Icon(
+                        painter = painterResource(id = com.murzify.ui.R.drawable.round_delete_outline_24),
+                        contentDescription = stringResource(id = R.string.delete_service)
                     )
-                    navigateToBack()
                 }
             }
-        ) {
-            Text(
-                text = stringResource(id = R.string.save),
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
+
+            FloatingActionButton(
+                modifier = Modifier.padding(16.dp),
+                onClick = {
+                    nameError = name.isEmpty()
+                    try {
+                        priceAmount.toDouble()
+                    } catch (_: Throwable) {
+                        Log.d("price", "error")
+                        priceError = true
+                    }
+                    val c = if (currency == null) {
+                        Currency.getInstance(Locale.getDefault())
+                    } else {
+                        currency
+                    }
+
+                    if (!nameError && !priceError) {
+                        save(
+                            Service(
+                                name,
+                                priceAmount.toDouble(),
+                                c!!,
+                                if (isEditing && editingService != null) editingService.id
+                                else UUID.randomUUID()
+                            )
+                        )
+                        navigateToBack()
+                    }
+                }
+            ) {
+                Text(
+                    text = stringResource(id = R.string.save),
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+            }
+
         }
     }
 }
@@ -159,9 +214,13 @@ internal fun AddServiceScreen(navigateToBack: () -> Unit = {}, save: (Service) -
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun CurrencyField(
+    isEditing: Boolean = false,
+    default: Currency? = null,
     onCurrencyChanged: (currency: Currency?) -> Unit
 ) {
-    val defaultCurrency = Currency.getInstance(Locale.getDefault())
+    val defaultCurrency = if (isEditing) {
+        default ?: Currency.getInstance(Locale.getDefault())
+    } else Currency.getInstance(Locale.getDefault())
     val currencies = Currency.getAvailableCurrencies().toSortedSet(
         compareBy {
             it.currencyCode

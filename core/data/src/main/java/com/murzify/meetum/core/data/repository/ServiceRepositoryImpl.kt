@@ -23,4 +23,8 @@ class ServiceRepositoryImpl @Inject constructor(
         serviceDao.delete(service.toEntity())
     }
 
+    override suspend fun editService(service: Service) {
+        serviceDao.edit(service = service.toEntity())
+    }
+
 }
