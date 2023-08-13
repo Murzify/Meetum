@@ -48,6 +48,7 @@ internal fun AddServiceRoute(
     navigateToBack: () -> Unit
 ) {
     val editingService by viewModel.selectedService.collectAsState()
+    Log.d("addService", editingService.toString())
     AddServiceScreen(
         isEditing,
         editingService,

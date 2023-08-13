@@ -1,5 +1,6 @@
 package com.murzify.meetum.feature.services
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.murzify.meetum.core.domain.model.Service
@@ -56,6 +57,7 @@ class ServicesViewModel @Inject constructor(
     fun selectService(service: Service) {
         viewModelScope.launch(Dispatchers.IO) {
             _selectedService.value = service
+            Log.d("addService", selectedService.value.toString())
         }
     }
 }

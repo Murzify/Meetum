@@ -1,7 +1,6 @@
 package com.murzify.meetum.core.data.repository
 
 import com.murzify.meetum.core.database.dao.RecordDao
-import com.murzify.meetum.core.database.dao.ServiceDao
 import com.murzify.meetum.core.database.model.toDomain
 import com.murzify.meetum.core.database.model.toEntity
 import com.murzify.meetum.core.domain.model.Record
@@ -12,7 +11,6 @@ import javax.inject.Inject
 
 class RecordRepositoryImpl @Inject constructor(
     private val recordDao: RecordDao,
-    private val serviceDao: ServiceDao
 ): RecordRepository {
 
     override suspend fun getAllRecords() = recordDao.getAll().map { recordList ->
@@ -25,9 +23,6 @@ class RecordRepositoryImpl @Inject constructor(
         }
 
     override suspend fun addRecord(record: Record) {
-        // TODO delete
-        serviceDao.add(record.service.toEntity())
-
         recordDao.add(record.toEntity())
     }
 

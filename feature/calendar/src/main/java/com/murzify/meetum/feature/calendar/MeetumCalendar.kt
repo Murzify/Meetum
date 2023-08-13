@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -50,6 +51,7 @@ import java.util.Locale
 
 @Composable
 internal fun MeetumCalendarRoute(
+    navigateToAddRecord: (editing: Boolean, date: Date) -> Unit,
     viewModel: CalendarViewModel = hiltViewModel()
 ) {
     val records by viewModel.records.collectAsState()
@@ -58,17 +60,16 @@ internal fun MeetumCalendarRoute(
         getRecords = {
             viewModel.getRecords(it)
         },
-        addRecord = {
-            viewModel.addRecord(it)
-        }
+        navigateToAddRecord
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun MeetumCalendar(
     records: List<Record>,
     getRecords: (date: Date) -> Unit,
-    addRecord: (record: Record) -> Unit
+    navigateToAddRecord: (editing: Boolean, date: Date) -> Unit
 ) {
 
     val currentMonth = remember { YearMonth.now() }
@@ -123,17 +124,8 @@ internal fun MeetumCalendar(
         RecordsList(records = records) {
             selectedDate?.let {
                 val date = Date.from(selectedDate!!.atStartOfDay(ZoneId.systemDefault())?.toInstant())
-                // TODO edit
-                addRecord(
-                    Record(
-                        "Misha",
-                        date,
-                        null,
-                        serviceExample
-                    )
-                )
+                navigateToAddRecord(false, date)
             }
-
         }
     }
 

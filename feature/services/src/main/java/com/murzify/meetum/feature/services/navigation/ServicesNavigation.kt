@@ -1,5 +1,6 @@
 package com.murzify.meetum.feature.services.navigation
 
+import android.util.Log
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
@@ -35,15 +36,30 @@ fun NavGraphBuilder.servicesScreen(navController: NavHostController) {
                 }
             )
         ) { backStackEntry ->
-            val servicesListEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(servicesListNavigationRoute)
+            val isEditing = backStackEntry.arguments?.getBoolean("editing") ?: false
+            val servicesListViewModel: ServicesViewModel = if (isEditing) {
+                val servicesListEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(servicesListNavigationRoute)
+                }
+                Log.d("addService", "editing")
+                hiltViewModel(servicesListEntry)
+            } else {
+                Log.d("addService", "no editing")
+                hiltViewModel()
             }
-            val servicesListViewModel = hiltViewModel<ServicesViewModel>(servicesListEntry)
+
+//            val servicesListEntry = remember(backStackEntry) {
+//                navController.getBackStackEntry(servicesNavigationRoute)
+//            }
+//            Log.d("addService", "editing")
+//            val servicesListViewModel = hiltViewModel<ServicesViewModel>(servicesListEntry)
+
+            val prevRoute = navController.previousBackStackEntry?.destination?.route
             AddServiceRoute(
                 viewModel = servicesListViewModel,
-                isEditing =  backStackEntry.arguments?.getBoolean("editing") ?: false
+                isEditing =  isEditing
             ) {
-                navController.navigate(servicesListNavigationRoute)
+                prevRoute?.let { navController.popBackStack(prevRoute, inclusive = false) }
             }
         }
     }

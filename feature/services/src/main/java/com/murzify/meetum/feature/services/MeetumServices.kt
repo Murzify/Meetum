@@ -5,23 +5,15 @@ import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -32,17 +24,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.murzify.meetum.core.domain.model.Service
-import java.text.DecimalFormat
-import java.text.NumberFormat
+import com.murzify.meetum.core.ui.ServiceCard
 import java.util.Currency
-import java.util.Locale
 
 val serviceExample = Service(
     "Massage",
@@ -83,7 +70,9 @@ internal fun MeetumService(
             modifier = Modifier.fillMaxSize()
         ) {
             items(services) {
-                ServiceCard(it) { service ->
+                ServiceCard(
+                    service = it
+                ) { service ->
                     selectService(service)
                     navigateToAddService(true)
                 }
@@ -115,64 +104,4 @@ internal fun MeetumService(
         }
     }
 
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF,
-    device = "spec:width=700px,height=700px,dpi=440"
-)
-@Composable
-internal fun ServiceCard(
-    service: Service = serviceExample,
-    onClick: (service: Service) -> Unit = {}
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxSize()
-            .aspectRatio(1f)
-            .padding(8.dp)
-
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize()
-                .clickable {
-                    onClick(service)
-                }
-        ) {
-            Column(
-                Modifier
-                    .padding(16.dp)
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.SpaceBetween,
-
-                ) {
-                Text(
-                    text = service.name,
-                    fontSize = 20.sp,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f)
-                )
-
-                val format = localStyleForeignFormat(Locale.getDefault())
-                format.currency = service.currency
-                val price = format.format(service.price)
-                Row(
-                    horizontalArrangement = Arrangement.End,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(text = price, fontSize = 20.sp, textAlign = TextAlign.End)
-                }
-            }
-        }
-            }
-}
-
-fun localStyleForeignFormat(locale: Locale): NumberFormat {
-    val format = NumberFormat.getCurrencyInstance(locale)
-    if (format is DecimalFormat) {
-        // use local/default decimal symbols with original currency symbol
-        val dfs = DecimalFormat().decimalFormatSymbols
-        dfs.currency = format.currency
-        format.decimalFormatSymbols = dfs
-    }
-    return format
 }

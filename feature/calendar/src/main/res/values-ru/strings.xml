@@ -2,4 +2,10 @@
 <resources>
     <string name="add_record">Добавить запись</string>
     <string name="calendar_label">Календарь</string>
+    <string name="client_name_label">Имя (не обязательно)</string>
+    <string name="description_label">Описание (опционально)</string>
+    <string name="choose_service">Выберете услугу</string>
+    <string name="add_new_service">Добавить услугу</string>
+    <string name="delete_record">Удалить запись</string>
+    <string name="save_record">Сохранить</string>
 </resources>

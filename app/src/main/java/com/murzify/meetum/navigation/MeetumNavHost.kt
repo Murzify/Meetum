@@ -19,7 +19,9 @@ fun MeetumNavHost(
         startDestination = startDestination,
         modifier = modifier
     ) {
-        calendarScreen()
+        calendarScreen(navController) {
+            navController.navigate("addService?editing=false")
+        }
         servicesScreen(navController)
     }
 }
