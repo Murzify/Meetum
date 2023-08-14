@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.murzify.meetum.core.ui.meetumTypography
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -64,7 +65,7 @@ fun MeetumTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = meetumTypography,
         content = content
     )
 }

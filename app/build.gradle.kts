@@ -76,6 +76,7 @@ dependencies {
     implementation(libs.ui.tooling.preview)
     implementation(libs.calendar)
     implementation(libs.material3)
+    implementation(libs.material)
     implementation(libs.navigation)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
