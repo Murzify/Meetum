@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -84,7 +83,16 @@ internal fun MeetumCalendar(
 
     var selectedDate by rememberSaveable { mutableStateOf<LocalDate?>(LocalDate.now()) }
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+
+    RecordsList(
+        records = records,
+        addRecord = {
+            selectedDate?.let {
+                val date = Date.from(selectedDate!!.atStartOfDay(ZoneId.systemDefault())?.toInstant())
+                navigateToAddRecord(false, date)
+            }
+        }
+    ) {
         HorizontalCalendar(
             state = state,
             dayContent = {
@@ -117,13 +125,6 @@ internal fun MeetumCalendar(
                 text = dateFormatted,
                 modifier = Modifier.padding(8.dp)
             )
-        }
-
-        RecordsList(records = records) {
-            selectedDate?.let {
-                val date = Date.from(selectedDate!!.atStartOfDay(ZoneId.systemDefault())?.toInstant())
-                navigateToAddRecord(false, date)
-            }
         }
     }
 
