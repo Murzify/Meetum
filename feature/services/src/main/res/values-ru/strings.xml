@@ -6,6 +6,5 @@
     <string name="price">Цена</string>
     <string name="currency">Валюта</string>
     <string name="save">Сохранить</string>
-    <string name="back_button">Назад</string>
     <string name="delete_service">Удалить услугу</string>
 </resources>

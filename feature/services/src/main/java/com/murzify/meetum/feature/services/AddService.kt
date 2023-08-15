@@ -110,7 +110,7 @@ internal fun AddServiceScreen(
         IconButton(modifier = Modifier.statusBarsPadding(), onClick = { navigateToBack() }) {
             Icon(
                 painter = painterResource(id = com.murzify.ui.R.drawable.round_arrow_back_24),
-                contentDescription = stringResource(id = R.string.back_button)
+                contentDescription = stringResource(id = com.murzify.ui.R.string.back_button)
             )
         }
 

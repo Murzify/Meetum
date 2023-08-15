@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -18,6 +19,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -225,6 +227,17 @@ internal fun AddRecordScreen(
             }
         }
     )
+
+    IconButton(modifier = Modifier
+        .statusBarsPadding()
+        .padding(8.dp),
+        onClick = { navigateToBack() }
+    ) {
+        Icon(
+            painter = painterResource(id = com.murzify.ui.R.drawable.round_arrow_back_24),
+            contentDescription = stringResource(id = com.murzify.ui.R.string.back_button)
+        )
+    }
 }
 
 @Composable
