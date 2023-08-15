@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -270,6 +271,7 @@ private fun RecordDate(date: Date) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .systemBarsPadding()
             .padding(16.dp)
         ,
         horizontalArrangement = Arrangement.Center

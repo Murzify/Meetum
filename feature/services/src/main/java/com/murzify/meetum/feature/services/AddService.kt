@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DropdownMenuItem
@@ -106,7 +107,7 @@ internal fun AddServiceScreen(
             .padding(16.dp)
     ) {
 
-        IconButton(onClick = { navigateToBack() }) {
+        IconButton(modifier = Modifier.statusBarsPadding(), onClick = { navigateToBack() }) {
             Icon(
                 painter = painterResource(id = com.murzify.ui.R.drawable.round_arrow_back_24),
                 contentDescription = stringResource(id = R.string.back_button)
