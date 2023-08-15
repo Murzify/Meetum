@@ -87,8 +87,6 @@ internal fun AddRecordScreen(
 ) {
     val defCalendar = Calendar.getInstance().apply {
         time = Date()
-        set(Calendar.HOUR_OF_DAY, 1)
-        set(Calendar.MINUTE, 0)
         if (isEditing) {
             record?.let {
                 time = it.time
@@ -206,7 +204,7 @@ internal fun AddRecordScreen(
         save = {
             val cal = Calendar.getInstance().apply {
                 time = date
-                set(Calendar.HOUR, timePickerState.hour)
+                set(Calendar.HOUR_OF_DAY, timePickerState.hour)
                 set(Calendar.MINUTE, timePickerState.minute)
             }
 
