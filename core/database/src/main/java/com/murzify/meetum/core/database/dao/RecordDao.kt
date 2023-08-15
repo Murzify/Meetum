@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.murzify.meetum.core.database.model.RecordEntity
 import com.murzify.meetum.core.database.model.RecordWithService
 import kotlinx.coroutines.flow.Flow
@@ -19,6 +20,9 @@ interface RecordDao {
 
     @Insert
     fun add(record: RecordEntity)
+
+    @Update
+    fun update(record: RecordEntity)
 
     @Delete
     fun delete(record: RecordEntity)

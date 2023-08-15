@@ -58,7 +58,8 @@ internal fun MeetumCalendarRoute(
         getRecords = {
             viewModel.getRecords(it)
         },
-        navigateToAddRecord
+        navigateToAddRecord,
+        viewModel::selectRecordForEdit
     )
 }
 
@@ -66,7 +67,8 @@ internal fun MeetumCalendarRoute(
 internal fun MeetumCalendar(
     records: List<Record>,
     getRecords: (date: Date) -> Unit,
-    navigateToAddRecord: (editing: Boolean, date: Date) -> Unit
+    navigateToAddRecord: (editing: Boolean, date: Date) -> Unit,
+    selectRecord: (record: Record) -> Unit
 ) {
 
     val currentMonth = remember { YearMonth.now() }
@@ -91,6 +93,10 @@ internal fun MeetumCalendar(
                 val date = Date.from(selectedDate!!.atStartOfDay(ZoneId.systemDefault())?.toInstant())
                 navigateToAddRecord(false, date)
             }
+        },
+        editRecord = {
+            selectRecord(it)
+            navigateToAddRecord(true, it.time)
         }
     ) {
         HorizontalCalendar(

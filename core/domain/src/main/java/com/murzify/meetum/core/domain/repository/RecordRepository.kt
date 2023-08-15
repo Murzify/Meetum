@@ -10,6 +10,8 @@ interface RecordRepository {
 
     suspend fun addRecord(record: Record)
 
+    suspend fun updateRecord(record: Record)
+
     suspend fun deleteRecord(record: Record)
 
     suspend fun getRecords(starDate: Date, endDate: Date): Flow<List<Record>>

@@ -48,6 +48,12 @@ class CalendarViewModel @Inject constructor(
         }
     }
 
+    fun editRecord(record: Record) {
+        viewModelScope.launch(Dispatchers.IO) {
+            recordRepository.updateRecord(record)
+        }
+    }
+
     fun deleteRecord() {
         viewModelScope.launch(Dispatchers.IO) {
             selectedRecord.value?.let {
@@ -65,5 +71,10 @@ class CalendarViewModel @Inject constructor(
         }
     }
 
+    fun selectRecordForEdit(record: Record) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _selectedRecord.value = record
+        }
+    }
 
 }

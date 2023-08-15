@@ -44,6 +44,7 @@ import java.text.DateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.UUID
 
 @Composable
 internal fun AddRecordRoute(
@@ -54,13 +55,16 @@ internal fun AddRecordRoute(
     navigateToAddService: () -> Unit
 ) {
     val services by viewModel.services.collectAsState()
+    val selectedRecord by viewModel.selectedRecord.collectAsState()
     AddRecordScreen(
         services,
         navigateToAddService,
         navigateToBack,
         viewModel::deleteRecord,
         viewModel::addRecord,
+        viewModel::editRecord,
         isEditing,
+        selectedRecord,
         date
     )
 }
@@ -73,13 +77,20 @@ internal fun AddRecordScreen(
     navigateToBack: () -> Unit,
     delete: () -> Unit,
     save: (record: Record) -> Unit,
+    edit: (record: Record) -> Unit,
     isEditing: Boolean,
+    record: Record?,
     date: Date
 ) {
     val defCalendar = Calendar.getInstance().apply {
         time = Date()
-        add(Calendar.HOUR_OF_DAY, 1)
+        set(Calendar.HOUR_OF_DAY, 1)
         set(Calendar.MINUTE, 0)
+        if (isEditing) {
+            record?.let {
+                time = it.time
+            }
+        }
     }
 
     val timePickerState = remember {
@@ -89,9 +100,27 @@ internal fun AddRecordScreen(
             is24Hour = true
         )
     }
-    var selectedService: Service? by remember { mutableStateOf(null) }
-    var clientName by rememberSaveable { mutableStateOf("") }
-    var description by rememberSaveable { mutableStateOf("") }
+    var selectedService: Service? by remember {
+        mutableStateOf(
+            if (isEditing) {
+                record?.service
+            } else null
+        )
+    }
+    var clientName by rememberSaveable {
+        mutableStateOf(
+            if (isEditing) {
+                record?.clientName ?: ""
+            } else ""
+        )
+    }
+    var description by rememberSaveable {
+        mutableStateOf(
+            if (isEditing) {
+                record?.description ?: ""
+            } else ""
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -177,14 +206,20 @@ internal fun AddRecordScreen(
                 set(Calendar.HOUR, timePickerState.hour)
                 set(Calendar.MINUTE, timePickerState.minute)
             }
+
             if (selectedService != null) {
-                val record = Record(
+                val saveRecord = Record(
                     clientName = clientName,
                     time = cal.time,
                     description = description,
-                    service = selectedService!!
+                    service = selectedService!!,
+                    id = if (isEditing) record?.id ?: UUID.randomUUID() else UUID.randomUUID()
                 )
-                save(record)
+                if (isEditing) {
+                    edit(saveRecord)
+                } else {
+                    save(saveRecord)
+                }
                 navigateToBack()
             }
         }

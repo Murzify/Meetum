@@ -5,6 +5,7 @@ import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -59,7 +60,8 @@ val recordExample = Record(
 @Composable
 fun RecordsList(
     records: List<Record>, addRecord: () -> Unit,
-    topContent: @Composable () -> Unit
+    editRecord: (record: Record) -> Unit,
+    topContent: @Composable () -> Unit,
 ) {
     val listState = rememberLazyListState()
 
@@ -81,7 +83,10 @@ fun RecordsList(
         ) {
             item { topContent() }
             items(records) {
-                RecordCard(it)
+                RecordCard(
+                    it,
+                    editRecord
+                )
             }
             item {
                 Spacer(
@@ -119,36 +124,43 @@ fun RecordsList(
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
-fun RecordCard(record: Record = recordExample) {
+fun RecordCard(
+    record: Record = recordExample,
+    onClick: (record: Record) -> Unit = {}
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
     ) {
-        Row(
-            Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
-                Modifier.weight(1f),
-                verticalArrangement = Arrangement.Center
+        Box(modifier = Modifier.fillMaxSize().clickable {
+            onClick(record)
+        }) {
+            Row(
+                Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                if (!record.clientName.isNullOrEmpty()) {
-                    Text(
-                        text = record.clientName!!,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.ExtraBold
-                    )
+                Column(
+                    Modifier.weight(1f),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    if (!record.clientName.isNullOrEmpty()) {
+                        Text(
+                            text = record.clientName!!,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.ExtraBold
+                        )
+                    }
+                    Text(text = record.service.name, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
-                Text(text = record.service.name, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            }
-            val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
+                val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
 
-            Text(text = sdf.format(record.time), modifier = Modifier.padding(start = 2.dp))
+                Text(text = sdf.format(record.time), modifier = Modifier.padding(start = 2.dp))
+            }
         }
     }
 }
