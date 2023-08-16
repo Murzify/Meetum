@@ -33,12 +33,21 @@ class CalendarViewModel @Inject constructor(
     private val _selectedRecord: MutableStateFlow<Record?> = MutableStateFlow(null)
     val selectedRecord: StateFlow<Record?> = _selectedRecord
 
+    private val _allRecords: MutableStateFlow<List<Record>> = MutableStateFlow(emptyList())
+    val allRecords: StateFlow<List<Record>> = _allRecords
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
             getServicesUseCase()
                 .collect {
                     _services.value = it
                 }
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            recordRepository.getAllRecords().collect {
+                _allRecords.value = it
+            }
         }
     }
 

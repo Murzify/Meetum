@@ -11,10 +11,13 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -53,11 +56,11 @@ internal fun MeetumCalendarRoute(
     viewModel: CalendarViewModel = hiltViewModel()
 ) {
     val records by viewModel.records.collectAsState()
+    val allRecords by viewModel.allRecords.collectAsState()
     MeetumCalendar(
         records = records,
-        getRecords = {
-            viewModel.getRecords(it)
-        },
+        allRecords = allRecords,
+        getRecords = viewModel::getRecords,
         navigateToAddRecord,
         viewModel::selectRecordForEdit
     )
@@ -66,6 +69,7 @@ internal fun MeetumCalendarRoute(
 @Composable
 internal fun MeetumCalendar(
     records: List<Record>,
+    allRecords: List<Record>,
     getRecords: (date: Date) -> Unit,
     navigateToAddRecord: (editing: Boolean, date: Date) -> Unit,
     selectRecord: (record: Record) -> Unit
@@ -102,12 +106,22 @@ internal fun MeetumCalendar(
         HorizontalCalendar(
             state = state,
             dayContent = {
-                Day(it, isSelected = selectedDate == it.date) { day ->
+                Day(
+                    it,
+                    isSelected = selectedDate == it.date,
+                    badge = allRecords.any { record ->
+                        val recordDate =
+                            record.time.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+                        it.date.isEqual(recordDate)
+                    }
+                ) { day ->
                     if (selectedDate == day.date) {
                         selectedDate = null
                     } else {
                         selectedDate = day.date
-                        val date = Date.from(selectedDate!!.atStartOfDay(ZoneId.systemDefault())?.toInstant())
+                        val date = Date.from(
+                            selectedDate!!.atStartOfDay(ZoneId.systemDefault())?.toInstant()
+                        )
                         getRecords(date)
                     }
                 }
@@ -137,7 +151,12 @@ internal fun MeetumCalendar(
 }
 
 @Composable
-private fun Day(day: CalendarDay, isSelected: Boolean, onClick: (CalendarDay) -> Unit) {
+private fun Day(
+    day: CalendarDay,
+    isSelected: Boolean,
+    badge: Boolean,
+    onClick: (CalendarDay) -> Unit,
+) {
     val border = remember { LocalDate.now() == day.date }
     val bgColor = if (day.position == DayPosition.MonthDate) {
         CardDefaults.cardColors()
@@ -168,6 +187,20 @@ private fun Day(day: CalendarDay, isSelected: Boolean, onClick: (CalendarDay) ->
                 ),
             contentAlignment = Alignment.Center)
         {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.BottomEnd
+            ) {
+                if (badge) {
+                    Surface(
+                        shape = CircleShape,
+                        modifier = Modifier
+                            .padding(end = 6.dp, bottom = 6.dp)
+                            .size(6.dp),
+                        color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary
+                    ) {}
+                }
+            }
             Text(
                 text = day.date.dayOfMonth.toString(),
                 color = if (isSelected) MaterialTheme.colorScheme.onPrimary else textColor
@@ -175,8 +208,8 @@ private fun Day(day: CalendarDay, isSelected: Boolean, onClick: (CalendarDay) ->
         }
 
     }
-
 }
+
 
 @Composable
 private fun Month(month: CalendarMonth) {
