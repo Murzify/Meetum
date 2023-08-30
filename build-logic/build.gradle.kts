@@ -20,5 +20,9 @@ gradlePlugin {
             id = "meetum.hilt"
             implementationClass = "com.murzify.meetum.build_logic.HiltPlugin"
         }
+        register("unitTests") {
+            id = "meetum.unitTests"
+            implementationClass = "com.murzify.meetum.build_logic.UnitTestPlugin"
+        }
     }
 }
