@@ -16,7 +16,6 @@ class UnitTestPlugin: Plugin<Project> {
                 add("testImplementation", libs.findLibrary("mockito.inline").get())
                 add("testImplementation", libs.findLibrary("mockito.kotlin").get())
                 add("testImplementation", libs.findLibrary("coroutines.test").get())
-                add("testImplementation", libs.findLibrary("androidx.test.core").get())
             }
         }
     }
