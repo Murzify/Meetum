@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.com.android.library)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     kotlin("kapt")
-    alias(libs.plugins.hilt)
+    id("meetum.feature")
 }
 
 android {
@@ -42,22 +42,5 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:ui"))
-    implementation(project(":core:domain"))
-    implementation(project(":core:data"))
-
-    implementation(libs.core.ktx)
-    implementation(libs.lifecycle.runtime.ktx)
-    implementation(libs.activity.compose)
-    implementation(platform(libs.compose.bom))
-    implementation(libs.ui)
-    implementation(libs.ui.graphics)
-    implementation(libs.ui.tooling.preview)
     implementation(libs.calendar)
-    implementation(libs.material3)
-    implementation(libs.navigation)
-
-    implementation(libs.androidx.hilt.navigation.compose)
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
 }
