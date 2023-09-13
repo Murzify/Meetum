@@ -68,7 +68,7 @@ internal fun AddServiceRoute(
     )
 }
 
-@Preview
+@Preview(backgroundColor = 0xFFFFFFFF)
 @Composable
 internal fun AddServiceScreen(
     isEditing: Boolean = false,

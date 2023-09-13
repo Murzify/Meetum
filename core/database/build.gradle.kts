@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.murzify.meetum.core.database"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 26
