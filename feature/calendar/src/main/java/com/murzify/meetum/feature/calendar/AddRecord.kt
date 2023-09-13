@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -193,6 +194,8 @@ internal fun AddRecordScreen(
                 Spacer(modifier = Modifier.width(24.dp))
             }
         }
+
+        Spacer(modifier = Modifier.height(80.dp))
     }
 
     FloatActionBar(
