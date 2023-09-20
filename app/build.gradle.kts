@@ -2,8 +2,7 @@
 plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
-    kotlin("kapt")
-    alias(libs.plugins.hilt)
+    id("meetum.hilt")
 }
 
 android {
@@ -51,9 +50,6 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-    kapt {
-        correctErrorTypes = true
-    }
 }
 
 dependencies {
@@ -63,9 +59,6 @@ dependencies {
     implementation(project(":core:database"))
     implementation(project(":core:ui"))
     implementation(project(":core:domain"))
-
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
 
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)

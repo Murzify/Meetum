@@ -2,8 +2,7 @@
 plugins {
     alias(libs.plugins.com.android.library)
     alias(libs.plugins.org.jetbrains.kotlin.android)
-    kotlin("kapt")
-    alias(libs.plugins.hilt)
+    id("meetum.hilt")
     id("meetum.unitTests")
 }
 
@@ -40,7 +39,5 @@ dependencies {
     implementation(project(":core:domain"))
     implementation(project(":core:database"))
 
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
     implementation(libs.inject)
 }

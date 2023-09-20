@@ -13,6 +13,7 @@ fun RecordWithService.toDomain() = Record(
     record.clientName,
     record.time,
     record.description,
+    record.phone,
     service.toDomain(),
     record.recordId
 )

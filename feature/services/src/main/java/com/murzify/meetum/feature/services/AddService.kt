@@ -118,7 +118,7 @@ internal fun AddServiceScreen(
             value = name,
             onValueChange = {
                 nameError = false
-                name = it
+                name = it.removePrefix(" ")
                             },
             label = { Text(text = stringResource(id = R.string.service_name)) },
             modifier = Modifier.padding(vertical = 16.dp),
@@ -133,7 +133,9 @@ internal fun AddServiceScreen(
                 value = priceAmount,
                 onValueChange = {
                     priceError = false
-                    val text = it.replace(",", ".")
+                    val text = it
+                        .replace(",", ".")
+                        .replace("-", "")
                     priceAmount = text
                 },
                 label = { Text(text = stringResource(R.string.price)) },

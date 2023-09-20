@@ -2,7 +2,6 @@
 plugins {
     alias(libs.plugins.com.android.library)
     alias(libs.plugins.org.jetbrains.kotlin.android)
-    kotlin("kapt")
     id("meetum.feature")
 }
 
@@ -43,4 +42,5 @@ android {
 
 dependencies {
     implementation(libs.calendar)
+    implementation(libs.androidx.constraintlayout)
 }

@@ -13,6 +13,7 @@ data class RecordEntity(
     @ColumnInfo(name = "client_name") val clientName: String?,
     @ColumnInfo(name = "time") val time: Date,
     @ColumnInfo(name = "description") val description: String?,
+    @ColumnInfo(name = "phone") val phone: String?,
     @ColumnInfo(name = "service_id") val serviceId: UUID
 )
 
@@ -21,5 +22,6 @@ fun Record.toEntity() = RecordEntity(
     clientName,
     time,
     description,
+    phone,
     service.id
 )
