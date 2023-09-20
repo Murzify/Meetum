@@ -7,6 +7,7 @@ import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.core.domain.repository.RecordRepository
 import kotlinx.coroutines.flow.map
 import java.util.Date
+import java.util.UUID
 import javax.inject.Inject
 
 class RecordRepositoryImpl @Inject constructor(
@@ -22,6 +23,16 @@ class RecordRepositoryImpl @Inject constructor(
             recordList.map { it.toDomain() }
         }
 
+    override suspend fun futureRecords(serviceId: UUID): List<Record> {
+        return recordDao.getFuture(serviceId, Date()).map {
+            it.toDomain()
+        }
+    }
+
+    override suspend fun deleteLinkedRecords(serviceId: UUID) {
+        recordDao.deleteLinkedWithService(serviceId)
+    }
+
     override suspend fun addRecord(record: Record) {
         recordDao.add(record.toEntity())
     }
@@ -33,4 +44,5 @@ class RecordRepositoryImpl @Inject constructor(
     override suspend fun deleteRecord(record: Record) {
         recordDao.delete(record.toEntity())
     }
+
 }

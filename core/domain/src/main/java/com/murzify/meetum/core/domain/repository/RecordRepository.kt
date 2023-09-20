@@ -3,6 +3,7 @@ package com.murzify.meetum.core.domain.repository
 import com.murzify.meetum.core.domain.model.Record
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
+import java.util.UUID
 
 interface RecordRepository {
 
@@ -15,4 +16,8 @@ interface RecordRepository {
     suspend fun deleteRecord(record: Record)
 
     suspend fun getRecords(starDate: Date, endDate: Date): Flow<List<Record>>
+
+    suspend fun futureRecords(serviceId: UUID): List<Record>
+
+    suspend fun deleteLinkedRecords(serviceId: UUID)
 }

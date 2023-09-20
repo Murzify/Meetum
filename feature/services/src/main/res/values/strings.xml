@@ -7,4 +7,7 @@
     <string name="currency">Currency</string>
     <string name="save">Save</string>
     <string name="delete_service">Delete service</string>
+    <string name="you_have_records">You have records assigned, all related records will be deleted. Are you sure?</string>
+    <string name="confirm_delete">Confirm</string>
+    <string name="cancel_delete">Cancel</string>
 </resources>

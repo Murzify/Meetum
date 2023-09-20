@@ -7,4 +7,7 @@
     <string name="currency">Валюта</string>
     <string name="save">Сохранить</string>
     <string name="delete_service">Удалить услугу</string>
+    <string name="you_have_records">У вас назначены записи, все связанные записи будут удалены. Вы уверены?</string>
+    <string name="confirm_delete">Подтвердить</string>
+    <string name="cancel_delete">Отмена</string>
 </resources>

@@ -1,15 +1,22 @@
 package com.murzify.meetum.feature.services
 
 import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -19,7 +26,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -36,6 +45,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.core.domain.model.Service
 import kotlinx.coroutines.launch
 import java.util.Currency
@@ -49,10 +59,13 @@ internal fun AddServiceRoute(
     navigateToBack: () -> Unit
 ) {
     val editingService by viewModel.selectedService.collectAsState()
+    viewModel.getFutureRecords()
+    val futureRecords by viewModel.futureRecords.collectAsState()
     Log.d("addService", editingService.toString())
     AddServiceScreen(
         isEditing,
         editingService,
+        futureRecords,
         navigateToBack,
         save = {
             if (isEditing) {
@@ -68,11 +81,13 @@ internal fun AddServiceRoute(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(backgroundColor = 0xFFFFFFFF)
 @Composable
 internal fun AddServiceScreen(
     isEditing: Boolean = false,
     editingService: Service? = null,
+    futureRecords: List<Record> = emptyList(),
     navigateToBack: () -> Unit = {},
     save: (Service) -> Unit = {},
     delete: () -> Unit = {}
@@ -158,12 +173,18 @@ internal fun AddServiceScreen(
         contentAlignment = Alignment.BottomCenter
     ) {
         Row(){
+            var showAlert by remember { mutableStateOf(false) }
             if (isEditing) {
                 FloatingActionButton(
                     modifier = Modifier.padding(16.dp),
                     onClick = {
-                        delete()
-                        navigateToBack()
+                        if (futureRecords.isNotEmpty()) {
+                            showAlert = true
+                        } else {
+                            delete()
+                            navigateToBack()
+                        }
+
                     },
                     containerColor = MaterialTheme.colorScheme.errorContainer,
                     contentColor = MaterialTheme.colorScheme.error
@@ -173,6 +194,46 @@ internal fun AddServiceScreen(
                         contentDescription = stringResource(id = R.string.delete_service)
                     )
                 }
+            }
+
+            if (showAlert) {
+                AlertDialog(onDismissRequest = { showAlert = false }) {
+                    Text(text = "hello")
+                    Surface(
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .wrapContentHeight(),
+                        shape = MaterialTheme.shapes.large,
+                        tonalElevation = AlertDialogDefaults.TonalElevation
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text(
+                                text = stringResource(id = R.string.you_have_records),
+                            )
+                            Spacer(modifier = Modifier.height(24.dp))
+                            Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                                TextButton(
+                                    onClick = {
+                                        showAlert = false
+                                    },
+                                ) {
+                                    Text(stringResource(id = R.string.cancel_delete))
+                                }
+                                TextButton(
+                                    onClick = {
+                                        delete()
+                                        showAlert = false
+                                        navigateToBack()
+                                    },
+                                ) {
+                                    Text(stringResource(id = R.string.confirm_delete))
+                                }
+                            }
+
+                        }
+                    }
+                }
+
             }
 
             FloatingActionButton(

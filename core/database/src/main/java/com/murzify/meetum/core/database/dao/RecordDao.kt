@@ -9,6 +9,7 @@ import com.murzify.meetum.core.database.model.RecordEntity
 import com.murzify.meetum.core.database.model.RecordWithService
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
+import java.util.UUID
 
 @Dao
 interface RecordDao {
@@ -26,5 +27,11 @@ interface RecordDao {
 
     @Delete
     fun delete(record: RecordEntity)
+
+    @Query("SELECT * FROM records WHERE service_id == :serviceId AND time > :currentTime")
+    fun getFuture(serviceId: UUID, currentTime: Date): List<RecordWithService>
+
+    @Query("DELETE FROM records WHERE service_id == :serviceId")
+    fun deleteLinkedWithService(serviceId: UUID)
 
 }
