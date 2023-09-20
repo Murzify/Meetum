@@ -36,6 +36,7 @@ class RecordRepositoryImplTest {
         "Vasya",
         Date(),
         null,
+        null,
         testService
     )
     private val testRecordWithService = RecordWithService(

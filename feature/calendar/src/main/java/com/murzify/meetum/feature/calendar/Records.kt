@@ -53,6 +53,7 @@ val recordExample = Record(
     "Misha",
     GregorianCalendar(2023, 7, 6, 16, 0).time,
     null,
+    null,
     serviceExample
 )
 

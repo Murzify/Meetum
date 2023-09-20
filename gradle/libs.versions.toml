@@ -12,7 +12,7 @@ appcompat = "1.6.1"
 material3 = "1.2.0-alpha05"
 navigation = "2.6.0"
 org-jetbrains-kotlin-jvm = "1.9.0"
-hilt = "2.47"
+hilt = "2.48"
 androidxHiltNavigationCompose = "1.0.0"
 calendar = "2.4.0-beta01"
 ksp = "1.9.0-1.0.13"
@@ -20,6 +20,7 @@ room = "2.5.2"
 coroutines = "1.7.2"
 mockito = "4.0.0"
 androidx-test = "1.5.0"
+constraint-layout = "1.0.1"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -42,6 +43,7 @@ navigation = { module = "androidx.navigation:navigation-compose", version.ref = 
 calendar = { module = "com.kizitonwose.calendar:compose", version.ref = "calendar" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+hilt-gradle-plugin = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "hilt" }
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidxHiltNavigationCompose" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
@@ -53,12 +55,13 @@ mockito-inline = { group = "org.mockito", name = "mockito-inline", version.ref =
 mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockito"}
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines"}
 androidx-test-core = { group = "androidx.test", name = "core", version.ref = "androidx-test" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraint-layout" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "org-jetbrains-kotlin-android" }
 com-android-library = { id = "com.android.library", version.ref = "agp" }
 org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org-jetbrains-kotlin-jvm" }
-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt"}
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
