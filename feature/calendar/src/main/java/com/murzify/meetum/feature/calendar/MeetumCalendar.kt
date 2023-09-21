@@ -87,16 +87,14 @@ internal fun MeetumCalendar(
         firstDayOfWeek = firstDayOfWeek
     )
 
-    var selectedDate by rememberSaveable { mutableStateOf<LocalDate?>(LocalDate.now()) }
+    var selectedDate by rememberSaveable { mutableStateOf<LocalDate>(LocalDate.now()) }
 
 
     RecordsList(
         records = records,
         addRecord = {
-            selectedDate?.let {
-                val date = Date.from(selectedDate!!.atStartOfDay(ZoneId.systemDefault())?.toInstant())
-                navigateToAddRecord(false, date)
-            }
+            val date = Date.from(selectedDate.atStartOfDay(ZoneId.systemDefault())?.toInstant())
+            navigateToAddRecord(false, date)
         },
         editRecord = {
             selectRecord(it)
@@ -115,12 +113,10 @@ internal fun MeetumCalendar(
                         it.date.isEqual(recordDate)
                     }
                 ) { day ->
-                    if (selectedDate == day.date) {
-                        selectedDate = null
-                    } else {
+                    if (selectedDate != day.date) {
                         selectedDate = day.date
                         val date = Date.from(
-                            selectedDate!!.atStartOfDay(ZoneId.systemDefault())?.toInstant()
+                            selectedDate.atStartOfDay(ZoneId.systemDefault())?.toInstant()
                         )
                         getRecords(date)
                     }
@@ -134,18 +130,16 @@ internal fun MeetumCalendar(
             },
             modifier = Modifier.padding(top = 8.dp)
         )
-        selectedDate?.let {
-            val f = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.getDefault())
-            val date = Date.from(selectedDate!!.atStartOfDay(ZoneId.systemDefault())?.toInstant())
-            val dateFormatted = f.format(
-                date
-            )
-            getRecords(date)
-            Text(
-                text = dateFormatted,
-                modifier = Modifier.padding(8.dp)
-            )
-        }
+        val f = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.getDefault())
+        val date = Date.from(selectedDate.atStartOfDay(ZoneId.systemDefault())?.toInstant())
+        val dateFormatted = f.format(
+            date
+        )
+        getRecords(date)
+        Text(
+            text = dateFormatted,
+            modifier = Modifier.padding(8.dp)
+        )
     }
 
 }
