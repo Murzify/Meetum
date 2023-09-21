@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.murzify.meetum.core.domain.model.Service
+import com.murzify.meetum.core.ui.EmptyScreenLottie
 import com.murzify.meetum.core.ui.ServiceCard
 import java.util.Currency
 
@@ -56,6 +57,9 @@ internal fun MeetumService(
     navigateToAddService: (edit: Boolean) -> Unit = {},
     selectService: (service: Service) -> Unit = {}
 ) {
+    if (services.isEmpty()) {
+        EmptyScreenLottie()
+    }
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomEnd
