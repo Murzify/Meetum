@@ -19,23 +19,25 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TimeInput
 import androidx.compose.material3.TimePickerState
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
@@ -47,6 +49,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -148,132 +151,150 @@ internal fun AddRecordScreen(
         )
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    RecordDate(date = date)
+                },
+                navigationIcon = {
+                    IconButton(modifier = Modifier
+                        .padding(8.dp),
+                        onClick = { navigateToBack() }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = com.murzify.ui.R.drawable.round_arrow_back_24),
+                            contentDescription = stringResource(id = com.murzify.ui.R.string.back_button)
+                        )
+                    }
+                },
+                scrollBehavior = scrollBehavior
+            )
+
+        }
     ) {
-
-        RecordDate(date = date)
-
-        Row(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 18.dp),
-            horizontalArrangement = Arrangement.Center
+                .padding(it)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
             TimeInput(
-                modifier = Modifier,
+                modifier = Modifier.align(Alignment.CenterHorizontally),
                 state = timePickerState
             )
-        }
 
-        ConstraintLayout(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp).fillMaxWidth()
-        ) {
+            ConstraintLayout(
+                modifier = Modifier
+                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                    .fillMaxWidth()
+            ) {
 
-            val (textField, button) = createRefs()
+                val (textField, button) = createRefs()
+
+                OutlinedTextField(
+                    modifier = Modifier.constrainAs(textField) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                        bottom.linkTo(parent.bottom)
+                    },
+                    value = clientName,
+                    onValueChange = {
+                        clientName = it
+                    },
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.round_person_24),
+                            contentDescription = stringResource(id = R.string.client_name_label)
+                        )
+                    },
+                    label = {
+                        Text(text = stringResource(id = R.string.client_name_label))
+                    }
+                )
+
+                ImportContactButton(
+                    modifier = Modifier.constrainAs(button) {
+                        linkTo(textField.end,button.start, bias = 0f)
+                        end.linkTo(parent.end)
+                        bottom.linkTo(parent.bottom)
+                        top.linkTo(parent.top)
+                    }
+                ) { name, phone ->
+                    clientName = name
+                    phoneNumber = phone
+                }
+            }
 
             OutlinedTextField(
-                modifier = Modifier.constrainAs(textField) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    bottom.linkTo(parent.bottom)
-                },
-                value = clientName,
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                value = description,
                 onValueChange = {
-                    clientName = it
+                    description = it
                 },
                 leadingIcon = {
                     Icon(
-                        painter = painterResource(id = R.drawable.round_person_24),
-                        contentDescription = stringResource(id = R.string.client_name_label)
+                        painter = painterResource(id = R.drawable.round_description_24),
+                        contentDescription = stringResource(id = R.string.description_label)
                     )
                 },
                 label = {
-                    Text(text = stringResource(id = R.string.client_name_label))
+                    Text(text = stringResource(id = R.string.description_label))
                 }
             )
 
-            ImportContactButton(
-                modifier = Modifier.constrainAs(button) {
-                    linkTo(textField.end,button.start, bias = 0f)
-                    end.linkTo(parent.end)
-                    bottom.linkTo(parent.bottom)
-                    top.linkTo(parent.top)
+            OutlinedTextField(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                value = phoneNumber,
+                onValueChange = {
+                    phoneNumber = it
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.round_phone_24),
+                        contentDescription = stringResource(id = R.string.phone_label)
+                    )
+                },
+                label = {
+                    Text(text = stringResource(id = R.string.phone_label))
                 }
-            ) { name, phone ->
-                clientName = name
-                phoneNumber = phone
+            )
+
+            Text(
+                text = stringResource(id = R.string.choose_service),
+                modifier = Modifier.padding(start = 16.dp, top = 8.dp)
+            )
+
+            LazyRow() {
+                item {
+                    Spacer(modifier = Modifier.width(24.dp))
+                }
+                item {
+                    AddServiceCard(modifier = Modifier.width(180.dp)) {
+                        navigateToAddService()
+                    }
+                }
+                items(services) { service ->
+                    ServiceCard(
+                        service = service,
+                        modifier = Modifier.width(180.dp),
+                        border = if (selectedService == service) {
+                            BorderStroke(4.dp, MaterialTheme.colorScheme.primary)
+                        } else null
+                    ) {
+                        selectedService = service
+                    }
+                }
+                item {
+                    Spacer(modifier = Modifier.width(24.dp))
+                }
             }
+
+            Spacer(modifier = Modifier.height(80.dp))
         }
-
-        OutlinedTextField(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-            value = description,
-            onValueChange = {
-                description = it
-            },
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.round_description_24),
-                    contentDescription = stringResource(id = R.string.description_label)
-                )
-            },
-            label = {
-                Text(text = stringResource(id = R.string.description_label))
-            }
-        )
-
-        OutlinedTextField(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-            value = phoneNumber,
-            onValueChange = {
-                phoneNumber = it
-            },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.round_phone_24),
-                    contentDescription = stringResource(id = R.string.phone_label)
-                )
-            },
-            label = {
-                Text(text = stringResource(id = R.string.phone_label))
-            }
-        )
-
-        Text(
-            text = stringResource(id = R.string.choose_service),
-            modifier = Modifier.padding(start = 16.dp, top = 8.dp)
-        )
-
-        LazyRow() {
-            item {
-                Spacer(modifier = Modifier.width(24.dp))
-            }
-            item {
-                AddServiceCard(modifier = Modifier.width(180.dp)) {
-                    navigateToAddService()
-                }
-            }
-            items(services) { service ->
-                ServiceCard(
-                    service = service,
-                    modifier = Modifier.width(180.dp),
-                    border = if (selectedService == service) {
-                        BorderStroke(4.dp, MaterialTheme.colorScheme.primary)
-                    } else null
-                ) {
-                    selectedService = service
-                }
-            }
-            item {
-                Spacer(modifier = Modifier.width(24.dp))
-            }
-        }
-
-        Spacer(modifier = Modifier.height(80.dp))
     }
 
     FloatActionBar(
@@ -308,16 +329,7 @@ internal fun AddRecordScreen(
         }
     )
 
-    IconButton(modifier = Modifier
-        .statusBarsPadding()
-        .padding(8.dp),
-        onClick = { navigateToBack() }
-    ) {
-        Icon(
-            painter = painterResource(id = com.murzify.ui.R.drawable.round_arrow_back_24),
-            contentDescription = stringResource(id = com.murzify.ui.R.string.back_button)
-        )
-    }
+
 }
 
 @Composable
@@ -362,11 +374,6 @@ private fun FloatActionBar(
 @Composable
 private fun RecordDate(date: Date) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .systemBarsPadding()
-            .padding(16.dp)
-        ,
         horizontalArrangement = Arrangement.Center
     ) {
 
