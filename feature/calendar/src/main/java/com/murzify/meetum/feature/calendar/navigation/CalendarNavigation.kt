@@ -11,11 +11,13 @@ import androidx.navigation.navigation
 import com.murzify.meetum.feature.calendar.AddRecordRoute
 import com.murzify.meetum.feature.calendar.CalendarViewModel
 import com.murzify.meetum.feature.calendar.MeetumCalendarRoute
+import com.murzify.meetum.feature.calendar.RecordInfoRoute
 import java.util.Date
 
 const val calendarNavigationRoute = "calendar"
 const val mainCalendarNavigationRoute = "mainCalendar"
 const val addRecordNavigationRoute = "addRecord?editing={editing}&date={date}"
+const val recordInfoNavigationRoute = "navigationInfo"
 
 fun NavGraphBuilder.calendarScreen(
     navController: NavController,
@@ -24,8 +26,11 @@ fun NavGraphBuilder.calendarScreen(
     navigation(route = calendarNavigationRoute, startDestination = mainCalendarNavigationRoute) {
         composable(route = mainCalendarNavigationRoute) {
             MeetumCalendarRoute(
-                navigateToAddRecord = { isEditing, date ->
-                    navController.navigate("addRecord?editing=$isEditing&date=${date.time}")
+                navigateToAddRecord = { _, date ->
+                    navController.navigate("addRecord?editing=false&date=${date.time}")
+                },
+                navigateToOpenRecord = {
+                    navController.navigate(recordInfoNavigationRoute)
                 }
             )
         }
@@ -57,6 +62,24 @@ fun NavGraphBuilder.calendarScreen(
                     navController.popBackStack()
                 },
                 navigateToAddService = navigateToAddService
+            )
+        }
+
+        composable(
+            route = recordInfoNavigationRoute,
+        ) { navBackStackEntry ->
+            val mainCalendarEntry = remember(navBackStackEntry) {
+                navController.getBackStackEntry(mainCalendarNavigationRoute)
+            }
+            val calendarViewModel = hiltViewModel<CalendarViewModel>(mainCalendarEntry)
+            RecordInfoRoute(
+                viewModel = calendarViewModel,
+                navigateToEdit = { date ->
+                    navController.navigate("addRecord?editing=true&date=${date.time}")
+                },
+                navigateToBack = {
+                    navController.popBackStack()
+                }
             )
         }
     }

@@ -10,4 +10,6 @@
     <string name="delete_record">Delete record</string>
     <string name="save_record">Save</string>
     <string name="import_contact">Import contact</string>
+    <string name="edit">Edit</string>
+    <string name="service_label">Service</string>
 </resources>

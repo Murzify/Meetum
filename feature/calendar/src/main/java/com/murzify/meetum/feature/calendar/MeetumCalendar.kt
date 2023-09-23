@@ -53,6 +53,7 @@ import java.util.Locale
 @Composable
 internal fun MeetumCalendarRoute(
     navigateToAddRecord: (editing: Boolean, date: Date) -> Unit,
+    navigateToOpenRecord: (date: Date) -> Unit,
     viewModel: CalendarViewModel = hiltViewModel()
 ) {
     val records by viewModel.records.collectAsState()
@@ -62,6 +63,7 @@ internal fun MeetumCalendarRoute(
         allRecords = allRecords,
         getRecords = viewModel::getRecords,
         navigateToAddRecord,
+        navigateToOpenRecord,
         viewModel::selectRecordForEdit
     )
 }
@@ -72,6 +74,7 @@ internal fun MeetumCalendar(
     allRecords: List<Record>,
     getRecords: (date: Date) -> Unit,
     navigateToAddRecord: (editing: Boolean, date: Date) -> Unit,
+    navigateToOpenRecord: (date: Date) -> Unit,
     selectRecord: (record: Record) -> Unit
 ) {
 
@@ -96,9 +99,9 @@ internal fun MeetumCalendar(
             val date = Date.from(selectedDate.atStartOfDay(ZoneId.systemDefault())?.toInstant())
             navigateToAddRecord(false, date)
         },
-        editRecord = {
+        openRecord = {
             selectRecord(it)
-            navigateToAddRecord(true, it.time)
+            navigateToOpenRecord(it.time)
         }
     ) {
         HorizontalCalendar(

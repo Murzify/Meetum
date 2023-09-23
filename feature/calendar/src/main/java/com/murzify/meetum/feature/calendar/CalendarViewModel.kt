@@ -59,6 +59,7 @@ class CalendarViewModel @Inject constructor(
 
     fun editRecord(record: Record) {
         viewModelScope.launch(Dispatchers.IO) {
+            _selectedRecord.emit(record)
             recordRepository.updateRecord(record)
         }
     }
