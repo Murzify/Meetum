@@ -10,4 +10,6 @@
     <string name="delete_record">Удалить запись</string>
     <string name="save_record">Сохранить</string>
     <string name="import_contact">Импортировать контакт</string>
+    <string name="edit">Редактировать</string>
+    <string name="service_label">Услуга</string>
 </resources>

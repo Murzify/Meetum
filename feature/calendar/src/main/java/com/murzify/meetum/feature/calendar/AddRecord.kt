@@ -312,10 +312,10 @@ internal fun AddRecordScreen(
 
             if (selectedService != null) {
                 val saveRecord = Record(
-                    clientName = clientName,
+                    clientName = if (clientName == "") null else clientName,
                     time = cal.time,
-                    description = description,
-                    phone = phoneNumber,
+                    description = if (description == "") null else description,
+                    phone = if (phoneNumber == "") null else phoneNumber,
                     service = selectedService!!,
                     id = if (isEditing) record?.id ?: UUID.randomUUID() else UUID.randomUUID()
                 )
@@ -435,13 +435,6 @@ private fun ImportContactButton(modifier: Modifier = Modifier, import: (name: St
             }
         }
     }
-
-//    PlainTooltipBox(
-//        modifier = modifier,
-//        tooltip = { Text(text = stringResource(id = R.string.import_contact)) }
-//    ) {
-//
-//    }
 
     IconButton(
         modifier = modifier,

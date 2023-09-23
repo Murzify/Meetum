@@ -62,7 +62,7 @@ val recordExample = Record(
 @Composable
 fun RecordsList(
     records: List<Record>, addRecord: () -> Unit,
-    editRecord: (record: Record) -> Unit,
+    openRecord: (record: Record) -> Unit,
     topContent: @Composable () -> Unit,
 ) {
     val listState = rememberLazyListState()
@@ -90,7 +90,7 @@ fun RecordsList(
             items(records) {
                 RecordCard(
                     it,
-                    editRecord
+                    openRecord
                 )
             }
             item {
