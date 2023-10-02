@@ -23,6 +23,7 @@ androidx-test = "1.5.0"
 constraint-layout = "1.0.1"
 lottie = "6.1.0"
 toolbar-compose = "2.3.5"
+appmetrica = "6.0.0"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -60,6 +61,7 @@ androidx-test-core = { group = "androidx.test", name = "core", version.ref = "an
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraint-layout" }
 lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie" }
 toolbar-compose = { module = "me.onebone:toolbar-compose", version.ref = "toolbar-compose" }
+appmetrica-analytics = { group = "io.appmetrica.analytics", name = "analytics", version.ref = "appmetrica" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }
