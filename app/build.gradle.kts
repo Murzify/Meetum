@@ -1,8 +1,20 @@
+import org.jetbrains.kotlin.konan.properties.Properties
+import java.io.FileInputStream
+
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
+    id("appmetrica-plugin")
     id("meetum.hilt")
+}
+
+val keystorePropertiesFile: File = rootProject.file("keystore.properties")
+val keystoreProperties = Properties()
+keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+
+appmetrica {
+    setPostApiKey(keystoreProperties["appMetricaPostKey"] as String)
 }
 
 android {
@@ -20,6 +32,7 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        buildConfigField("String", "APPMETRICA_KEY", "\"${keystoreProperties["appMetricaKey"]}\"")
     }
 
     buildTypes {
@@ -41,6 +54,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.0"
@@ -71,6 +85,7 @@ dependencies {
     implementation(libs.material3)
     implementation(libs.material)
     implementation(libs.navigation)
+    implementation(libs.appmetrica.analytics)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
