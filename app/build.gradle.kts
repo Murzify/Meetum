@@ -5,12 +5,17 @@ import java.io.FileInputStream
 plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
+    id("appmetrica-plugin")
     id("meetum.hilt")
 }
 
 val keystorePropertiesFile: File = rootProject.file("keystore.properties")
 val keystoreProperties = Properties()
 keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+
+appmetrica {
+    setPostApiKey(keystoreProperties["appMetricaPostKey"] as String)
+}
 
 android {
     namespace = "com.murzify.meetum"
