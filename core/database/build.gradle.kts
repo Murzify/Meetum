@@ -38,6 +38,10 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+    sourceSets {
+        // Adds exported schema location as test app assets.
+        getByName("androidTest").assets.srcDir("$projectDir/schemas")
+    }
 }
 
 dependencies {

@@ -19,16 +19,14 @@ class Migrations {
     @Throws(IOException::class)
     fun migrate1to2() {
         helper.createDatabase(TEST_DB, 1).apply {
-
             execSQL("INSERT INTO services (service_id, name, price, currency)" +
-                    "VALUES(\"ab1743a1-7744-4eaa-8136-890e1851cc8b\", \"massage\", 50.0, \"USD\"")
+                    "VALUES(\"ab1743a1-7744-4eaa-8136-890e1851cc8b\", \"massage\", 50.0, \"USD\")")
 
-            execSQL("INSERT INTO records (record_id, client_name, time, description, phone, service_id)" +
-                    "VALUES( \"e68bf281-8ff6-404a-aa2f-e2964d3dc3a1\", \"Jess\", 123123123, \"+00000000000\", ab1743a1-7744-4eaa-8136-890e1851cc8b)")
-
+            execSQL("INSERT INTO records (record_id, client_name, time, description, service_id)" +
+                    "VALUES( \"e68bf281-8ff6-404a-aa2f-e2964d3dc3a1\", \"Jess\", 123123123, \"what??\", \"ab1743a1-7744-4eaa-8136-890e1851cc8b\")")
             close()
         }
 
-        helper.runMigrationsAndValidate(TEST_DB, 4, true)
+        helper.runMigrationsAndValidate(TEST_DB, 2, true)
     }
 }
