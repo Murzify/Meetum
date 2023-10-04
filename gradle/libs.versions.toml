@@ -19,18 +19,23 @@ ksp = "1.9.0-1.0.13"
 room = "2.5.2"
 coroutines = "1.7.2"
 mockito = "4.0.0"
-androidx-test = "1.5.0"
+androidx-test = "1.5.2"
+androidx-test-rules = "1.5.0"
 constraint-layout = "1.0.1"
 lottie = "6.1.0"
 toolbar-compose = "2.3.5"
 appmetrica = "6.0.0"
 appmetrica-gradle = "0.8.0"
+lifecycle-viewmodel-kt = "2.6.2"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
+test-runner = { group = "androidx.test", name = "runner", version.ref = "androidx-test" }
+test-rules = { group = "androidx.test", name = "rules", version.ref = "androidx-test-rules" }
+room-testing = { group = "androidx.room", name = "room-testing", version.ref = "room" }
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
@@ -64,6 +69,7 @@ lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", versio
 toolbar-compose = { module = "me.onebone:toolbar-compose", version.ref = "toolbar-compose" }
 appmetrica-analytics = { group = "io.appmetrica.analytics", name = "analytics", version.ref = "appmetrica" }
 appmetrica-gradle = { group = "io.appmetrica.analytics", name = "gradle", version.ref = "appmetrica-gradle" }
+lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle-viewmodel-kt" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }

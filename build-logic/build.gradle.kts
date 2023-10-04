@@ -24,5 +24,9 @@ gradlePlugin {
             id = "meetum.unitTests"
             implementationClass = "com.murzify.meetum.build_logic.UnitTestPlugin"
         }
+        register("instrumentalTests") {
+            id = "meetum.instrumentalTest"
+            implementationClass = "com.murzify.meetum.build_logic.InstrumentalTestPlugin"
+        }
     }
 }

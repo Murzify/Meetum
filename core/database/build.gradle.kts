@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.ksp)
     id("meetum.hilt")
+    id("meetum.unitTests")
+    id("meetum.instrumentalTest")
 }
 
 android {
@@ -46,7 +48,6 @@ dependencies {
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
 
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+    implementation(libs.lifecycle.viewmodel)
+    androidTestImplementation(libs.room.testing)
 }

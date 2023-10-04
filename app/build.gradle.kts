@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.org.jetbrains.kotlin.android)
     id("appmetrica-plugin")
     id("meetum.hilt")
+    id("meetum.unitTests")
 }
 
 val keystorePropertiesFile: File = rootProject.file("keystore.properties")

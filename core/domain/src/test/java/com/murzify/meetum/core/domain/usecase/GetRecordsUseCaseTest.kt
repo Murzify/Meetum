@@ -29,6 +29,7 @@ class GetRecordsUseCaseTest {
             "Vasya",
             Date(),
             null,
+            "+10000000000",
             testService
         )
         val recordsList = List(5) { testRecord }

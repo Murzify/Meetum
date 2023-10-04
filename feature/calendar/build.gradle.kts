@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.com.android.library)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     id("meetum.feature")
+    id("meetum.unitTests")
 }
 
 android {

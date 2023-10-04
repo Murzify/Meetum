@@ -26,6 +26,7 @@ class AddRecordUseCaseTest {
             "Vasya",
             Date(),
             null,
+            "+10000000000",
             testService
         )
         useCase(testRecord)
