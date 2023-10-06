@@ -8,6 +8,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.murzify.meetum.feature.calendar.CalendarState
 import com.murzify.meetum.feature.calendar.navigation.calendarNavigationRoute
 import com.murzify.meetum.feature.services.navigation.servicesNavigationRoute
 import com.murzify.meetum.navigation.Screen
@@ -23,7 +24,7 @@ fun rememberMeetumState(
     }
 }
 
-interface AppState {
+interface AppState: CalendarState {
 
     val navController: NavHostController
 
@@ -61,5 +62,8 @@ class MeetumState(
 
     override val screensList: List<Screen>
         get() = listOf(Screen.Calendar, Screen.Services)
+
+    override val shouldSplitCalendarScreen: Boolean
+        get() = !shouldShowBottomBar
 
 }

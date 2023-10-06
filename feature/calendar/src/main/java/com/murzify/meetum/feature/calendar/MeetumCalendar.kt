@@ -53,6 +53,7 @@ import java.util.Locale
 
 @Composable
 internal fun MeetumCalendarRoute(
+    calendarState: CalendarState,
     navigateToAddRecord: (editing: Boolean, date: Date) -> Unit,
     navigateToOpenRecord: (date: Date) -> Unit,
     viewModel: CalendarViewModel = hiltViewModel()
@@ -60,6 +61,7 @@ internal fun MeetumCalendarRoute(
     val records by viewModel.records.collectAsState()
     val allRecords by viewModel.allRecords.collectAsState()
     MeetumCalendar(
+        calendarState,
         records = records,
         allRecords = allRecords,
         getRecords = viewModel::getRecords,
@@ -71,6 +73,7 @@ internal fun MeetumCalendarRoute(
 
 @Composable
 internal fun MeetumCalendar(
+    calendarState: CalendarState,
     records: List<Record>,
     allRecords: List<Record>,
     getRecords: (date: Date) -> Unit,
@@ -96,6 +99,7 @@ internal fun MeetumCalendar(
 
 
     RecordsList(
+        calendarState.shouldSplitCalendarScreen,
         records = records,
         addRecord = {
             val date = Date.from(selectedDate.atStartOfDay(ZoneId.systemDefault())?.toInstant())
@@ -104,8 +108,20 @@ internal fun MeetumCalendar(
         openRecord = {
             selectRecord(it)
             navigateToOpenRecord(it.time)
+        },
+        dateLabel = {
+            val f = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.getDefault())
+            val date = Date.from(selectedDate.atStartOfDay(ZoneId.systemDefault())?.toInstant())
+            val dateFormatted = f.format(
+                date
+            )
+            getRecords(date)
+            Text(
+                text = dateFormatted,
+                modifier = Modifier.padding(8.dp)
+            )
         }
-    ) {
+    ) { weight ->
         HorizontalCalendar(
             state = state,
             dayContent = {
@@ -133,18 +149,9 @@ internal fun MeetumCalendar(
                     daysOfWeek = daysOfWeek(firstDayOfWeek = firstDayOfWeek)
                 )
             },
-            modifier = Modifier.padding(top = 8.dp)
+            modifier = Modifier.padding(8.dp).weight(weight)
         )
-        val f = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.getDefault())
-        val date = Date.from(selectedDate.atStartOfDay(ZoneId.systemDefault())?.toInstant())
-        val dateFormatted = f.format(
-            date
-        )
-        getRecords(date)
-        Text(
-            text = dateFormatted,
-            modifier = Modifier.padding(8.dp)
-        )
+
     }
 
 }

@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.murzify.meetum.feature.calendar.AddRecordRoute
+import com.murzify.meetum.feature.calendar.CalendarState
 import com.murzify.meetum.feature.calendar.CalendarViewModel
 import com.murzify.meetum.feature.calendar.MeetumCalendarRoute
 import com.murzify.meetum.feature.calendar.RecordInfoRoute
@@ -21,11 +22,13 @@ const val recordInfoNavigationRoute = "navigationInfo"
 
 fun NavGraphBuilder.calendarScreen(
     navController: NavController,
+    calendarState: CalendarState,
     navigateToAddService: () -> Unit
 ) {
     navigation(route = calendarNavigationRoute, startDestination = mainCalendarNavigationRoute) {
         composable(route = mainCalendarNavigationRoute) {
             MeetumCalendarRoute(
+                calendarState,
                 navigateToAddRecord = { _, date ->
                     navController.navigate("addRecord?editing=false&date=${date.time}")
                 },

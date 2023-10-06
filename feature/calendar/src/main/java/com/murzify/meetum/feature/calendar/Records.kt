@@ -1,16 +1,13 @@
 package com.murzify.meetum.feature.calendar
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.keyframes
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,11 +21,8 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -61,66 +55,61 @@ val recordExample = Record(
 
 @Composable
 fun RecordsList(
+    splitMode: Boolean,
     records: List<Record>, addRecord: () -> Unit,
     openRecord: (record: Record) -> Unit,
-    topContent: @Composable () -> Unit,
+    dateLabel: @Composable () -> Unit,
+    topContent: @Composable RowScope.(weight: Float) -> Unit,
 ) {
     val listState = rememberLazyListState()
-
-    val fabVisibility = remember {
-        derivedStateOf {
-            listState.firstVisibleItemIndex == 0
-        }
-    }
 
     Box(
         contentAlignment = Alignment.BottomEnd,
         modifier = Modifier.fillMaxSize()
     ) {
-        LazyColumn(
-            state = listState,
-            modifier = Modifier
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            item {
-                Spacer(modifier = Modifier.statusBarsPadding())
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            if (splitMode) {
+                topContent(1f)
             }
-            item { topContent() }
-            items(records) {
-                RecordCard(
-                    it,
-                    openRecord
-                )
-            }
-            item {
-                Spacer(
-                    modifier = Modifier.height(64.dp)
-                )
+            LazyColumn(
+                state = listState,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                item {
+                    Spacer(modifier = Modifier.statusBarsPadding())
+                }
+                if (!splitMode) {
+                    item { topContent(1f) }
+                }
+                item {
+                    dateLabel()
+                }
+                items(records) {
+                    RecordCard(
+                        it,
+                        openRecord
+                    )
+                }
+                item {
+                    Spacer(
+                        modifier = Modifier.height(64.dp)
+                    )
+                }
             }
         }
 
-        val density = LocalDensity.current
-        AnimatedVisibility(
-            visible = fabVisibility.value,
-            enter = slideInVertically {
-                with(density) { 40.dp.roundToPx() }
-            } + fadeIn(),
-            exit = fadeOut(
-                animationSpec = keyframes {
-                    this.durationMillis = 120
-                }
-            )
+
+        FloatingActionButton(
+            modifier = Modifier.padding(end = 8.dp, bottom = 8.dp),
+            onClick = { addRecord() }
         ) {
-            FloatingActionButton(
-                modifier = Modifier.padding(end = 8.dp, bottom = 8.dp),
-                onClick = { addRecord() }
-            ) {
-                Icon(
-                    painter = painterResource(id = com.murzify.ui.R.drawable.round_add_24),
-                    contentDescription = stringResource(id = R.string.add_record)
-                )
-            }
+            Icon(
+                painter = painterResource(id = com.murzify.ui.R.drawable.round_add_24),
+                contentDescription = stringResource(id = R.string.add_record)
+            )
         }
     }
 

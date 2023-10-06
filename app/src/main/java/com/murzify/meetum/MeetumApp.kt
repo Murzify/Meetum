@@ -90,7 +90,7 @@ fun MeetumApp(
                 }
             }
             MeetumNavHost(
-                navController = appState.navController,
+                appState = appState,
                 modifier = Modifier
                     .padding(paddingValues)
                     .consumeWindowInsets(paddingValues)
