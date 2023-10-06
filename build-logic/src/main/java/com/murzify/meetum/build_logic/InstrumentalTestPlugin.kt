@@ -14,6 +14,7 @@ class InstrumentalTestPlugin: Plugin<Project> {
                 add("androidTestImplementation", libs.findLibrary("test.runner").get())
                 add("androidTestImplementation", libs.findLibrary("test.rules").get())
                 add("androidTestImplementation", libs.findLibrary("androidx.test.ext.junit").get())
+                add("androidTestImplementation", libs.findLibrary("coroutines.test").get())
             }
         }
     }
