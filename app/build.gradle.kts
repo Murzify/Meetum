@@ -85,6 +85,7 @@ dependencies {
     implementation(libs.calendar)
     implementation(libs.material3)
     implementation(libs.material)
+    implementation(libs.androidx.compose.material3.windowSizeClass)
     implementation(libs.navigation)
     implementation(libs.appmetrica.analytics)
     testImplementation(libs.junit)

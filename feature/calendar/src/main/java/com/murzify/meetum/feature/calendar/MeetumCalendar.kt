@@ -5,17 +5,27 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -29,7 +39,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -42,24 +57,44 @@ import com.kizitonwose.calendar.core.OutDateStyle
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import com.murzify.meetum.core.domain.model.Record
+import com.murzify.meetum.core.domain.model.Service
 import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
 import java.time.format.TextStyle
+import java.util.Currency
 import java.util.Date
+import java.util.GregorianCalendar
 import java.util.Locale
+
+val serviceExample = Service(
+    "Massage",
+    200.toDouble(),
+    Currency.getInstance("rub")
+)
+
+val recordExample = Record(
+    "Misha",
+    GregorianCalendar(2023, 7, 6, 16, 0).time,
+    null,
+    null,
+    serviceExample
+)
 
 @Composable
 internal fun MeetumCalendarRoute(
+    calendarState: CalendarState,
     navigateToAddRecord: (editing: Boolean, date: Date) -> Unit,
     navigateToOpenRecord: (date: Date) -> Unit,
     viewModel: CalendarViewModel = hiltViewModel()
 ) {
     val records by viewModel.records.collectAsState()
     val allRecords by viewModel.allRecords.collectAsState()
-    MeetumCalendar(
+    CalendarScreen(
+        calendarState,
         records = records,
         allRecords = allRecords,
         getRecords = viewModel::getRecords,
@@ -70,7 +105,8 @@ internal fun MeetumCalendarRoute(
 }
 
 @Composable
-internal fun MeetumCalendar(
+private fun CalendarScreen(
+    calendarState: CalendarState,
     records: List<Record>,
     allRecords: List<Record>,
     getRecords: (date: Date) -> Unit,
@@ -78,7 +114,91 @@ internal fun MeetumCalendar(
     navigateToOpenRecord: (date: Date) -> Unit,
     selectRecord: (record: Record) -> Unit
 ) {
+    var selectedDate by rememberSaveable { mutableStateOf<LocalDate>(LocalDate.now()) }
+    val listState = rememberLazyListState()
 
+    val date = Date.from(selectedDate.atStartOfDay(ZoneId.systemDefault())?.toInstant())
+    getRecords(date)
+
+    Box(
+        contentAlignment = Alignment.BottomEnd,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            if (calendarState.shouldSplitCalendarScreen) {
+                Calendar(
+                    weight = 1f,
+                    getRecords = getRecords,
+                    allRecords = allRecords,
+                    selectedDate = selectedDate,
+                ) {
+                    selectedDate = it
+                }
+            }
+            LazyColumn(
+                state = listState,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                item {
+                    Spacer(modifier = Modifier.statusBarsPadding())
+                }
+                if (!calendarState.shouldSplitCalendarScreen) {
+                    item {
+                        Calendar(
+                            weight = 1f,
+                            getRecords = getRecords,
+                            allRecords = allRecords,
+                            selectedDate = selectedDate,
+                        ) {
+                            selectedDate = it
+                        }
+                    }
+                }
+                item {
+                    DayTitle(selectedDate = selectedDate)
+                }
+                items(records) {
+                    RecordCard(
+                        it
+                    ) { record ->
+                        selectRecord(record)
+                        navigateToOpenRecord(record.time)
+                    }
+                }
+                item {
+                    Spacer(
+                        modifier = Modifier.height(64.dp)
+                    )
+                }
+            }
+        }
+
+        FloatingActionButton(
+            modifier = Modifier.padding(end = 8.dp, bottom = 8.dp),
+            onClick = {
+                navigateToAddRecord(false, date)
+            }
+        ) {
+            Icon(
+                painter = painterResource(id = com.murzify.ui.R.drawable.round_add_24),
+                contentDescription = stringResource(id = R.string.add_record)
+            )
+        }
+    }
+
+}
+
+@Composable
+private fun RowScope.Calendar(
+    weight: Float,
+    getRecords: (date: Date) -> Unit,
+    allRecords: List<Record>,
+    selectedDate: LocalDate,
+    selectDate: (LocalDate) -> Unit
+) {
     val currentMonth = remember { YearMonth.now() }
     val startMonth = remember { currentMonth.minusMonths(100) } // Adjust as needed
     val endMonth = remember { currentMonth.plusMonths(100) } // Adjust as needed
@@ -92,61 +212,41 @@ internal fun MeetumCalendar(
         outDateStyle = OutDateStyle.EndOfGrid
     )
 
-    var selectedDate by rememberSaveable { mutableStateOf<LocalDate>(LocalDate.now()) }
-
-
-    RecordsList(
-        records = records,
-        addRecord = {
-            val date = Date.from(selectedDate.atStartOfDay(ZoneId.systemDefault())?.toInstant())
-            navigateToAddRecord(false, date)
-        },
-        openRecord = {
-            selectRecord(it)
-            navigateToOpenRecord(it.time)
-        }
-    ) {
-        HorizontalCalendar(
-            state = state,
-            dayContent = {
-                Day(
-                    it,
-                    isSelected = selectedDate == it.date,
-                    badge = allRecords.any { record ->
-                        val recordDate =
-                            record.time.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-                        it.date.isEqual(recordDate)
-                    }
-                ) { day ->
-                    if (selectedDate != day.date) {
-                        selectedDate = day.date
-                        val date = Date.from(
-                            selectedDate.atStartOfDay(ZoneId.systemDefault())?.toInstant()
-                        )
-                        getRecords(date)
-                    }
+    HorizontalCalendar(
+        state = state,
+        dayContent = {
+            Day(
+                it,
+                isSelected = selectedDate == it.date,
+                badge = allRecords.any { record ->
+                    val recordDate =
+                        record.time.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+                    it.date.isEqual(recordDate)
                 }
-            },
-            monthHeader = {
-                Month(month = it)
-                DaysOfWeekTitle(
-                    daysOfWeek = daysOfWeek(firstDayOfWeek = firstDayOfWeek)
-                )
-            },
-            modifier = Modifier.padding(top = 8.dp)
-        )
-        val f = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.getDefault())
-        val date = Date.from(selectedDate.atStartOfDay(ZoneId.systemDefault())?.toInstant())
-        val dateFormatted = f.format(
-            date
-        )
-        getRecords(date)
-        Text(
-            text = dateFormatted,
-            modifier = Modifier.padding(8.dp)
-        )
-    }
-
+            ) { day ->
+                if (selectedDate != day.date) {
+                    selectDate(day.date)
+                    val date = Date.from(
+                        selectedDate.atStartOfDay(ZoneId.systemDefault())?.toInstant()
+                    )
+                    getRecords(date)
+                }
+            }
+        },
+        monthHeader = {
+            Month(month = it)
+            DaysOfWeekTitle(
+                daysOfWeek = daysOfWeek(firstDayOfWeek = firstDayOfWeek)
+            )
+        },
+        monthBody = { _, container ->
+            Box(modifier = Modifier.padding(8.dp)) {
+                container()
+            }
+        },
+        modifier = Modifier
+            .weight(weight)
+    )
 }
 
 @Composable
@@ -179,7 +279,9 @@ private fun Day(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(if (isSelected) MaterialTheme.colorScheme.tertiary else Color.Transparent)
+                .background(
+                    if (isSelected) MaterialTheme.colorScheme.tertiary else Color.Transparent
+                )
                 .clickable(
                     enabled = day.position == DayPosition.MonthDate,
                     onClick = { onClick(day) }
@@ -196,7 +298,8 @@ private fun Day(
                         modifier = Modifier
                             .padding(end = 6.dp, bottom = 6.dp)
                             .size(6.dp),
-                        color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary
+                        color = if (isSelected) MaterialTheme.colorScheme.onPrimary
+                        else MaterialTheme.colorScheme.primary
                     ) {}
                 }
             }
@@ -209,6 +312,20 @@ private fun Day(
     }
 }
 
+@Composable
+private fun DayTitle(
+    selectedDate: LocalDate,
+) {
+    val f = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.getDefault())
+    val date = Date.from(selectedDate.atStartOfDay(ZoneId.systemDefault())?.toInstant())
+    val dateFormatted = f.format(
+        date
+    )
+    Text(
+        text = dateFormatted,
+        modifier = Modifier.padding(8.dp)
+    )
+}
 
 @Composable
 private fun Month(month: CalendarMonth) {
@@ -233,6 +350,51 @@ private fun DaysOfWeekTitle(daysOfWeek: List<DayOfWeek>) {
                 textAlign = TextAlign.Center,
                 text = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
             )
+        }
+    }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
+@Composable
+private fun RecordCard(
+    record: Record = recordExample,
+    onClick: (record: Record) -> Unit = {}
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .clickable {
+                onClick(record)
+            }) {
+            Row(
+                Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(
+                    Modifier.weight(1f),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    if (!record.clientName.isNullOrEmpty()) {
+                        Text(
+                            text = record.clientName!!,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.ExtraBold
+                        )
+                    }
+                    Text(text = record.service.name, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
+                val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
+
+                Text(text = sdf.format(record.time), modifier = Modifier.padding(start = 2.dp))
+            }
         }
     }
 }

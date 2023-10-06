@@ -72,6 +72,7 @@ toolbar-compose = { module = "me.onebone:toolbar-compose", version.ref = "toolba
 appmetrica-analytics = { group = "io.appmetrica.analytics", name = "analytics", version.ref = "appmetrica" }
 appmetrica-gradle = { group = "io.appmetrica.analytics", name = "gradle", version.ref = "appmetrica-gradle" }
 lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle-viewmodel-kt" }
+androidx-compose-material3-windowSizeClass = {group = "androidx.compose.material3", name = "material3-window-size-class" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }
