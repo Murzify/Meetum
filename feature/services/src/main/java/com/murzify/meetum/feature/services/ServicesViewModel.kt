@@ -68,7 +68,6 @@ class ServicesViewModel @Inject constructor(
                     recordRepository.futureRecords(it.id)
                 )
             }
-
         }
     }
 
