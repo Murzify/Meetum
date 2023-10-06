@@ -286,13 +286,9 @@ internal fun CurrencyField(
     val defaultCurrency = if (isEditing) {
         default ?: Currency.getInstance(Locale.getDefault())
     } else Currency.getInstance(Locale.getDefault())
-    val currencies = Currency.getAvailableCurrencies().toSortedSet(
-        compareBy {
-            it.currencyCode
-        }
-    )
-    val options = remember {
-        currencies
+    val currencies = Currency.getAvailableCurrencies().sortedBy { it.currencyCode }
+    var options by remember {
+        mutableStateOf(currencies)
     }
     var expanded by remember { mutableStateOf(false) }
     var selectedOptionText by remember {
@@ -314,20 +310,12 @@ internal fun CurrencyField(
             modifier = Modifier.menuAnchor(),
             value = selectedOptionText,
             onValueChange = {
-                val prevText = selectedOptionText
                 selectedOptionText = it
                 coroutineScope.launch {
-                    if (prevText.length > selectedOptionText.length) {
-                        options.addAll(currencies.minus(options).filter { currency ->
-                            currency.currencyCode.startsWith(it.uppercase())
-                        })
-                    } else {
-                        options.removeIf { currency ->
-                            !currency.currencyCode.startsWith(it.uppercase())
-                        }
+                    options = currencies.filter { currency ->
+                        currency.currencyCode.startsWith(it.uppercase())
                     }
                 }
-
                 expanded = true
             },
             label = { Text(stringResource(id = R.string.currency)) },
