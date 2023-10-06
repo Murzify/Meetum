@@ -38,6 +38,7 @@ import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.CalendarMonth
 import com.kizitonwose.calendar.core.DayPosition
+import com.kizitonwose.calendar.core.OutDateStyle
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import com.murzify.meetum.core.domain.model.Record
@@ -87,7 +88,8 @@ internal fun MeetumCalendar(
         startMonth = startMonth,
         endMonth = endMonth,
         firstVisibleMonth = currentMonth,
-        firstDayOfWeek = firstDayOfWeek
+        firstDayOfWeek = firstDayOfWeek,
+        outDateStyle = OutDateStyle.EndOfGrid
     )
 
     var selectedDate by rememberSaveable { mutableStateOf<LocalDate>(LocalDate.now()) }
