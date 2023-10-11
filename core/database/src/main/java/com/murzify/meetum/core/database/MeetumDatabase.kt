@@ -4,20 +4,46 @@ import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.murzify.meetum.core.database.dao.RecordDao
 import com.murzify.meetum.core.database.dao.ServiceDao
+import com.murzify.meetum.core.database.model.RecordDatesEntity
 import com.murzify.meetum.core.database.model.RecordEntity
 import com.murzify.meetum.core.database.model.ServiceEntity
+import java.util.UUID
 
 @Database(
-    entities = [RecordEntity::class, ServiceEntity::class],
-    version = 2,
+    entities = [RecordEntity::class, ServiceEntity::class, RecordDatesEntity::class],
+    version = 3,
     exportSchema = true,
-    autoMigrations = [AutoMigration(1,2)]
+    autoMigrations = [
+        AutoMigration(1,2)
+    ]
 )
 @TypeConverters(Converters::class)
 abstract class MeetumDatabase: RoomDatabase() {
     abstract fun recordDao(): RecordDao
     abstract fun serviceDao(): ServiceDao
 
+}
+
+val MIGRATION_2_3 = object : Migration(2, 3) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("CREATE TABLE IF NOT EXISTS `record_dates` " +
+                "(`date_id` TEXT NOT NULL, `record_id` TEXT NOT NULL, `date` INTEGER NOT NULL, PRIMARY KEY(`date_id`), FOREIGN KEY(record_id) REFERENCES records(record_id) ON DELETE CASCADE)")
+
+        val cursor = database.query("SELECT * FROM records")
+
+        while (cursor.moveToNext()) {
+            val recordId = cursor.getString(cursor.getColumnIndexOrThrow("record_id"))
+            val time = cursor.getLong(cursor.getColumnIndexOrThrow("time"))
+
+            val dateId = UUID.randomUUID().toString()
+            database.execSQL("INSERT INTO `record_dates` (`date_id`, `record_id`, `date`) VALUES ('$dateId', '$recordId', $time)")
+
+        }
+        cursor.close()
+        database.execSQL("ALTER TABLE records DROP COLUMN time")
+    }
 }

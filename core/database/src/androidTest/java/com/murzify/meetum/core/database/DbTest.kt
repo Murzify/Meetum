@@ -6,8 +6,9 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.murzify.meetum.core.database.dao.RecordDao
 import com.murzify.meetum.core.database.dao.ServiceDao
+import com.murzify.meetum.core.database.model.FullRecord
+import com.murzify.meetum.core.database.model.RecordDatesEntity
 import com.murzify.meetum.core.database.model.RecordEntity
-import com.murzify.meetum.core.database.model.RecordWithService
 import com.murzify.meetum.core.database.model.ServiceEntity
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -30,7 +31,6 @@ class DbTest {
     private val testRecord = RecordEntity(
         UUID.randomUUID(),
         "Kate",
-        Date(),
         "~~~",
         "+10000000000",
         serviceId
@@ -40,6 +40,16 @@ class DbTest {
         "massage",
         50.0,
         Currency.getInstance("USD"),
+    )
+    private val testDate = RecordDatesEntity(
+        UUID.randomUUID(),
+        testRecord.recordId,
+        Date()
+    )
+    private val testFullRecord = FullRecord(
+        testRecord,
+        testService,
+        listOf(testDate)
     )
 
     @Before
@@ -52,6 +62,7 @@ class DbTest {
         serviceDao = db.serviceDao()
         serviceDao.add(testService)
         recordDao.add(testRecord)
+        recordDao.addDate(testDate)
     }
 
     @After
@@ -63,10 +74,7 @@ class DbTest {
     fun addRecordAndReturn() = runTest {
         val actual = recordDao.getAll().first()[0]
         Assert.assertEquals(
-            RecordWithService(
-                testRecord,
-                testService
-            ),
+            testFullRecord,
             actual
         )
     }
@@ -77,10 +85,7 @@ class DbTest {
         recordDao.update(updatedRecord)
         val actual = recordDao.getAll().first()[0]
         Assert.assertEquals(
-            RecordWithService(
-                updatedRecord,
-                testService
-            ),
+            testFullRecord.copy(record = updatedRecord),
             actual
         )
     }
@@ -88,37 +93,53 @@ class DbTest {
     @Test
     fun getRecordByDate() = runTest {
         val calendar = Calendar.getInstance().apply {
-            time = testRecord.time
+            time = testFullRecord.dates[0].date
         }
         repeat(3) {
             calendar.add(Calendar.DATE, 1)
+            val recordId = UUID.randomUUID()
             recordDao.add(
-                testRecord.copy(recordId = UUID.randomUUID() , time = calendar.time)
+                testRecord.copy(recordId = recordId)
+            )
+            recordDao.addDate(
+                RecordDatesEntity(
+                    dateId = UUID.randomUUID(),
+                    recordId = recordId,
+                    date = calendar.time
+                )
             )
         }
         calendar.apply {
-            time = testRecord.time
+            time = testFullRecord.dates[0].date
             add(Calendar.DATE, 2)
         }
-        val actual = recordDao.getByDate(testRecord.time, calendar.time).first()
+        val actual = recordDao.getByDate(testFullRecord.dates[0].date, calendar.time).first()
         Assert.assertEquals(3, actual.size)
-        Assert.assertEquals(actual[0].record.time, testRecord.time)
-        Assert.assertEquals(actual[2].record.time, calendar.time)
+        Assert.assertEquals(actual[0].dates[0].date, testFullRecord.dates[0].date)
+        Assert.assertEquals(actual[2].dates[0].date, calendar.time)
     }
 
     @Test
     fun getFutureRecords() = runTest {
         val calendar = Calendar.getInstance().apply {
-            time = testRecord.time
+            time = testFullRecord.dates[0].date
         }
         repeat(3) {
             calendar.add(Calendar.DATE, 1)
+            val recordId = UUID.randomUUID()
             recordDao.add(
-                testRecord.copy(recordId = UUID.randomUUID() , time = calendar.time)
+                testRecord.copy(recordId = recordId)
+            )
+            recordDao.addDate(
+                RecordDatesEntity(
+                    dateId = UUID.randomUUID(),
+                    recordId = recordId,
+                    date = calendar.time
+                )
             )
         }
         val currentTime = calendar.apply {
-            time = testRecord.time
+            time = testFullRecord.dates[0].date
             add(Calendar.DATE, 1)
         }.time
 
@@ -136,39 +157,28 @@ class DbTest {
             add(Calendar.DATE, 1)
         }.time
         Assert.assertEquals(
-            start, actual[0].record.time
+            start, actual[0].dates[0].date
         )
-        Assert.assertEquals(end, actual.last().record.time)
+        Assert.assertEquals(end, actual.last().dates[0].date)
     }
 
     @Test
     fun deleteOneRecord() = runTest {
-        val deletableRecord = testRecord.copy(recordId = UUID.randomUUID())
-        recordDao.add(deletableRecord)
-        recordDao.delete(deletableRecord)
+        recordDao.delete(testRecord)
         val actual = recordDao.getAll().first()
         Assert.assertEquals(
             false,
-            actual.contains(RecordWithService(deletableRecord, testService))
+            actual.contains(testFullRecord)
         )
     }
 
     @Test
     fun deleteAllRelatedRecordsWithService() = runTest {
-        val newService = testService.copy(serviceId = UUID.randomUUID())
-        val newRecord = testRecord.copy(
-            recordId = UUID.randomUUID(),
-            serviceId = newService.serviceId
-        )
-        serviceDao.add(newService)
-        recordDao.add(
-            newRecord
-        )
-        recordDao.deleteLinkedWithService(newService.serviceId)
+        recordDao.deleteLinkedWithService(testService.serviceId)
         val actual = recordDao.getAll().first()
         Assert.assertEquals(
             false,
-            actual.contains(RecordWithService(newRecord, newService))
+            actual.contains(testFullRecord)
         )
     }
 

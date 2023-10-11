@@ -4,14 +4,15 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import com.murzify.meetum.core.domain.model.Record
 
-data class RecordWithService(
+data class FullRecord(
     @Embedded val record: RecordEntity,
-    @Relation(parentColumn = "service_id", entityColumn = "service_id") val service: ServiceEntity
+    @Relation(parentColumn = "service_id", entityColumn = "service_id") val service: ServiceEntity,
+    @Relation(parentColumn = "record_id", entityColumn = "record_id") val dates: List<RecordDatesEntity>
 )
 
-fun RecordWithService.toDomain() = Record(
+fun FullRecord.toDomain() = Record(
     record.clientName,
-    record.time,
+    dates.map { it.date },
     record.description,
     record.phone,
     service.toDomain(),

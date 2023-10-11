@@ -51,7 +51,7 @@ internal fun RecordInfoRoute(
     navigateToBack: () -> Unit
 ) {
     val selectedRecord by viewModel.selectedRecord.collectAsState()
-    RecordInfo(record = selectedRecord, navigateToEdit,navigateToBack)
+    RecordInfo(record = selectedRecord, navigateToEdit, navigateToBack)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,7 +71,7 @@ internal fun RecordInfo(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    RecordDateTime(date = record.time)
+                    RecordDateTime(date = record.time[0])
                 },
                 navigationIcon = {
                     IconButton(modifier = Modifier
@@ -87,7 +87,7 @@ internal fun RecordInfo(
                 actions = {
                     IconButton(modifier = Modifier
                         .padding(8.dp),
-                        onClick = { navigateToEdit(record.time) }
+                        onClick = { navigateToEdit(record.time[0]) }
                     ) {
                         Icon(
                             painter = painterResource(

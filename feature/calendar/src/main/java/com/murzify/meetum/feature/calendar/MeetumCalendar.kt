@@ -67,7 +67,6 @@ import java.time.ZoneId
 import java.time.format.TextStyle
 import java.util.Currency
 import java.util.Date
-import java.util.GregorianCalendar
 import java.util.Locale
 
 val serviceExample = Service(
@@ -78,7 +77,7 @@ val serviceExample = Service(
 
 val recordExample = Record(
     "Misha",
-    GregorianCalendar(2023, 7, 6, 16, 0).time,
+    listOf(Date()),
     null,
     null,
     serviceExample
@@ -88,7 +87,7 @@ val recordExample = Record(
 internal fun MeetumCalendarRoute(
     calendarState: CalendarState,
     navigateToAddRecord: (editing: Boolean, date: Date) -> Unit,
-    navigateToOpenRecord: (date: Date) -> Unit,
+    navigateToOpenRecord: () -> Unit,
     viewModel: CalendarViewModel = hiltViewModel()
 ) {
     val records by viewModel.records.collectAsState()
@@ -111,7 +110,7 @@ private fun CalendarScreen(
     allRecords: List<Record>,
     getRecords: (date: Date) -> Unit,
     navigateToAddRecord: (editing: Boolean, date: Date) -> Unit,
-    navigateToOpenRecord: (date: Date) -> Unit,
+    navigateToOpenRecord: () -> Unit,
     selectRecord: (record: Record) -> Unit
 ) {
     var selectedDate by rememberSaveable { mutableStateOf<LocalDate>(LocalDate.now()) }
@@ -165,7 +164,7 @@ private fun CalendarScreen(
                         it
                     ) { record ->
                         selectRecord(record)
-                        navigateToOpenRecord(record.time)
+                        navigateToOpenRecord()
                     }
                 }
                 item {
@@ -218,10 +217,12 @@ private fun RowScope.Calendar(
             Day(
                 it,
                 isSelected = selectedDate == it.date,
-                badge = allRecords.any { record ->
-                    val recordDate =
-                        record.time.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-                    it.date.isEqual(recordDate)
+                showBadge = allRecords.any { record ->
+                    val recordDates =
+                        record.time.map { date ->
+                            date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+                        }
+                    recordDates.contains(it.date)
                 }
             ) { day ->
                 if (selectedDate != day.date) {
@@ -253,7 +254,7 @@ private fun RowScope.Calendar(
 private fun Day(
     day: CalendarDay,
     isSelected: Boolean,
-    badge: Boolean,
+    showBadge: Boolean,
     onClick: (CalendarDay) -> Unit,
 ) {
     val border = remember { LocalDate.now() == day.date }
@@ -292,7 +293,7 @@ private fun Day(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.BottomEnd
             ) {
-                if (badge) {
+                if (showBadge) {
                     Surface(
                         shape = CircleShape,
                         modifier = Modifier
@@ -393,7 +394,7 @@ private fun RecordCard(
                 }
                 val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
 
-                Text(text = sdf.format(record.time), modifier = Modifier.padding(start = 2.dp))
+                Text(text = sdf.format(record.time[0]), modifier = Modifier.padding(start = 2.dp))
             }
         }
     }

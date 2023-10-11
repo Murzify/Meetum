@@ -6,6 +6,7 @@ import com.murzify.meetum.core.domain.repository.RecordRepository
 import com.murzify.meetum.core.domain.usecase.AddRecordUseCase
 import com.murzify.meetum.core.domain.usecase.GetRecordsUseCase
 import com.murzify.meetum.core.domain.usecase.GetServicesUseCase
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
@@ -23,34 +24,43 @@ import java.util.Date
 
 class CalendarViewModelTest {
 
-    private val getRecordsUseCase = mock<GetRecordsUseCase>()
-    private val addRecordUseCase = mock<AddRecordUseCase>()
-    private val getServicesUseCase = mock<GetServicesUseCase>()
-    private val recordRepository = mock<RecordRepository>()
+    private lateinit var getRecordsUseCase: GetRecordsUseCase
+    private lateinit var addRecordUseCase: AddRecordUseCase
+    private lateinit var getServicesUseCase: GetServicesUseCase
+    private lateinit var recordRepository: RecordRepository
 
     private lateinit var viewModel: CalendarViewModel
 
-    private val testService = Service(
-        "haircut",
-        100.0,
-        Currency.getInstance("USD")
-    )
-    private val testRecord = Record(
-        "Vasya",
-        Date(),
-        "some text",
-        "+100000000000",
-        testService
-    )
-    private val flowServices = flow {
-        emit(emptyList<Service>())
-    }
-    private val flowRecords = flow {
-        emit(emptyList<Record>())
-    }
+    private lateinit var testService: Service
+    private lateinit var testRecord: Record
+    private lateinit var flowServices: Flow<List<Service>>
+    private lateinit var flowRecords: Flow<List<Record>>
 
     @Before
     fun init() = runTest {
+        getRecordsUseCase = mock<GetRecordsUseCase>()
+        addRecordUseCase = mock<AddRecordUseCase>()
+        getServicesUseCase = mock<GetServicesUseCase>()
+        recordRepository = mock<RecordRepository>()
+
+        testService = Service(
+            "haircut",
+            100.0,
+            Currency.getInstance("USD")
+        )
+        testRecord = Record(
+            "Vasya",
+            listOf(Date()),
+            "some text",
+            "+100000000000",
+            testService
+        )
+        flowServices = flow {
+            emit(emptyList<Service>())
+        }
+        flowRecords = flow {
+            emit(emptyList<Record>())
+        }
         Mockito.`when`(getServicesUseCase.invoke()).thenReturn(flowServices)
         Mockito.`when`(recordRepository.getAllRecords()).thenReturn(flowRecords)
         viewModel = CalendarViewModel(

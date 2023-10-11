@@ -20,6 +20,6 @@ object DatabaseModule {
         context,
         MeetumDatabase::class.java,
         "meetum-database"
-    ).build()
+    ).addMigrations(MIGRATION_2_3).build()
 
 }

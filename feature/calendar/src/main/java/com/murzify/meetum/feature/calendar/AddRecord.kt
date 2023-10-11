@@ -110,7 +110,7 @@ internal fun AddRecordScreen(
         time = Date()
         if (isEditing) {
             record?.let {
-                time = it.time
+                time = it.time[0]
             }
         }
     }
@@ -157,7 +157,7 @@ internal fun AddRecordScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    RecordDate(date = date)
+                    RecordDate(date = record?.time?.get(0) ?: date)
                 },
                 navigationIcon = {
                     IconButton(modifier = Modifier
@@ -181,22 +181,45 @@ internal fun AddRecordScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            TimeInput(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                state = timePickerState
-            )
 
             ConstraintLayout(
                 modifier = Modifier
                     .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
                     .fillMaxWidth()
             ) {
+                val (
+                    textField,
+                    button,
+                    timeInput,
+                    repeatButton,
+                ) = createRefs()
+                TimeInput(
+                    modifier = Modifier.constrainAs(timeInput) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    },
+                    state = timePickerState
+                )
 
-                val (textField, button) = createRefs()
+                IconButton(
+                    modifier = Modifier.constrainAs(repeatButton) {
+                        top.linkTo(timeInput.top, 12.dp)
+                        start.linkTo(timeInput.end)
+                    },
+                    onClick = {
+
+                    }
+                ) {
+                    Icon(painter = painterResource(
+                        id = R.drawable.round_repeat_24),
+                        contentDescription = stringResource(id = R.string.import_contact)
+                    )
+                }
 
                 OutlinedTextField(
                     modifier = Modifier.constrainAs(textField) {
-                        top.linkTo(parent.top)
+                        top.linkTo(timeInput.bottom)
                         start.linkTo(parent.start)
                         bottom.linkTo(parent.bottom)
                     },
@@ -220,7 +243,7 @@ internal fun AddRecordScreen(
                         linkTo(textField.end,button.start, bias = 0f)
                         end.linkTo(parent.end)
                         bottom.linkTo(parent.bottom)
-                        top.linkTo(parent.top)
+                        top.linkTo(textField.top)
                     }
                 ) { name, phone ->
                     clientName = name
@@ -304,7 +327,7 @@ internal fun AddRecordScreen(
             navigateToBack()
         },
         save = {
-            val cal = Calendar.getInstance().apply {
+            val calendar = Calendar.getInstance().apply {
                 time = date
                 set(Calendar.HOUR_OF_DAY, timePickerState.hour)
                 set(Calendar.MINUTE, timePickerState.minute)
@@ -313,7 +336,7 @@ internal fun AddRecordScreen(
             if (selectedService != null) {
                 val saveRecord = Record(
                     clientName = if (clientName == "") null else clientName,
-                    time = cal.time,
+                    time = listOf(calendar.time),
                     description = if (description == "") null else description,
                     phone = if (phoneNumber == "") null else phoneNumber,
                     service = selectedService!!,
