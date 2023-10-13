@@ -44,6 +44,11 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
 
         }
         cursor.close()
-        database.execSQL("ALTER TABLE records DROP COLUMN time")
+        with(database) {
+            execSQL("CREATE TABLE records_backup (`record_id` TEXT NOT NULL, `client_name` TEXT, `description` TEXT, `phone` TEXT, `service_id` TEXT NOT NULL, PRIMARY KEY(`record_id`))")
+            execSQL("INSERT INTO `records_backup` SELECT `record_id`, `client_name`, `description`, `phone`, `service_id` FROM `records`")
+            execSQL("DROP TABLE records")
+            execSQL("ALTER TABLE records_backup RENAME to records")
+        }
     }
 }

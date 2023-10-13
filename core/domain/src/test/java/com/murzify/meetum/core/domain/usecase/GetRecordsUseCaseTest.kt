@@ -27,7 +27,7 @@ class GetRecordsUseCaseTest {
         )
         val testRecord = Record(
             "Vasya",
-            Date(),
+            listOf(Date()),
             null,
             "+10000000000",
             testService

@@ -26,7 +26,7 @@ class AddRecordUseCaseTest {
         listOf(
             Calendar.getInstance().apply {
                 time = Date()
-                set(Calendar.DAY_OF_MONTH, 31)
+                set(Calendar.DAY_OF_MONTH, 15)
             }.time
         ),
         null,
@@ -44,10 +44,13 @@ class AddRecordUseCaseTest {
     @Test
     fun `should repeat records correctly`() = runTest {
         val useCase = AddRecordUseCase(recordRepository)
-
+        val endDate = Calendar.getInstance().apply {
+            time = testRecord.time.first()
+            add(Calendar.MONTH, 3)
+        }.time
         val repeat: Repeat = RepeatRecord.Repeater()
             .every(1, Calendar.MONTH)
-            .end(4)
+            .end(endDate)
             .repeat()
 
         useCase(testRecord, repeat)
