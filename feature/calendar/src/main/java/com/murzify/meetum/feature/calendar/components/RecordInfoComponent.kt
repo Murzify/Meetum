@@ -1,4 +1,4 @@
-package com.murzify.meetum.feature.calendar
+package com.murzify.meetum.feature.calendar.components
 
 import com.murzify.meetum.core.domain.model.Record
 import kotlinx.coroutines.flow.StateFlow

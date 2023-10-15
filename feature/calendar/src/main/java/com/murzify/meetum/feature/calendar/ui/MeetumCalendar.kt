@@ -1,4 +1,4 @@
-package com.murzify.meetum.feature.calendar
+package com.murzify.meetum.feature.calendar.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -58,6 +58,9 @@ import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.core.domain.model.Service
+import com.murzify.meetum.feature.calendar.CalendarState
+import com.murzify.meetum.feature.calendar.CalendarViewModel
+import com.murzify.meetum.feature.calendar.R
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.DayOfWeek

@@ -1,4 +1,4 @@
-package com.murzify.meetum.feature.calendar
+package com.murzify.meetum.feature.calendar.components
 
 import com.arkivanov.decompose.ComponentContext
 import com.murzify.meetum.core.common.ComponentFactory

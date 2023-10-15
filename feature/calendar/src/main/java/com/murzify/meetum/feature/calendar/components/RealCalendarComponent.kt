@@ -1,4 +1,4 @@
-package com.murzify.meetum.feature.calendar
+package com.murzify.meetum.feature.calendar.components
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
@@ -54,10 +54,12 @@ class RealCalendarComponent(
                 componentContext,
                 MutableStateFlow(config.record)
             ) {
-                navigation.push(ChildConfig.AddRecord(
-                    config.record.time.first(),
-                    config.record
-                ))
+                navigation.push(
+                    ChildConfig.AddRecord(
+                        config.record.time.first(),
+                        config.record
+                    )
+                )
             }
         )
     }

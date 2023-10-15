@@ -1,4 +1,4 @@
-package com.murzify.meetum.feature.calendar
+package com.murzify.meetum.feature.calendar.ui
 
 import android.content.Intent
 import androidx.annotation.DrawableRes
@@ -39,6 +39,7 @@ import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.core.ui.localStyleForeignFormat
+import com.murzify.meetum.feature.calendar.CalendarViewModel
 import com.murzify.ui.R
 import java.text.DateFormat
 import java.util.Date
@@ -148,7 +149,8 @@ internal fun RecordInfo(
                         modifier = Modifier.padding(start = 8.dp),
                         painter = painterResource(id = R.drawable.round_handshake_24),
                         contentDescription = stringResource(id =
-                        com.murzify.meetum.feature.calendar.R.string.service_label),
+                        com.murzify.meetum.feature.calendar.R.string.service_label
+                        ),
                     )
                     Spacer(Modifier.width(16.dp))
                     Column(

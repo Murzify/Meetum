@@ -8,11 +8,11 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.murzify.meetum.feature.calendar.AddRecordRoute
 import com.murzify.meetum.feature.calendar.CalendarState
 import com.murzify.meetum.feature.calendar.CalendarViewModel
-import com.murzify.meetum.feature.calendar.MeetumCalendarRoute
-import com.murzify.meetum.feature.calendar.RecordInfoRoute
+import com.murzify.meetum.feature.calendar.ui.AddRecordRoute
+import com.murzify.meetum.feature.calendar.ui.MeetumCalendarRoute
+import com.murzify.meetum.feature.calendar.ui.RecordInfoRoute
 import java.util.Date
 
 const val calendarNavigationRoute = "calendar"

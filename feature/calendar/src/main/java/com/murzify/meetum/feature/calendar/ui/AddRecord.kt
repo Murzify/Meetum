@@ -1,4 +1,4 @@
-package com.murzify.meetum.feature.calendar
+package com.murzify.meetum.feature.calendar.ui
 
 import android.Manifest
 import android.app.Activity
@@ -63,6 +63,8 @@ import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.core.domain.model.Service
 import com.murzify.meetum.core.ui.AddServiceCard
 import com.murzify.meetum.core.ui.ServiceCard
+import com.murzify.meetum.feature.calendar.CalendarViewModel
+import com.murzify.meetum.feature.calendar.R
 import java.text.DateFormat
 import java.util.Calendar
 import java.util.Date
@@ -212,7 +214,8 @@ internal fun AddRecordScreen(
                     }
                 ) {
                     Icon(painter = painterResource(
-                        id = R.drawable.round_repeat_24),
+                        id = R.drawable.round_repeat_24
+                    ),
                         contentDescription = stringResource(id = R.string.import_contact)
                     )
                 }
@@ -466,7 +469,8 @@ private fun ImportContactButton(modifier: Modifier = Modifier, import: (name: St
         },
     ) {
         Icon(painter = painterResource(
-            id = R.drawable.round_import_contacts_24),
+            id = R.drawable.round_import_contacts_24
+        ),
             contentDescription = stringResource(id = R.string.import_contact)
         )
     }
