@@ -32,5 +32,9 @@ gradlePlugin {
             id = "meetum.instrumentalTest"
             implementationClass = "com.murzify.meetum.build_logic.InstrumentalTestPlugin"
         }
+        register("koin") {
+            id = "meetum.koin"
+            implementationClass = "com.murzify.meetum.build_logic.KoinPlugin"
+        }
     }
 }

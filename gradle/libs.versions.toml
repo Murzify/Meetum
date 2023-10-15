@@ -6,10 +6,10 @@ junit = "4.13.2"
 androidx-test-ext-junit = "1.1.5"
 espresso-core = "3.5.1"
 lifecycle-runtime-ktx = "2.6.2"
-activity-compose = "1.7.2"
-compose-bom = "2023.09.02"
+activity-compose = "1.8.0"
+compose-bom = "2023.10.00"
 appcompat = "1.6.1"
-material3 = "1.2.0-alpha07"
+material3 = "1.2.0-alpha09"
 navigation = "2.7.3"
 org-jetbrains-kotlin-jvm = "1.9.0"
 hilt = "2.48"
@@ -29,6 +29,10 @@ toolbar-compose = "2.3.5"
 appmetrica = "6.0.0"
 appmetrica-gradle = "0.8.0"
 lifecycle-viewmodel-kt = "2.6.2"
+decompose = "2.1.2"
+material = "1.10.0"
+koin = "3.5.0"
+koin-compose = "1.1.0"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -73,6 +77,11 @@ appmetrica-analytics = { group = "io.appmetrica.analytics", name = "analytics", 
 appmetrica-gradle = { group = "io.appmetrica.analytics", name = "gradle", version.ref = "appmetrica-gradle" }
 lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle-viewmodel-kt" }
 androidx-compose-material3-windowSizeClass = {group = "androidx.compose.material3", name = "material3-window-size-class" }
+decompose = { group = "com.arkivanov.decompose", name = "decompose", version.ref = "decompose" }
+decompose-extensions = { group = "com.arkivanov.decompose", name = "extensions-compose-jetpack", version.ref = "decompose" }
+com-google-android-material-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
+koin-compose = { group = "io.insert-koin", name = "koin-androidx-compose-core", version.ref = "koin-compose" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }

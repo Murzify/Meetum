@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.ksp)
     id("meetum.hilt")
+    id("meetum.koin")
     id("meetum.unitTests")
     id("meetum.instrumentalTest")
 }
