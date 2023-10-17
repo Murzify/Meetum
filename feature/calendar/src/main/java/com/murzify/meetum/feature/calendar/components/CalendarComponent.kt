@@ -5,6 +5,8 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface CalendarComponent {
 
+    val navigateToAddService: () -> Unit
+    val splitScreen: Boolean
     val childStack: StateFlow<ChildStack<*, Child>>
 
     sealed interface Child {

@@ -1,5 +1,8 @@
 package com.murzify.meetum.feature.calendar.components
 
+import android.content.ContentResolver
+import android.net.Uri
+import android.provider.ContactsContract
 import com.arkivanov.decompose.ComponentContext
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.common.componentCoroutineScope
@@ -7,6 +10,7 @@ import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.core.domain.model.Service
 import com.murzify.meetum.core.domain.repository.RecordRepository
 import com.murzify.meetum.core.domain.usecase.AddRecordUseCase
+import com.murzify.meetum.core.domain.usecase.GetServicesUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -17,20 +21,28 @@ import java.util.UUID
 fun ComponentFactory.createAddRecordComponent(
     componentContext: ComponentContext,
     date: Date,
-    record: Record?
+    record: Record?,
+    navigateBack: () -> Unit,
+    navigateToAddService: () -> Unit
 ) : AddRecordComponent = RealAddRecordComponent(
     componentContext,
+    navigateBack,
+    navigateToAddService,
     MutableStateFlow(date),
     MutableStateFlow(record),
+    get(),
     get(),
     get()
 )
 
 class RealAddRecordComponent(
     componentContext: ComponentContext,
+    private val navigateBack: () -> Unit,
+    override val onAddServiceClick: () -> Unit,
     override val date: MutableStateFlow<Date>,
     override val record: MutableStateFlow<Record?> = MutableStateFlow(null),
     private val addRecordUseCase: AddRecordUseCase,
+    private val getServicesUseCase: GetServicesUseCase,
     private val recordRepo: RecordRepository
 ) :  ComponentContext by componentContext, AddRecordComponent {
 
@@ -46,8 +58,18 @@ class RealAddRecordComponent(
     override val service: MutableStateFlow<Service?> = MutableStateFlow(
         record.value?.service
     )
+    override val services: MutableStateFlow<List<Service>> = MutableStateFlow(emptyList())
 
     private val coroutineScope = componentCoroutineScope()
+
+    init {
+        coroutineScope.launch(Dispatchers.IO) {
+            getServicesUseCase()
+                .collect {
+                    services.value = it
+                }
+        }
+    }
 
     override fun onTimeChanged(time: Date) {
         date.value = time
@@ -65,12 +87,45 @@ class RealAddRecordComponent(
         this.phone.value = phone
     }
 
-    override fun onContactsClicked() {
-        TODO("Import client from contacts")
+    override fun onContactsClicked(uri: Uri, contentResolver: ContentResolver) {
+        val contactFields = arrayOf(
+            ContactsContract.Contacts.DISPLAY_NAME,
+            ContactsContract.Contacts._ID,
+        )
+        val cursor = contentResolver.query(
+            uri,
+            contactFields,
+            null,
+            null,
+            null
+        ) ?: return
+
+        cursor.use { cur ->
+            if (cur.count == 0) return
+            cur.moveToFirst()
+            val name = cur.getString(0)
+            this.name.value = name
+            val contactId = cur.getString(1)
+            val phonesFields = arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER)
+            val phones = contentResolver.query(
+                ContactsContract.CommonDataKinds.Phone.CONTENT_URI, phonesFields,
+                ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId,
+                null, null
+            ) ?: return
+            phones.use { ph ->
+                ph.moveToFirst()
+                val phone = ph.getString(0)
+                this.phone.value = phone
+            }
+        }
     }
 
     override fun onRepeatClicked() {
         TODO("Repeat records")
+    }
+
+    override fun onServiceSelected(service: Service) {
+        this.service.value = service
     }
 
     override fun onSaveClicked() {
@@ -97,6 +152,11 @@ class RealAddRecordComponent(
     override fun onDeleteClicked() {
         coroutineScope.launch(Dispatchers.IO) {
             recordRepo.deleteRecord(record.value!!)
+            navigateBack()
         }
+    }
+
+    override fun onBackClick() {
+        navigateBack()
     }
 }

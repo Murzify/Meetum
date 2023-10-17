@@ -2,11 +2,11 @@ package com.murzify.meetum.feature.calendar.ui
 
 import android.Manifest
 import android.app.Activity
+import android.content.ContentResolver
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.pm.PackageManager
-import android.provider.ContactsContract.CommonDataKinds.Phone
-import android.provider.ContactsContract.Contacts
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -45,7 +45,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,63 +57,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.murzify.meetum.core.domain.model.Record
-import com.murzify.meetum.core.domain.model.Service
 import com.murzify.meetum.core.ui.AddServiceCard
 import com.murzify.meetum.core.ui.ServiceCard
-import com.murzify.meetum.feature.calendar.CalendarViewModel
 import com.murzify.meetum.feature.calendar.R
+import com.murzify.meetum.feature.calendar.components.AddRecordComponent
 import java.text.DateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import java.util.UUID
-
-
-@Composable
-internal fun AddRecordRoute(
-    viewModel: CalendarViewModel = hiltViewModel(),
-    isEditing: Boolean,
-    date: Date,
-    navigateToBack: () -> Unit,
-    navigateToAddService: () -> Unit
-) {
-    val services by viewModel.services.collectAsState()
-    val selectedRecord by viewModel.selectedRecord.collectAsState()
-    AddRecordScreen(
-        services,
-        navigateToAddService,
-        navigateToBack,
-        viewModel::deleteRecord,
-        viewModel::addRecord,
-        viewModel::editRecord,
-        isEditing,
-        selectedRecord,
-        date
-    )
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun AddRecordScreen(
-    services: List<Service>,
-    navigateToAddService: () -> Unit,
-    navigateToBack: () -> Unit,
-    delete: () -> Unit,
-    save: (record: Record) -> Unit,
-    edit: (record: Record) -> Unit,
-    isEditing: Boolean,
-    record: Record?,
-    date: Date
+internal fun AddRecordUi(
+    component: AddRecordComponent
 ) {
+    val date by component.date.collectAsState()
     val defCalendar = Calendar.getInstance().apply {
-        time = Date()
-        if (isEditing) {
-            record?.let {
-                time = it.time[0]
-            }
-        }
+        time = date
     }
 
     val timePickerState = remember {
@@ -124,34 +83,12 @@ internal fun AddRecordScreen(
             is24Hour = true
         )
     }
-    var selectedService: Service? by remember {
-        mutableStateOf(
-            if (isEditing) {
-                record?.service
-            } else null
-        )
-    }
-    var clientName by rememberSaveable {
-        mutableStateOf(
-            if (isEditing) {
-                record?.clientName ?: ""
-            } else ""
-        )
-    }
-    var description by rememberSaveable {
-        mutableStateOf(
-            if (isEditing) {
-                record?.description ?: ""
-            } else ""
-        )
-    }
-    var phoneNumber by rememberSaveable {
-        mutableStateOf(
-            if (isEditing) {
-                record?.phone ?: ""
-            } else ""
-        )
-    }
+    val selectedService by component.service.collectAsState()
+    val clientName by component.name.collectAsState()
+    val description by component.description.collectAsState()
+    val phoneNumber by component.phone.collectAsState()
+    val record by component.record.collectAsState()
+    val services by component.services.collectAsState()
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     Scaffold(
@@ -164,7 +101,7 @@ internal fun AddRecordScreen(
                 navigationIcon = {
                     IconButton(modifier = Modifier
                         .padding(8.dp),
-                        onClick = { navigateToBack() }
+                        onClick = component::onBackClick
                     ) {
                         Icon(
                             painter = painterResource(id = com.murzify.ui.R.drawable.round_arrow_back_24),
@@ -227,9 +164,7 @@ internal fun AddRecordScreen(
                         bottom.linkTo(parent.bottom)
                     },
                     value = clientName,
-                    onValueChange = {
-                        clientName = it
-                    },
+                    onValueChange = component::onNameChanged,
                     leadingIcon = {
                         Icon(
                             painter = painterResource(id = R.drawable.round_person_24),
@@ -247,19 +182,15 @@ internal fun AddRecordScreen(
                         end.linkTo(parent.end)
                         bottom.linkTo(parent.bottom)
                         top.linkTo(textField.top)
-                    }
-                ) { name, phone ->
-                    clientName = name
-                    phoneNumber = phone
-                }
+                    },
+                    onClick = component::onContactsClicked
+                )
             }
 
             OutlinedTextField(
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
                 value = description,
-                onValueChange = {
-                    description = it
-                },
+                onValueChange = component::onDescriptionChanged,
                 leadingIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.round_description_24),
@@ -274,9 +205,7 @@ internal fun AddRecordScreen(
             OutlinedTextField(
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
                 value = phoneNumber,
-                onValueChange = {
-                    phoneNumber = it
-                },
+                onValueChange = component::onPhoneChanged,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 leadingIcon = {
                     Icon(
@@ -300,7 +229,7 @@ internal fun AddRecordScreen(
                 }
                 item {
                     AddServiceCard(modifier = Modifier.width(180.dp)) {
-                        navigateToAddService()
+                        component.onAddServiceClick()
                     }
                 }
                 items(services) { service ->
@@ -309,10 +238,9 @@ internal fun AddRecordScreen(
                         modifier = Modifier.width(180.dp),
                         border = if (selectedService == service) {
                             BorderStroke(4.dp, MaterialTheme.colorScheme.primary)
-                        } else null
-                    ) {
-                        selectedService = service
-                    }
+                        } else null,
+                        onClick = component::onServiceSelected
+                    )
                 }
                 item {
                     Spacer(modifier = Modifier.width(24.dp))
@@ -324,37 +252,10 @@ internal fun AddRecordScreen(
     }
 
     FloatActionBar(
-        canDelete = isEditing,
-        delete = {
-            delete()
-            navigateToBack()
-        },
-        save = {
-            val calendar = Calendar.getInstance().apply {
-                time = date
-                set(Calendar.HOUR_OF_DAY, timePickerState.hour)
-                set(Calendar.MINUTE, timePickerState.minute)
-            }
-
-            if (selectedService != null) {
-                val saveRecord = Record(
-                    clientName = if (clientName == "") null else clientName,
-                    time = listOf(calendar.time),
-                    description = if (description == "") null else description,
-                    phone = if (phoneNumber == "") null else phoneNumber,
-                    service = selectedService!!,
-                    id = if (isEditing) record?.id ?: UUID.randomUUID() else UUID.randomUUID()
-                )
-                if (isEditing) {
-                    edit(saveRecord)
-                } else {
-                    save(saveRecord)
-                }
-                navigateToBack()
-            }
-        }
+        canDelete = record != null,
+        delete = component::onDeleteClicked,
+        save = component::onSaveClicked
     )
-
 
 }
 
@@ -419,39 +320,16 @@ private fun RecordDate(date: Date) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ImportContactButton(modifier: Modifier = Modifier, import: (name: String, phone: String) -> Unit) {
+private fun ImportContactButton(modifier: Modifier = Modifier, onClick: (uri: Uri, contentResolver: ContentResolver) -> Unit) {
     var importContact by remember { mutableStateOf(false) }
     val contentResolver = LocalContext.current.findActivity().contentResolver
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickContact()
     ) {
-        val contactFields = arrayOf(
-            Contacts.DISPLAY_NAME,
-            Contacts._ID,
-        )
         it?.let { uri ->
-            val cursor = contentResolver.query(uri, contactFields, null, null, null)
-                ?: return@rememberLauncherForActivityResult
-            cursor.use { cur ->
-                if (cur.count == 0) return@rememberLauncherForActivityResult
-                cur.moveToFirst()
-                val name = cur.getString(0)
-                val contactId = cur.getString(1)
-                val phonesFields = arrayOf(Phone.NUMBER)
-                val phones = contentResolver.query(Phone.CONTENT_URI, phonesFields,
-                    Phone.CONTACT_ID + " = " + contactId,
-                    null, null
-                ) ?: return@rememberLauncherForActivityResult
-                phones.use { ph ->
-                    ph.moveToFirst()
-                    val phone = ph.getString(0)
-                    import(name, phone)
-                }
-            }
-
+            onClick(uri, contentResolver)
         }
     }
-
 
     if (importContact) {
         RequestContactsPermission() {

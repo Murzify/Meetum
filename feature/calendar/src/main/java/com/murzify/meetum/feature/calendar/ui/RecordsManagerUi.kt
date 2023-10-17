@@ -32,10 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,7 +44,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.kizitonwose.calendar.compose.HorizontalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.core.CalendarDay
@@ -58,9 +54,8 @@ import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.core.domain.model.Service
-import com.murzify.meetum.feature.calendar.CalendarState
-import com.murzify.meetum.feature.calendar.CalendarViewModel
 import com.murzify.meetum.feature.calendar.R
+import com.murzify.meetum.feature.calendar.components.RecordsManagerComponent
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.DayOfWeek
@@ -87,55 +82,27 @@ val recordExample = Record(
 )
 
 @Composable
-internal fun MeetumCalendarRoute(
-    calendarState: CalendarState,
-    navigateToAddRecord: (editing: Boolean, date: Date) -> Unit,
-    navigateToOpenRecord: () -> Unit,
-    viewModel: CalendarViewModel = hiltViewModel()
+internal fun RecordsManagerUi(
+    component: RecordsManagerComponent
 ) {
-    val records by viewModel.records.collectAsState()
-    val allRecords by viewModel.allRecords.collectAsState()
-    CalendarScreen(
-        calendarState,
-        records = records,
-        allRecords = allRecords,
-        getRecords = viewModel::getRecords,
-        navigateToAddRecord,
-        navigateToOpenRecord,
-        viewModel::selectRecordForEdit
-    )
-}
-
-@Composable
-private fun CalendarScreen(
-    calendarState: CalendarState,
-    records: List<Record>,
-    allRecords: List<Record>,
-    getRecords: (date: Date) -> Unit,
-    navigateToAddRecord: (editing: Boolean, date: Date) -> Unit,
-    navigateToOpenRecord: () -> Unit,
-    selectRecord: (record: Record) -> Unit
-) {
-    var selectedDate by rememberSaveable { mutableStateOf<LocalDate>(LocalDate.now()) }
+    val selectedDate by component.selectedDate.collectAsState()
     val listState = rememberLazyListState()
 
-    val date = Date.from(selectedDate.atStartOfDay(ZoneId.systemDefault())?.toInstant())
-    getRecords(date)
+    val allRecords by component.allRecords.collectAsState()
+    val records by component.currentRecords.collectAsState()
 
     Box(
         contentAlignment = Alignment.BottomEnd,
         modifier = Modifier.fillMaxSize()
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            if (calendarState.shouldSplitCalendarScreen) {
+            if (component.splitScreen) {
                 Calendar(
                     weight = 1f,
-                    getRecords = getRecords,
                     allRecords = allRecords,
                     selectedDate = selectedDate,
-                ) {
-                    selectedDate = it
-                }
+                    selectDate = component::onDateClick
+                )
             }
             LazyColumn(
                 state = listState,
@@ -147,16 +114,14 @@ private fun CalendarScreen(
                 item {
                     Spacer(modifier = Modifier.statusBarsPadding())
                 }
-                if (!calendarState.shouldSplitCalendarScreen) {
+                if (!component.splitScreen) {
                     item {
                         Calendar(
                             weight = 1f,
-                            getRecords = getRecords,
+                            selectDate = component::onDateClick,
                             allRecords = allRecords,
                             selectedDate = selectedDate,
-                        ) {
-                            selectedDate = it
-                        }
+                        )
                     }
                 }
                 item {
@@ -164,11 +129,9 @@ private fun CalendarScreen(
                 }
                 items(records) {
                     RecordCard(
-                        it
-                    ) { record ->
-                        selectRecord(record)
-                        navigateToOpenRecord()
-                    }
+                        it,
+                        onClick = component::onRecordClick
+                    )
                 }
                 item {
                     Spacer(
@@ -181,7 +144,7 @@ private fun CalendarScreen(
         FloatingActionButton(
             modifier = Modifier.padding(end = 8.dp, bottom = 8.dp),
             onClick = {
-                navigateToAddRecord(false, date)
+                component.onAddRecordClick()
             }
         ) {
             Icon(
@@ -196,7 +159,6 @@ private fun CalendarScreen(
 @Composable
 private fun RowScope.Calendar(
     weight: Float,
-    getRecords: (date: Date) -> Unit,
     allRecords: List<Record>,
     selectedDate: LocalDate,
     selectDate: (LocalDate) -> Unit
@@ -230,10 +192,6 @@ private fun RowScope.Calendar(
             ) { day ->
                 if (selectedDate != day.date) {
                     selectDate(day.date)
-                    val date = Date.from(
-                        selectedDate.atStartOfDay(ZoneId.systemDefault())?.toInstant()
-                    )
-                    getRecords(date)
                 }
             }
         },

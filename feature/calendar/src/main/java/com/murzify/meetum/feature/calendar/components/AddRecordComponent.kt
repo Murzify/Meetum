@@ -1,5 +1,7 @@
 package com.murzify.meetum.feature.calendar.components
 
+import android.content.ContentResolver
+import android.net.Uri
 import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.core.domain.model.Service
 import kotlinx.coroutines.flow.StateFlow
@@ -12,6 +14,8 @@ interface AddRecordComponent {
     val phone: StateFlow<String>
     val service: StateFlow<Service?>
     val record: StateFlow<Record?>
+    val services: StateFlow<List<Service>>
+    val onAddServiceClick: () -> Unit
 
     fun onTimeChanged(time: Date)
 
@@ -21,12 +25,16 @@ interface AddRecordComponent {
 
     fun onPhoneChanged(phone: String)
 
-    fun onContactsClicked()
+    fun onContactsClicked(uri: Uri, contentResolver: ContentResolver)
 
     fun onRepeatClicked()
+
+    fun onServiceSelected(service: Service)
 
     fun onSaveClicked()
 
     fun onDeleteClicked()
+
+    fun onBackClick()
 
 }

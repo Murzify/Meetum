@@ -4,6 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.murzify.meetum.core.common.ComponentFactory
@@ -16,11 +17,20 @@ import kotlinx.parcelize.RawValue
 import java.util.Date
 
 fun ComponentFactory.createCalendarComponent(
-    componentContext: ComponentContext
-) : CalendarComponent = RealCalendarComponent(componentContext, this)
+    componentContext: ComponentContext,
+    splitScreen: Boolean,
+    navigateToAddService: () -> Unit,
+) : CalendarComponent = RealCalendarComponent(
+    componentContext,
+    navigateToAddService,
+    splitScreen,
+    this
+)
 
 class RealCalendarComponent(
     componentContext: ComponentContext,
+    override val navigateToAddService: () -> Unit,
+    override val splitScreen: Boolean,
     private val componentFactory: ComponentFactory
 ) : ComponentContext by componentContext, CalendarComponent {
 
@@ -38,29 +48,35 @@ class RealCalendarComponent(
         componentContext: ComponentContext
     ): CalendarComponent.Child = when (config) {
         is ChildConfig.RecordsManager -> CalendarComponent.Child.RecordsManager(
-            componentFactory.createRecordsManagerComponent(componentContext) {
-                navigation.push(ChildConfig.AddRecord(it))
+            componentFactory.createRecordsManagerComponent(
+                componentContext, splitScreen
+            ) { date, record ->
+                navigation.push(ChildConfig.AddRecord(date, record))
             }
         )
         is ChildConfig.AddRecord -> CalendarComponent.Child.AddRecord(
             componentFactory.createAddRecordComponent(
                 componentContext,
                 config.date,
-                config.record
+                config.record,
+                navigateBack = navigation::pop,
+                navigateToAddService = navigateToAddService
             )
         )
         is ChildConfig.RecordInfo -> CalendarComponent.Child.RecordInfo(
             componentFactory.createRecordInfoComponent(
                 componentContext,
-                MutableStateFlow(config.record)
-            ) {
-                navigation.push(
-                    ChildConfig.AddRecord(
-                        config.record.time.first(),
-                        config.record
+                MutableStateFlow(config.record),
+                navigateBack = navigation::pop,
+                navigateToEdit = {
+                    navigation.push(
+                        ChildConfig.AddRecord(
+                            config.record.time.first(),
+                            config.record
+                        )
                     )
-                )
-            }
+                }
+            )
         )
     }
 

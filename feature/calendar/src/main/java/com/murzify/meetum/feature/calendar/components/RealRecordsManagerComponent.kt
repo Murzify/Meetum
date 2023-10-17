@@ -19,11 +19,13 @@ import javax.inject.Inject
 
 fun ComponentFactory.createRecordsManagerComponent(
     componentContext: ComponentContext,
-    navigateToAddRecord: (date: Date) -> Unit
+    splitScreen: Boolean,
+    navigateToAddRecord: (date: Date, record: Record?) -> Unit,
 ): RecordsManagerComponent {
     return RealRecordsManagerComponent(
         componentContext,
         navigateToAddRecord,
+        splitScreen,
         get(),
         get(),
         get()
@@ -32,7 +34,8 @@ fun ComponentFactory.createRecordsManagerComponent(
 
 class RealRecordsManagerComponent @Inject constructor (
     componentContext: ComponentContext,
-    val navigateToAddRecord: (date: Date) -> Unit,
+    val navigateToAddRecord: (date: Date, record: Record?) -> Unit,
+    override val splitScreen: Boolean,
     private val getServicesUseCase: GetServicesUseCase,
     private val recordRepository: RecordRepository,
     private val getRecordsUseCase: GetRecordsUseCase,
@@ -70,11 +73,11 @@ class RealRecordsManagerComponent @Inject constructor (
     }
 
     override fun onAddRecordClick() {
-        navigateToAddRecord(selectedDate.value.toDate())
+        navigateToAddRecord(selectedDate.value.toDate(), null)
     }
 
-    override fun onRecordClick() {
-        TODO("Not yet implemented")
+    override fun onRecordClick(record: Record) {
+        navigateToAddRecord(record.time.first(), record)
     }
 
     private fun LocalDate.toDate(): Date {

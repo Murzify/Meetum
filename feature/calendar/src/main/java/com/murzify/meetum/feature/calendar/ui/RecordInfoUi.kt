@@ -1,6 +1,5 @@
 package com.murzify.meetum.feature.calendar.ui
 
-import android.content.Intent
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -35,36 +34,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toUri
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.core.ui.localStyleForeignFormat
-import com.murzify.meetum.feature.calendar.CalendarViewModel
+import com.murzify.meetum.feature.calendar.components.RecordInfoComponent
 import com.murzify.ui.R
 import java.text.DateFormat
 import java.util.Date
 import java.util.Locale
 
-@Composable
-internal fun RecordInfoRoute(
-    viewModel: CalendarViewModel = hiltViewModel(),
-    navigateToEdit: (date: Date) -> Unit,
-    navigateToBack: () -> Unit
-) {
-    val selectedRecord by viewModel.selectedRecord.collectAsState()
-    RecordInfo(record = selectedRecord, navigateToEdit, navigateToBack)
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun RecordInfo(
-    record: Record?,
-    navigateToEdit: (Date) -> Unit,
-    navigateToBack: () -> Unit
+internal fun RecordInfoUi(
+    component: RecordInfoComponent
 ) {
-    if (record == null) {
-        return
-    }
+    val record by component.record.collectAsState()
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     Scaffold(
@@ -77,7 +60,7 @@ internal fun RecordInfo(
                 navigationIcon = {
                     IconButton(modifier = Modifier
                         .padding(8.dp),
-                        onClick = { navigateToBack() }
+                        onClick = component::onBackClick
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.round_arrow_back_24),
@@ -88,7 +71,7 @@ internal fun RecordInfo(
                 actions = {
                     IconButton(modifier = Modifier
                         .padding(8.dp),
-                        onClick = { navigateToEdit(record.time[0]) }
+                        onClick = component::onEditClick
                     ) {
                         Icon(
                             painter = painterResource(
@@ -129,13 +112,9 @@ internal fun RecordInfo(
                     InfoField(
                         iconId = com.murzify.meetum.feature.calendar.R.drawable.round_phone_24,
                         contentDescriptionId = com.murzify.meetum.feature.calendar.R.string.phone_label,
-                        text = phone
-                    ) {
-                        val uri = "tel:$phone".toUri()
-                        val intent = Intent(Intent.ACTION_DIAL)
-                        intent.data = uri
-                        context.startActivity(intent)
-                    }
+                        text = phone,
+                        onLongPress = { component.onPhoneLongClick(context) }
+                    )
                 }
             }
             item {

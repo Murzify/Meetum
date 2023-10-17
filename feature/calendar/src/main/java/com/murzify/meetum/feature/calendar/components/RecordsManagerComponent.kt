@@ -7,6 +7,7 @@ import java.time.LocalDate
 
 interface RecordsManagerComponent {
 
+    val splitScreen: Boolean
     val currentRecords: StateFlow<List<Record>>
     val services: StateFlow<List<Service>>
     val allRecords: StateFlow<List<Record>>
@@ -16,5 +17,5 @@ interface RecordsManagerComponent {
 
     fun onAddRecordClick()
 
-    fun onRecordClick()
+    fun onRecordClick(record: Record)
 }
