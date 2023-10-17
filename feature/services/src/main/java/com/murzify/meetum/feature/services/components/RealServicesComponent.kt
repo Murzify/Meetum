@@ -4,6 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
@@ -32,7 +33,11 @@ class RealServicesComponent(
         componentContext: ComponentContext
     ): ServicesComponent.Child = when (config) {
         is ChildConfig.AddService -> ServicesComponent.Child.AddService(
-            componentFactory.createAddServiceComponent(componentContext, config.service)
+            componentFactory.createAddServiceComponent(
+                componentContext,
+                config.service,
+                navigateBack = navigation::pop
+            )
         )
         ChildConfig.ServicesList -> ServicesComponent.Child.ServicesList(
             componentFactory.createServicesListComponent(componentContext) {

@@ -1,6 +1,5 @@
-package com.murzify.meetum.feature.services
+package com.murzify.meetum.feature.services.ui
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,94 +34,37 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.murzify.meetum.core.domain.model.Record
-import com.murzify.meetum.core.domain.model.Service
+import com.murzify.meetum.feature.services.R
+import com.murzify.meetum.feature.services.components.AddServiceComponent
 import kotlinx.coroutines.launch
 import java.util.Currency
-import java.util.Locale
-import java.util.UUID
-
-@Composable
-internal fun AddServiceRoute(
-    viewModel: ServicesViewModel = hiltViewModel(),
-    isEditing: Boolean,
-    navigateToBack: () -> Unit
-) {
-    val editingService by viewModel.selectedService.collectAsState()
-    viewModel.getFutureRecords()
-    val futureRecords by viewModel.futureRecords.collectAsState()
-    Log.d("addService", editingService.toString())
-    AddServiceScreen(
-        isEditing,
-        editingService,
-        futureRecords,
-        navigateToBack,
-        save = {
-            if (isEditing) {
-                Log.d("edit", it.toString())
-                viewModel.editService(it)
-            } else {
-                viewModel.addService(it)
-            }
-        },
-        delete = {
-            editingService?.let { service -> viewModel.deleteService(service) }
-        }
-    )
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(backgroundColor = 0xFFFFFFFF)
 @Composable
-internal fun AddServiceScreen(
-    isEditing: Boolean = false,
-    editingService: Service? = null,
-    futureRecords: List<Record> = emptyList(),
-    navigateToBack: () -> Unit = {},
-    save: (Service) -> Unit = {},
-    delete: () -> Unit = {}
+internal fun AddServiceUi(
+    component: AddServiceComponent
 ) {
-    val nameDefault = if (isEditing) {
-        editingService?.name ?: ""
-    } else ""
-    var name by rememberSaveable {
-        mutableStateOf(nameDefault)
-    }
-    val priceDefault = if (isEditing) {
-        editingService?.price.toString()
-    } else ""
-    var priceAmount by rememberSaveable {
-        mutableStateOf(priceDefault)
-    }
-    val currencyDefault = if (isEditing) {
-        editingService?.currency
-    } else null
-    var currency by rememberSaveable {
-        mutableStateOf(currencyDefault)
-    }
+    val name by component.name.collectAsState()
+    val isNameError by component.isNameError.collectAsState()
+    val price by component.price.collectAsState()
+    val isPriceError by component.isPriceError.collectAsState()
+    val currency by component.currency.collectAsState()
+    val showAlert by component.showAlert.collectAsState()
+    val showDeleteButton by component.showDeleteButton.collectAsState()
 
-    var nameError by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var priceError by rememberSaveable {
-        mutableStateOf(false)
-    }
     Column(
         modifier = Modifier
             .padding(16.dp)
     ) {
 
-        IconButton(modifier = Modifier.statusBarsPadding(), onClick = { navigateToBack() }) {
+        IconButton(modifier = Modifier.statusBarsPadding(), onClick = component::onBackClick) {
             Icon(
                 painter = painterResource(id = com.murzify.ui.R.drawable.round_arrow_back_24),
                 contentDescription = stringResource(id = com.murzify.ui.R.string.back_button)
@@ -131,13 +73,10 @@ internal fun AddServiceScreen(
 
         OutlinedTextField(
             value = name,
-            onValueChange = {
-                nameError = false
-                name = it.removePrefix(" ")
-                            },
+            onValueChange = component::onNameChanged,
             label = { Text(text = stringResource(id = R.string.service_name)) },
             modifier = Modifier.padding(vertical = 16.dp),
-            isError = nameError,
+            isError = isNameError,
         )
 
         Row(
@@ -145,25 +84,20 @@ internal fun AddServiceScreen(
         ) {
 
             OutlinedTextField(
-                value = priceAmount,
-                onValueChange = {
-                    priceError = false
-                    val text = it
-                        .replace(",", ".")
-                        .replace("-", "")
-                    priceAmount = text
-                },
+                value = price.toString(),
+                onValueChange = component::onPriceChanged,
                 label = { Text(text = stringResource(R.string.price)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 modifier = Modifier
                     .weight(1f)
                     .padding(end = 8.dp),
-                isError = priceError
+                isError = isPriceError
             )
 
-            CurrencyField(isEditing, currencyDefault) { c ->
-                currency = c
-            }
+            CurrencyField(
+                currency,
+                onCurrencyChanged = component::onCurrencyChanged
+            )
         }
         
     }
@@ -173,19 +107,10 @@ internal fun AddServiceScreen(
         contentAlignment = Alignment.BottomCenter
     ) {
         Row(){
-            var showAlert by remember { mutableStateOf(false) }
-            if (isEditing) {
+            if (showDeleteButton) {
                 FloatingActionButton(
                     modifier = Modifier.padding(16.dp),
-                    onClick = {
-                        if (futureRecords.isNotEmpty()) {
-                            showAlert = true
-                        } else {
-                            delete()
-                            navigateToBack()
-                        }
-
-                    },
+                    onClick = component::onDeleteClick,
                     containerColor = MaterialTheme.colorScheme.errorContainer,
                     contentColor = MaterialTheme.colorScheme.error
                 ) {
@@ -197,7 +122,7 @@ internal fun AddServiceScreen(
             }
 
             if (showAlert) {
-                AlertDialog(onDismissRequest = { showAlert = false }) {
+                AlertDialog(onDismissRequest = component::onDeleteCanceled) {
                     Text(text = "hello")
                     Surface(
                         modifier = Modifier
@@ -213,18 +138,12 @@ internal fun AddServiceScreen(
                             Spacer(modifier = Modifier.height(24.dp))
                             Row(horizontalArrangement = Arrangement.SpaceBetween) {
                                 TextButton(
-                                    onClick = {
-                                        showAlert = false
-                                    },
+                                    onClick = component::onDeleteCanceled,
                                 ) {
                                     Text(stringResource(id = R.string.cancel_delete))
                                 }
                                 TextButton(
-                                    onClick = {
-                                        delete()
-                                        showAlert = false
-                                        navigateToBack()
-                                    },
+                                    onClick = component::onDeleteConfirmed,
                                 ) {
                                     Text(stringResource(id = R.string.confirm_delete))
                                 }
@@ -238,33 +157,7 @@ internal fun AddServiceScreen(
 
             FloatingActionButton(
                 modifier = Modifier.padding(16.dp),
-                onClick = {
-                    nameError = name.isEmpty()
-                    try {
-                        priceAmount.toDouble()
-                    } catch (_: Throwable) {
-                        Log.d("price", "error")
-                        priceError = true
-                    }
-                    val c = if (currency == null) {
-                        Currency.getInstance(Locale.getDefault())
-                    } else {
-                        currency
-                    }
-
-                    if (!nameError && !priceError) {
-                        save(
-                            Service(
-                                name,
-                                priceAmount.toDouble(),
-                                c!!,
-                                if (isEditing && editingService != null) editingService.id
-                                else UUID.randomUUID()
-                            )
-                        )
-                        navigateToBack()
-                    }
-                }
+                onClick = component::onSaveClick
             ) {
                 Text(
                     text = stringResource(id = R.string.save),
@@ -279,23 +172,19 @@ internal fun AddServiceScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun CurrencyField(
-    isEditing: Boolean = false,
-    default: Currency? = null,
+    default: Currency,
     onCurrencyChanged: (currency: Currency?) -> Unit
 ) {
-    val defaultCurrency = if (isEditing) {
-        default ?: Currency.getInstance(Locale.getDefault())
-    } else Currency.getInstance(Locale.getDefault())
     val currencies = Currency.getAvailableCurrencies().sortedBy { it.currencyCode }
     var options by remember {
         mutableStateOf(currencies)
     }
     var expanded by remember { mutableStateOf(false) }
     var selectedOptionText by remember {
-        mutableStateOf(defaultCurrency.currencyCode)
+        mutableStateOf(default.currencyCode)
     }
     var selectedCurrency by remember {
-        mutableStateOf(defaultCurrency)
+        mutableStateOf(default)
     }
     val coroutineScope = rememberCoroutineScope()
 

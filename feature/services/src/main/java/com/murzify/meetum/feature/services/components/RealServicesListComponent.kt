@@ -25,6 +25,7 @@ class RealServicesListComponent(
     private val getServicesUseCase: GetServicesUseCase,
 ) : ComponentContext by componentContext, ServicesListComponent {
     override val services: MutableStateFlow<List<Service>> = MutableStateFlow(emptyList())
+    override val showGhostLottie: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     private val coroutineScope = componentCoroutineScope()
 
@@ -32,6 +33,7 @@ class RealServicesListComponent(
         coroutineScope.launch(Dispatchers.IO) {
             getServicesUseCase()
                 .collect {
+                    showGhostLottie.value = it.isEmpty()
                     services.value = it
                 }
         }

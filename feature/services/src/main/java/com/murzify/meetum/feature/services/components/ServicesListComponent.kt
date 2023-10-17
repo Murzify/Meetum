@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface ServicesListComponent {
     val services: StateFlow<List<Service>>
+    val showGhostLottie: StateFlow<Boolean>
 
     fun onServiceClick(service: Service)
 

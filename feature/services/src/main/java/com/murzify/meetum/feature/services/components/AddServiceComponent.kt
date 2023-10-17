@@ -1,22 +1,26 @@
 package com.murzify.meetum.feature.services.components
 
 import com.murzify.meetum.core.domain.model.Service
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.util.Currency
 
 interface AddServiceComponent {
     val service: StateFlow<Service?>
     val name: StateFlow<String>
-    val price: MutableStateFlow<Double>
+    val isNameError: StateFlow<Boolean>
+    val price: StateFlow<Double>
+    val isPriceError: StateFlow<Boolean>
     val currency: StateFlow<Currency>
     val showAlert: StateFlow<Boolean>
+    val showDeleteButton: StateFlow<Boolean>
+
+    fun onBackClick()
 
     fun onNameChanged(name: String)
 
-    fun onPriceChanged(price: Double)
+    fun onPriceChanged(price: String)
 
-    fun onCurrencyChanged(currency: Currency)
+    fun onCurrencyChanged(currency: Currency?)
 
     fun onSaveClick()
 
@@ -26,8 +30,4 @@ interface AddServiceComponent {
 
     fun onDeleteCanceled()
 
-    sealed interface Error {
-        data object Name : Error, Exception("Name cannot be empty")
-
-    }
 }

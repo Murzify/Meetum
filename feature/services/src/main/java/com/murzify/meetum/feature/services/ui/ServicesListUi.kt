@@ -1,4 +1,4 @@
-package com.murzify.meetum.feature.services
+package com.murzify.meetum.feature.services.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.keyframes
@@ -24,38 +24,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.murzify.meetum.core.domain.model.Service
 import com.murzify.meetum.core.ui.EmptyScreenLottie
 import com.murzify.meetum.core.ui.ServiceCard
-import java.util.Currency
-
-val serviceExample = Service(
-    "Massage",
-    200.toDouble(),
-    Currency.getInstance("RUB")
-)
-
+import com.murzify.meetum.feature.services.R
+import com.murzify.meetum.feature.services.components.ServicesListComponent
 
 @Composable
-internal fun ServicesListRoute(
-    navigateToAddService: (edit: Boolean) -> Unit,
-    viewModel: ServicesViewModel = hiltViewModel()
+internal fun ServicesListUi(
+    component: ServicesListComponent
 ) {
-    val services by viewModel.services.collectAsState()
-    MeetumService(services, navigateToAddService, viewModel::selectService)
-}
+    val showGhostLottie by component.showGhostLottie.collectAsState()
+    val services by component.services.collectAsState()
 
-@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
-@Composable
-internal fun MeetumService(
-    services: List<Service> = listOf(serviceExample, serviceExample),
-    navigateToAddService: (edit: Boolean) -> Unit = {},
-    selectService: (service: Service) -> Unit = {}
-) {
-    if (services.isEmpty()) {
+    if (showGhostLottie) {
         EmptyScreenLottie()
     }
     Box(
@@ -76,11 +58,9 @@ internal fun MeetumService(
 
             items(services) {
                 ServiceCard(
-                    service = it
-                ) { service ->
-                    selectService(service)
-                    navigateToAddService(true)
-                }
+                    service = it,
+                    onClick = component::onServiceClick
+                )
             }
         }
         val density = LocalDensity.current
@@ -97,9 +77,7 @@ internal fun MeetumService(
         ) {
             FloatingActionButton(
                 modifier = Modifier.padding(end = 8.dp, bottom = 8.dp),
-                onClick = {
-                    navigateToAddService(false)
-                }
+                onClick = component::onAddServiceClick
             ) {
                 Icon(
                     painter = painterResource(id = com.murzify.ui.R.drawable.round_add_24),

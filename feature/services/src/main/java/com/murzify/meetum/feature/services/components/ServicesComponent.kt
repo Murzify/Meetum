@@ -7,8 +7,8 @@ interface ServicesComponent {
     val childStack: StateFlow<ChildStack<*, Child>>
 
     sealed interface Child {
-        class ServicesList(component: ServicesListComponent) : Child
+        data class ServicesList(val component: ServicesListComponent) : Child
 
-        class AddService(component: AddServiceComponent) : Child
+        data class AddService(val component: AddServiceComponent) : Child
     }
 }
