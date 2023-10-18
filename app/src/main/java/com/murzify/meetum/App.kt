@@ -7,12 +7,10 @@ import com.murzify.meetum.core.data.repository.dataModule
 import com.murzify.meetum.core.database.databaseModule
 import com.murzify.meetum.di.KoinProvider
 import com.murzify.meetum.di.domainModule
-import dagger.hilt.android.HiltAndroidApp
 import io.appmetrica.analytics.AppMetrica
 import io.appmetrica.analytics.AppMetricaConfig
 import org.koin.core.Koin
 
-@HiltAndroidApp
 class App: Application(), KoinProvider {
 
     override lateinit var koin: Koin

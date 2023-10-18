@@ -15,16 +15,17 @@ import org.koin.core.component.get
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.Date
-import javax.inject.Inject
 
 fun ComponentFactory.createRecordsManagerComponent(
     componentContext: ComponentContext,
     splitScreen: Boolean,
     navigateToAddRecord: (date: Date, record: Record?) -> Unit,
+    navigateToRecordInfo: (record: Record) -> Unit,
 ): RecordsManagerComponent {
     return RealRecordsManagerComponent(
         componentContext,
         navigateToAddRecord,
+        navigateToRecordInfo,
         splitScreen,
         get(),
         get(),
@@ -32,9 +33,10 @@ fun ComponentFactory.createRecordsManagerComponent(
     )
 }
 
-class RealRecordsManagerComponent @Inject constructor (
+class RealRecordsManagerComponent constructor (
     componentContext: ComponentContext,
-    val navigateToAddRecord: (date: Date, record: Record?) -> Unit,
+    private val navigateToAddRecord: (date: Date, record: Record?) -> Unit,
+    private val navigateToRecordInfo: (record: Record) -> Unit,
     override val splitScreen: Boolean,
     private val getServicesUseCase: GetServicesUseCase,
     private val recordRepository: RecordRepository,
@@ -68,7 +70,9 @@ class RealRecordsManagerComponent @Inject constructor (
     override fun onDateClick(date: LocalDate) {
         selectedDate.value = date
         coroutineScope.launch(Dispatchers.IO) {
-            getRecordsUseCase(date.toDate())
+            getRecordsUseCase(date.toDate()).collect {
+                currentRecords.value = it
+            }
         }
     }
 
@@ -77,7 +81,7 @@ class RealRecordsManagerComponent @Inject constructor (
     }
 
     override fun onRecordClick(record: Record) {
-        navigateToAddRecord(record.time.first(), record)
+        navigateToRecordInfo(record)
     }
 
     private fun LocalDate.toDate(): Date {

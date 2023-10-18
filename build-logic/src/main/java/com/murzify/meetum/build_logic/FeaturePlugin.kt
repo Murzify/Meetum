@@ -11,7 +11,6 @@ class FeaturePlugin: Plugin<Project> {
         with(target) {
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
             with(pluginManager) {
-                apply("meetum.hilt")
                 apply("meetum.koin")
                 apply("kotlin-parcelize")
             }
@@ -29,7 +28,6 @@ class FeaturePlugin: Plugin<Project> {
                 add("implementation", libs.findLibrary("ui.graphics").get())
                 add("implementation", libs.findLibrary("ui.tooling.preview").get())
                 add("implementation", libs.findLibrary("material3").get())
-                add("implementation", libs.findLibrary("navigation").get())
                 add("implementation", libs.findLibrary("decompose").get())
                 add("implementation", libs.findLibrary("decompose-extensions").get())
             }

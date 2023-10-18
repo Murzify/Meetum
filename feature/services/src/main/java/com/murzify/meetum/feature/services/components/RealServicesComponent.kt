@@ -14,16 +14,27 @@ import com.murzify.meetum.core.domain.model.Service
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.parcelize.RawValue
 
+fun ComponentFactory.createServicesComponent(
+    componentContext: ComponentContext,
+    addService: Boolean
+) = RealServicesComponent(
+    componentContext,
+    this,
+    addService
+)
+
 class RealServicesComponent(
     componentContext: ComponentContext,
-    private val componentFactory: ComponentFactory
+    private val componentFactory: ComponentFactory,
+    addService: Boolean
 ) : ComponentContext by componentContext, ServicesComponent {
 
     private val navigation = StackNavigation<ChildConfig>()
 
     override val childStack: StateFlow<ChildStack<*, ServicesComponent.Child>> = childStack(
         source = navigation,
-        initialConfiguration = ChildConfig.ServicesList,
+        initialConfiguration = if (addService)
+            ChildConfig.AddService(null) else ChildConfig.ServicesList,
         handleBackButton = true,
         childFactory = ::createChild
     ).toStateFlow(lifecycle)

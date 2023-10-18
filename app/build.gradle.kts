@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     id("appmetrica-plugin")
-    id("meetum.hilt")
     id("meetum.koin")
     id("meetum.feature")
     id("meetum.unitTests")

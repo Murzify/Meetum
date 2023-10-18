@@ -1,7 +1,6 @@
 package com.murzify.meetum
 
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,37 +12,34 @@ import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import com.murzify.meetum.navigation.MeetumNavHost
+import com.arkivanov.decompose.extensions.compose.jetpack.stack.Children
+import com.murzify.meetum.feature.calendar.ui.CalendarUi
+import com.murzify.meetum.feature.services.ui.ServicesUi
+import com.murzify.meetum.navigation.Screen
 
 @Composable
-fun MeetumApp(
-    windowSizeClass: WindowSizeClass,
-    appState: AppState = rememberMeetumState(
-        windowSizeClass = windowSizeClass
-    )
+fun RootUi(
+    component: RootComponent,
 ) {
+    val shouldShowBottomBar by component.shouldShowBottomBar.collectAsState()
+    val shouldShowNavRail by component.shouldShowNavRail.collectAsState()
+    val selectedScreen by component.selectedScreen.collectAsState()
+    val screensList = listOf(Screen.Calendar, Screen.Services)
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
-            if (appState.shouldShowBottomBar) {
+            if (shouldShowBottomBar) {
                 NavigationBar(modifier = Modifier.fillMaxWidth()) {
-                    appState.screensList.forEach { screen ->
+                    screensList.forEach { screen ->
                         NavigationBarItem(
-                            selected = appState.currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                            onClick = { appState.navController.navigate(screen.route) {
-                                popUpTo(appState.navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            } },
+                            selected = selectedScreen == screen,
+                            onClick = { component.onTabSelected(screen) },
                             icon = {
                                 Icon(
                                     painter = painterResource(id = screen.iconId),
@@ -62,18 +58,12 @@ fun MeetumApp(
         }
     ) { paddingValues ->
         Row {
-            if (appState.shouldShowNavRail) {
+            if (shouldShowNavRail) {
                 NavigationRail(modifier = Modifier.fillMaxHeight()) {
-                    appState.screensList.forEach { screen ->
+                    screensList.forEach { screen ->
                         NavigationRailItem(
-                            selected = appState.currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                            onClick = { appState.navController.navigate(screen.route) {
-                                popUpTo(appState.navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            } },
+                            selected = selectedScreen == screen,
+                            onClick = { component.onTabSelected(screen) },
                             icon = {
                                 Icon(
                                     painter = painterResource(id = screen.iconId),
@@ -89,12 +79,17 @@ fun MeetumApp(
                     }
                 }
             }
-            MeetumNavHost(
-                appState = appState,
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .consumeWindowInsets(paddingValues)
-            )
+            val childStack by component.childStack.collectAsState()
+            Children(
+                childStack,
+                modifier = Modifier.padding(paddingValues)
+            ){
+                when (val instance = it.instance) {
+                    is RootComponent.Child.Calendar -> CalendarUi(instance.component)
+                    is RootComponent.Child.Services -> ServicesUi(instance.component)
+                }
+            }
+            
         }
     }
 }
