@@ -1,6 +1,7 @@
 package com.murzify.meetum
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -82,7 +83,7 @@ fun RootUi(
             val childStack by component.childStack.collectAsState()
             Children(
                 childStack,
-                modifier = Modifier.padding(paddingValues)
+                modifier = Modifier.consumeWindowInsets(paddingValues).padding(paddingValues)
             ){
                 when (val instance = it.instance) {
                     is RootComponent.Child.Calendar -> CalendarUi(instance.component)
