@@ -12,7 +12,6 @@ interface RootComponent {
     val splitScreen: Boolean
     val shouldShowBottomBar: StateFlow<Boolean>
     val shouldShowNavRail: StateFlow<Boolean>
-    val selectedScreen: StateFlow<Screen>
 
     val childStack: StateFlow<ChildStack<*, Child>>
 

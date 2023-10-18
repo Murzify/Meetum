@@ -48,6 +48,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -218,8 +219,11 @@ internal fun AddRecordUi(
                 }
             )
 
+            val isServiceError by component.isServiceError.collectAsState()
+
             Text(
                 text = stringResource(id = R.string.choose_service),
+                color = if (isServiceError) MaterialTheme.colorScheme.error else Color.Unspecified,
                 modifier = Modifier.padding(start = 16.dp, top = 8.dp)
             )
 

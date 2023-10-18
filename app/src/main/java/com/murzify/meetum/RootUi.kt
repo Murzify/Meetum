@@ -20,6 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.Children
+import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.stackAnimation
 import com.murzify.meetum.feature.calendar.ui.CalendarUi
 import com.murzify.meetum.feature.services.ui.ServicesUi
 import com.murzify.meetum.navigation.Screen
@@ -30,8 +32,9 @@ fun RootUi(
 ) {
     val shouldShowBottomBar by component.shouldShowBottomBar.collectAsState()
     val shouldShowNavRail by component.shouldShowNavRail.collectAsState()
-    val selectedScreen by component.selectedScreen.collectAsState()
     val screensList = listOf(Screen.Calendar, Screen.Services)
+    val childStack by component.childStack.collectAsState()
+    val selectedScreen = childStack.active.instance.toScreen()
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
@@ -80,9 +83,10 @@ fun RootUi(
                     }
                 }
             }
-            val childStack by component.childStack.collectAsState()
+
             Children(
                 childStack,
+                animation = stackAnimation(fade()),
                 modifier = Modifier.consumeWindowInsets(paddingValues).padding(paddingValues)
             ){
                 when (val instance = it.instance) {
@@ -93,6 +97,11 @@ fun RootUi(
             
         }
     }
+}
+
+private fun RootComponent.Child.toScreen() = when (this) {
+    is RootComponent.Child.Calendar -> Screen.Calendar
+    is RootComponent.Child.Services -> Screen.Services
 }
 
 

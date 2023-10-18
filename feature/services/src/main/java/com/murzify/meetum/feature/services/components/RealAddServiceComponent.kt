@@ -8,10 +8,8 @@ import com.murzify.meetum.core.domain.repository.RecordRepository
 import com.murzify.meetum.core.domain.repository.ServiceRepository
 import com.murzify.meetum.core.domain.usecase.AddServiceUseCase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.component.get
 import java.util.Currency
@@ -59,7 +57,7 @@ class RealAddServiceComponent(
         navigateBack()
     }
 
-    private val deleteAlertNeeded: MutableSharedFlow<Boolean> = MutableSharedFlow()
+    private val deleteAlertNeeded = MutableStateFlow(false)
 
     private val coroutineScope = componentCoroutineScope()
     init {
@@ -117,7 +115,7 @@ class RealAddServiceComponent(
 
     override fun onDeleteClick() {
         coroutineScope.launch(Dispatchers.IO) {
-            if (deleteAlertNeeded.first()) {
+            if (deleteAlertNeeded.value) {
                 showAlert.value = true
             } else {
                 onDeleteConfirmed()

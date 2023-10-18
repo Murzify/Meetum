@@ -13,6 +13,7 @@ interface AddRecordComponent {
     val description: StateFlow<String>
     val phone: StateFlow<String>
     val service: StateFlow<Service?>
+    val isServiceError: StateFlow<Boolean>
     val record: StateFlow<Record?>
     val services: StateFlow<List<Service>>
     val onAddServiceClick: () -> Unit

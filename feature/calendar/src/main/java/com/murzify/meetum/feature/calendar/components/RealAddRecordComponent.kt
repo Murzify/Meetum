@@ -58,6 +58,7 @@ class RealAddRecordComponent(
     override val service: MutableStateFlow<Service?> = MutableStateFlow(
         record.value?.service
     )
+    override val isServiceError = MutableStateFlow(false)
     override val services: MutableStateFlow<List<Service>> = MutableStateFlow(emptyList())
 
     private val coroutineScope = componentCoroutineScope()
@@ -125,11 +126,15 @@ class RealAddRecordComponent(
     }
 
     override fun onServiceSelected(service: Service) {
+        isServiceError.value = false
         this.service.value = service
     }
 
     override fun onSaveClicked() {
-        if (service.value == null) throw IllegalStateException("")
+        if (service.value == null) {
+            isServiceError.value = true
+            return
+        }
         val saveRecord = Record(
             clientName = name.value.takeIf { it.isNotEmpty() },
             time = listOf(date.value),
@@ -146,6 +151,7 @@ class RealAddRecordComponent(
             } else {
                 recordRepo.updateRecord(saveRecord)
             }
+            navigateBack()
         }
     }
 

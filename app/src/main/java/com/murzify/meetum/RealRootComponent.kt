@@ -30,8 +30,6 @@ class RealRootComponent(
         windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact
     )
     override val shouldShowNavRail: StateFlow<Boolean> = MutableStateFlow(!shouldShowBottomBar.value)
-    override val selectedScreen: MutableStateFlow<Screen> = MutableStateFlow(Screen.Calendar)
-    override val splitScreen: Boolean = !shouldShowBottomBar.value
     override val childStack: StateFlow<ChildStack<*, RootComponent.Child>> = childStack(
         source = navigation,
         initialConfiguration = ChildConfig.Calendar,
@@ -39,12 +37,14 @@ class RealRootComponent(
         childFactory = ::createChild
     ).toStateFlow(lifecycle)
 
+    override val splitScreen: Boolean = !shouldShowBottomBar.value
+
+
     override fun onTabSelected(screen: Screen) {
         val config = when (screen) {
             Screen.Calendar -> ChildConfig.Calendar
             Screen.Services -> ChildConfig.Services(false)
         }
-        selectedScreen.value = screen
         navigation.bringToFront(config)
     }
 
