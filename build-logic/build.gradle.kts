@@ -10,19 +10,11 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
-kotlin {
-    jvmToolchain(17)
-}
-
 gradlePlugin {
     plugins {
         register("feature") {
             id = "meetum.feature"
             implementationClass = "com.murzify.meetum.build_logic.FeaturePlugin"
-        }
-        register("hilt") {
-            id = "meetum.hilt"
-            implementationClass = "com.murzify.meetum.build_logic.HiltPlugin"
         }
         register("unitTests") {
             id = "meetum.unitTests"

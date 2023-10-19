@@ -5,7 +5,6 @@ import java.io.FileInputStream
 plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
-    id("appmetrica-plugin")
     id("meetum.koin")
     id("meetum.feature")
     id("meetum.unitTests")
@@ -14,10 +13,6 @@ plugins {
 val keystorePropertiesFile: File = rootProject.file("keystore.properties")
 val keystoreProperties = Properties()
 keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-
-appmetrica {
-    setPostApiKey(keystoreProperties["appMetricaPostKey"] as String)
-}
 
 android {
     namespace = "com.murzify.meetum"
@@ -34,18 +29,25 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        buildConfigField("String", "APPMETRICA_KEY", "\"${keystoreProperties["appMetricaKey"]}\"")
     }
-
+    signingConfigs {
+        create("release") {
+            keyAlias = keystoreProperties["alias"] as String
+            keyPassword = keystoreProperties["keyStorePassword"] as String
+            storeFile = file(keystoreProperties["store"] as String)
+            storePassword = keystoreProperties["keyStorePassword"] as String
+        }
+    }
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
         }
+
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -77,7 +79,6 @@ dependencies {
     implementation(project(":core:domain"))
 
     implementation(libs.androidx.compose.material3.windowSizeClass)
-    implementation(libs.appmetrica.analytics)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -85,3 +86,4 @@ dependencies {
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
 }
+

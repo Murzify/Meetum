@@ -40,7 +40,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kizitonwose.calendar.compose.HorizontalCalendar
@@ -52,7 +51,6 @@ import com.kizitonwose.calendar.core.OutDateStyle
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import com.murzify.meetum.core.domain.model.Record
-import com.murzify.meetum.core.domain.model.Service
 import com.murzify.meetum.feature.calendar.R
 import com.murzify.meetum.feature.calendar.components.RecordsManagerComponent
 import java.text.DateFormat
@@ -62,23 +60,8 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
 import java.time.format.TextStyle
-import java.util.Currency
 import java.util.Date
 import java.util.Locale
-
-val serviceExample = Service(
-    "Massage",
-    200.toDouble(),
-    Currency.getInstance("rub")
-)
-
-val recordExample = Record(
-    "Misha",
-    listOf(Date()),
-    null,
-    null,
-    serviceExample
-)
 
 @Composable
 internal fun RecordsManagerUi(
@@ -312,10 +295,9 @@ private fun DaysOfWeekTitle(daysOfWeek: List<DayOfWeek>) {
     }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 private fun RecordCard(
-    record: Record = recordExample,
+    record: Record,
     onClick: (record: Record) -> Unit = {}
 ) {
     Card(

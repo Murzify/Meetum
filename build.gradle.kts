@@ -12,8 +12,6 @@ buildscript {
         mavenCentral()
         google()
     }
-    dependencies {
-        classpath(libs.appmetrica.gradle)
-    }
+
 }
 true // Needed to make the Suppress annotation work for the plugins block
