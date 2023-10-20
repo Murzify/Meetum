@@ -74,7 +74,7 @@ internal fun AddRecordUi(
 ) {
     val date by component.date.collectAsState()
     val defCalendar = Calendar.getInstance().apply {
-        time = date
+        time = Date()
     }
 
     val timePickerState = remember {

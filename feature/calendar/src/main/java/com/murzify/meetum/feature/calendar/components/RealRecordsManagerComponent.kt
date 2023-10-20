@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.get
 import java.time.LocalDate
 import java.time.ZoneId
+import java.util.Calendar
 import java.util.Date
 
 fun ComponentFactory.createRecordsManagerComponent(
@@ -65,10 +66,22 @@ class RealRecordsManagerComponent constructor (
                 allRecords.value = it
             }
         }
+
+        coroutineScope.launch(Dispatchers.IO) {
+            getRecordsUseCase(selectedDate.value.toDate()).collect {
+                currentRecords.value = it
+            }
+        }
     }
 
     override fun onDateClick(date: LocalDate) {
-        selectedDate.value = date
+        val currentCal = Calendar.getInstance().apply { time = Date() }
+        val time = Calendar.getInstance().apply {
+            time = date.toDate()
+            set(Calendar.HOUR, currentCal.get(Calendar.HOUR))
+            set(Calendar.MINUTE, currentCal.get(Calendar.MINUTE))
+        }.time
+        selectedDate.value = time.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
         coroutineScope.launch(Dispatchers.IO) {
             getRecordsUseCase(date.toDate()).collect {
                 currentRecords.value = it

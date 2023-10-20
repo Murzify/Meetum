@@ -16,17 +16,20 @@ import kotlinx.parcelize.RawValue
 
 fun ComponentFactory.createServicesComponent(
     componentContext: ComponentContext,
-    addService: Boolean
-) = RealServicesComponent(
+    addService: Boolean,
+    navigateBack: () -> Unit
+): ServicesComponent = RealServicesComponent(
     componentContext,
     this,
-    addService
+    addService,
+    navigateBack
 )
 
 class RealServicesComponent(
     componentContext: ComponentContext,
     private val componentFactory: ComponentFactory,
-    addService: Boolean
+    private val addService: Boolean,
+    private val navigateBack: () -> Unit
 ) : ComponentContext by componentContext, ServicesComponent {
 
     private val navigation = StackNavigation<ChildConfig>()
@@ -47,7 +50,13 @@ class RealServicesComponent(
             componentFactory.createAddServiceComponent(
                 componentContext,
                 config.service,
-                navigateBack = navigation::pop
+                navigateBack = {
+                    if (addService) {
+                        navigateBack()
+                    } else {
+                        navigation.pop()
+                    }
+                }
             )
         )
         ChildConfig.ServicesList -> ServicesComponent.Child.ServicesList(

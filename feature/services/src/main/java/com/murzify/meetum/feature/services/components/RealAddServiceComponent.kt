@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.component.get
 import java.util.Currency
 import java.util.Locale
@@ -107,7 +108,9 @@ class RealAddServiceComponent(
                     service.value?.id ?: UUID.randomUUID()
                 )
                 addServicesUseCase(service)
-                navigateBack()
+                withContext(Dispatchers.Main) {
+                    navigateBack()
+                }
             }
 
         }
@@ -131,7 +134,9 @@ class RealAddServiceComponent(
                 recordRepository.deleteLinkedRecords(it.id)
                 serviceRepository.deleteService(it)
             }
-            navigateBack()
+            withContext(Dispatchers.IO){
+                navigateBack()
+            }
         }
     }
 

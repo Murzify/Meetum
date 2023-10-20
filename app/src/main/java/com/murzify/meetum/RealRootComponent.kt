@@ -7,6 +7,7 @@ import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
@@ -37,8 +38,7 @@ class RealRootComponent(
         childFactory = ::createChild
     ).toStateFlow(lifecycle)
 
-    override val splitScreen: Boolean = !shouldShowBottomBar.value
-
+    override val splitScreen: Boolean get() = !shouldShowBottomBar.value
 
     override fun onTabSelected(screen: Screen) {
         val config = when (screen) {
@@ -58,7 +58,12 @@ class RealRootComponent(
             }
         )
         is ChildConfig.Services -> RootComponent.Child.Services(
-            componentFactory.createServicesComponent(componentContext, false)
+            componentFactory.createServicesComponent(
+                componentContext,
+                config.addService,
+                navigateBack = navigation::pop
+            )
+
         )
     }
 
