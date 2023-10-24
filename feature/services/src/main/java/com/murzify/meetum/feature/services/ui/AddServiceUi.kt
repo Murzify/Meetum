@@ -84,7 +84,7 @@ internal fun AddServiceUi(
         ) {
 
             OutlinedTextField(
-                value = price.toString(),
+                value = price,
                 onValueChange = component::onPriceChanged,
                 label = { Text(text = stringResource(R.string.price)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),

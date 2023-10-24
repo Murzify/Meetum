@@ -43,8 +43,8 @@ class RealAddServiceComponent(
     )
     override val isNameError: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
-    override val price: MutableStateFlow<Double> = MutableStateFlow(
-        service.value?.price ?: 0.0
+    override val price: MutableStateFlow<String> = MutableStateFlow(
+        service.value?.price?.toString() ?: ""
     )
     override val isPriceError: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
@@ -86,6 +86,7 @@ class RealAddServiceComponent(
                 .replace(",", ".")
                 .replace("-", "")
                 .toDouble()
+                .toString()
         } catch (e: Throwable) {
             isPriceError.value = true
         }
@@ -103,7 +104,7 @@ class RealAddServiceComponent(
             if (!isNameError.value) {
                 val service = Service(
                     name.value,
-                    price.value,
+                    price.value.toDouble(),
                     currency.value,
                     service.value?.id ?: UUID.randomUUID()
                 )

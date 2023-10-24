@@ -8,7 +8,7 @@ interface AddServiceComponent {
     val service: StateFlow<Service?>
     val name: StateFlow<String>
     val isNameError: StateFlow<Boolean>
-    val price: StateFlow<Double>
+    val price: StateFlow<String>
     val isPriceError: StateFlow<Boolean>
     val currency: StateFlow<Currency>
     val showAlert: StateFlow<Boolean>
