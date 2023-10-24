@@ -1,14 +1,13 @@
-@Suppress("DSL_SCOPE_VIOLATION") 
+@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.com.android.library)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     id("meetum.koin")
-    id("meetum.unitTests")
 }
 
 android {
-    namespace = "com.murzify.meetum.core.data"
-    compileSdk = 34
+    namespace = "com.murzify.meetum.core.common"
+    compileSdk = 33
 
     defaultConfig {
         minSdk = 26
@@ -27,17 +26,17 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "1.8"
     }
 }
 
 dependencies {
-    implementation(project(":core:domain"))
-    implementation(project(":core:database"))
 
-    implementation(libs.inject)
+    implementation(libs.core.ktx)
+    implementation(libs.decompose)
+    testImplementation(libs.junit)
 }
