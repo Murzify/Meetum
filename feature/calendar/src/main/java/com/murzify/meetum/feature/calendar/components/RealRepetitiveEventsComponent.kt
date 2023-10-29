@@ -65,7 +65,12 @@ class RealRepetitiveEventsComponent(
     }
 
     override fun ondEndDateChanged(date: Date) {
-        endDate.value = date
+        endDate.value = Calendar.getInstance().apply {
+            time = date
+            set(Calendar.HOUR_OF_DAY, 23)
+            set(Calendar.MINUTE, 59)
+            set(Calendar.SECOND, 59)
+        }.time
     }
 
     override fun onEndTypeChanged(endType: RepetitiveEventsComponent.EndType) {

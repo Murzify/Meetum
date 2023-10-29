@@ -27,49 +27,52 @@ class AddRecordUseCase @Inject constructor(
             fun shouldAddDate() = shouldAddDate(repeat, dates)
 
             while (shouldAddDate()) {
-                var added = false
-                while (!added) {
+                while (true) {
                     addWeekRepeat(repeat, startTime, ::shouldAddDate) {
                         dates.add(time)
                     }
-                    add(repeat.period, repeat.periodCount)
                     if (repeat.period == Calendar.WEEK_OF_MONTH) {
                         break
                     }
                     dates.add(time)
-                    added = true
+                    break
                 }
             }
         }
-        recordRepository.addRecord(record)
-
+        val newRecord = record.copy(
+            time = dates
+        )
+        recordRepository.addRecord(newRecord)
     }
 
     private inline fun Calendar.addWeekRepeat(
         repeat: Repeat,
         startTime: Date,
         shouldAddDate: () -> Boolean,
-        block: (Boolean) -> Unit
+        block: () -> Unit
     ) {
         repeat.daysOfWeek.forEach { dayOfWeek ->
             set(Calendar.DAY_OF_WEEK, dayOfWeek)
             if (timeInMillis > startTime.time) {
                 if (shouldAddDate()) {
-                    block(true)
+                    block()
                     return@forEach
-                } else {
-                    block(false)
                 }
             }
         }
     }
 
-    private fun shouldAddDate(repeat: Repeat, dates: List<Date>): Boolean {
+    private fun Calendar.shouldAddDate(repeat: Repeat, dates: List<Date>): Boolean {
+        add(repeat.period, repeat.periodCount)
         return if (repeat.repeatTimes != null) {
             val times = repeat.repeatTimes!!
             (dates.size < times)
         } else if (repeat.repeatToDate != null) {
-            (dates.last().time < repeat.repeatToDate!!.time)
+            val endDate = Calendar.getInstance().apply {
+                time = repeat.repeatToDate
+            }
+            (dates.last().time < repeat.repeatToDate!!.time
+                    && this <= endDate)
         } else {
             false
         }
