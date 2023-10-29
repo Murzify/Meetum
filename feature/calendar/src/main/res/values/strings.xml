@@ -14,7 +14,6 @@
     <string name="service_label">Service</string>
     <string name="repeat_every">Repeat every</string>
     <string name="repetitive_events">Repetitive events</string>
-
     <string name="day">day</string>
     <plurals name="day">
         <item quantity="one">
@@ -50,7 +49,8 @@
     </plurals>
 
     <string name="end_of_repetition">End of repetition</string>
-    <string name="after">After</string>
+    <string name="ending">Ending: %s</string>
+    <string name="after">after</string>
     <plurals name="times">
         <item quantity="one">
             time

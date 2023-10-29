@@ -52,17 +52,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.content.ContextCompat
+import com.murzify.meetum.core.domain.model.Repeat
 import com.murzify.meetum.core.ui.AddServiceCard
 import com.murzify.meetum.core.ui.ServiceCard
 import com.murzify.meetum.feature.calendar.R
 import com.murzify.meetum.feature.calendar.components.AddRecordComponent
 import java.text.DateFormat
+import java.time.DayOfWeek
+import java.time.format.TextStyle
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -91,6 +95,8 @@ internal fun AddRecordUi(
     val phoneNumber by component.phone.collectAsState()
     val record by component.record.collectAsState()
     val services by component.services.collectAsState()
+    val repeat by component.repeat.collectAsState()
+    val showRepeatInfo by component.showRepeatInfo.collectAsState()
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     Scaffold(
@@ -133,6 +139,7 @@ internal fun AddRecordUi(
                     button,
                     timeInput,
                     repeatButton,
+                    repeatText
                 ) = createRefs()
                 TimeInput(
                     modifier = Modifier.constrainAs(timeInput) {
@@ -157,9 +164,23 @@ internal fun AddRecordUi(
                     )
                 }
 
+                if (showRepeatInfo) {
+                    RepeatText(
+                        repeat = repeat,
+                        modifier = Modifier.constrainAs(repeatText) {
+                            top.linkTo(timeInput.bottom)
+                            start.linkTo(parent.start)
+                        }
+                    )
+                }
+
                 OutlinedTextField(
                     modifier = Modifier.constrainAs(textField) {
-                        top.linkTo(timeInput.bottom)
+                        if (showRepeatInfo) {
+                            top.linkTo(repeatText.bottom)
+                        } else {
+                            top.linkTo(timeInput.bottom)
+                        }
                         start.linkTo(parent.start)
                         bottom.linkTo(parent.bottom)
                     },
@@ -391,6 +412,59 @@ private fun RequestContactsPermission(onGranted: @Composable () -> Unit) {
         }
     } else {
         onGranted()
+    }
+}
+
+@Composable
+private fun RepeatText(repeat: Repeat, modifier: Modifier) {
+    val periodsRes = mapOf(
+        Calendar.DATE to R.plurals.day,
+        Calendar.WEEK_OF_MONTH to R.plurals.week,
+        Calendar.MONTH to R.plurals.month,
+        Calendar.YEAR to R.plurals.year,
+    )
+    var repeatText = "${stringResource(R.string.repeat_every)} ${repeat.periodCount} " +
+            pluralStringResource(periodsRes[repeat.period]!!, repeat.periodCount)
+    if (repeat.period == Calendar.WEEK_OF_MONTH) {
+        repeatText += "("
+        repeat.daysOfWeek.forEach {
+            repeatText += it.toDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.getDefault())
+            repeatText += ", "
+        }
+        repeatText = repeatText.removeSuffix(", ")
+        repeatText += ")"
+    }
+
+    val ending = if (repeat.repeatTimes != null) {
+        stringResource(id = R.string.ending,
+            stringResource(id = R.string.after) + " ${repeat.repeatTimes} " +
+            pluralStringResource(id = R.plurals.times, repeat.repeatTimes!!)
+        )
+    } else {
+        val dateFormat = DateFormat.getDateInstance(
+            DateFormat.DEFAULT, Locale.getDefault()
+        )
+        val dateFormatted = dateFormat.format(
+            repeat.repeatToDate!!.time
+        )
+        stringResource(id = R.string.ending, dateFormatted)
+    }
+    Column(modifier = modifier) {
+        Text(text = repeatText)
+        Text(text = ending)
+    }
+}
+
+private fun Int.toDayOfWeek(): DayOfWeek {
+    return when (this) {
+        Calendar.MONDAY -> DayOfWeek.MONDAY
+        Calendar.TUESDAY -> DayOfWeek.TUESDAY
+        Calendar.WEDNESDAY -> DayOfWeek.WEDNESDAY
+        Calendar.THURSDAY -> DayOfWeek.THURSDAY
+        Calendar.FRIDAY -> DayOfWeek.FRIDAY
+        Calendar.SATURDAY -> DayOfWeek.SATURDAY
+        Calendar.SUNDAY -> DayOfWeek.SUNDAY
+        else -> throw IllegalStateException()
     }
 }
 

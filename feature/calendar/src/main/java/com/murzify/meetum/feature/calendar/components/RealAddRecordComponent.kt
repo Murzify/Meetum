@@ -71,6 +71,7 @@ class RealAddRecordComponent(
             .end(1)
             .repeat()
     )
+    override val showRepeatInfo = MutableStateFlow(false)
 
     private val coroutineScope = componentCoroutineScope()
 
@@ -184,6 +185,7 @@ class RealAddRecordComponent(
     }
 
     override fun onRepeatReceived(repeat: Repeat) {
+        showRepeatInfo.value = true
         this.repeat.value = repeat
     }
 }

@@ -66,6 +66,7 @@
     </plurals>
 
     <string name="after">после</string>
+    <string name="ending">Окончание: %s</string>
     <plurals name="times">
         <item quantity="one" tools:ignore="ImpliedQuantity">
             раза

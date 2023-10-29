@@ -18,6 +18,7 @@ interface AddRecordComponent {
     val record: StateFlow<Record?>
     val services: StateFlow<List<Service>>
     val repeat: StateFlow<Repeat>
+    val showRepeatInfo: StateFlow<Boolean>
     val onAddServiceClick: () -> Unit
 
     fun onTimeChanged(hours: Int, minutes: Int)
