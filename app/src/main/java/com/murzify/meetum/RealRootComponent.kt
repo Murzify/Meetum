@@ -12,25 +12,31 @@ import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 import com.murzify.meetum.core.common.ComponentFactory
+import com.murzify.meetum.core.common.componentCoroutineScope
 import com.murzify.meetum.core.common.toStateFlow
 import com.murzify.meetum.feature.calendar.components.createCalendarComponent
 import com.murzify.meetum.feature.services.components.createServicesComponent
 import com.murzify.meetum.navigation.Screen
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class RealRootComponent(
     componentContext: ComponentContext,
-    private val componentFactory: ComponentFactory,
-    override val windowSizeClass: WindowSizeClass,
+    private val componentFactory: ComponentFactory
 ) : ComponentContext by componentContext, RootComponent {
 
     private val navigation = StackNavigation<ChildConfig>()
 
-    override val shouldShowBottomBar: StateFlow<Boolean> = MutableStateFlow(
-        windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact
+    override val widthSizeClass = MutableStateFlow(WindowWidthSizeClass.Compact)
+
+    override val shouldShowBottomBar= MutableStateFlow(
+        widthSizeClass.value == WindowWidthSizeClass.Compact
     )
+
     override val shouldShowNavRail: StateFlow<Boolean> = MutableStateFlow(!shouldShowBottomBar.value)
+
     override val childStack: StateFlow<ChildStack<*, RootComponent.Child>> = childStack(
         source = navigation,
         initialConfiguration = ChildConfig.Calendar,
@@ -40,12 +46,26 @@ class RealRootComponent(
 
     override val splitScreen: Boolean get() = !shouldShowBottomBar.value
 
+    private val scope = componentContext.componentCoroutineScope()
+
+    init {
+        scope.launch(Dispatchers.Default) {
+            widthSizeClass.collect {
+                shouldShowBottomBar.value = it == WindowWidthSizeClass.Compact
+            }
+        }
+    }
+
     override fun onTabSelected(screen: Screen) {
         val config = when (screen) {
             Screen.Calendar -> ChildConfig.Calendar
             Screen.Services -> ChildConfig.Services(false)
         }
         navigation.bringToFront(config)
+    }
+
+    override fun onCalcWindow(windowSizeClass: WindowSizeClass) {
+        widthSizeClass.value = windowSizeClass.widthSizeClass
     }
 
     private fun createChild(

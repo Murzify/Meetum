@@ -7,6 +7,8 @@ import com.arkivanov.decompose.ComponentContext
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.common.componentCoroutineScope
 import com.murzify.meetum.core.domain.model.Record
+import com.murzify.meetum.core.domain.model.Repeat
+import com.murzify.meetum.core.domain.model.RepeatRecord
 import com.murzify.meetum.core.domain.model.Service
 import com.murzify.meetum.core.domain.repository.RecordRepository
 import com.murzify.meetum.core.domain.usecase.AddRecordUseCase
@@ -15,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.get
+import java.util.Calendar
 import java.util.Date
 import java.util.UUID
 
@@ -23,10 +26,12 @@ fun ComponentFactory.createAddRecordComponent(
     date: Date,
     record: Record?,
     navigateBack: () -> Unit,
-    navigateToAddService: () -> Unit
+    navigateToAddService: () -> Unit,
+    navigateToRepeat: () -> Unit
 ) : AddRecordComponent = RealAddRecordComponent(
     componentContext,
     navigateBack,
+    navigateToRepeat,
     navigateToAddService,
     MutableStateFlow(date),
     MutableStateFlow(record),
@@ -38,6 +43,7 @@ fun ComponentFactory.createAddRecordComponent(
 class RealAddRecordComponent(
     componentContext: ComponentContext,
     private val navigateBack: () -> Unit,
+    private val navigateToRepeat: () -> Unit,
     override val onAddServiceClick: () -> Unit,
     override val date: MutableStateFlow<Date>,
     override val record: MutableStateFlow<Record?> = MutableStateFlow(null),
@@ -60,6 +66,11 @@ class RealAddRecordComponent(
     )
     override val isServiceError = MutableStateFlow(false)
     override val services: MutableStateFlow<List<Service>> = MutableStateFlow(emptyList())
+    override val repeat = MutableStateFlow<Repeat>(
+        RepeatRecord.Repeater()
+            .end(1)
+            .repeat()
+    )
 
     private val coroutineScope = componentCoroutineScope()
 
@@ -72,8 +83,13 @@ class RealAddRecordComponent(
         }
     }
 
-    override fun onTimeChanged(time: Date) {
-        date.value = time
+    override fun onTimeChanged(hours: Int, minutes: Int) {
+        Calendar.getInstance().apply {
+            time = date.value
+            set(Calendar.HOUR_OF_DAY, hours)
+            set(Calendar.MINUTE, minutes)
+            date.value = time
+        }
     }
 
     override fun onNameChanged(name: String) {
@@ -122,7 +138,7 @@ class RealAddRecordComponent(
     }
 
     override fun onRepeatClicked() {
-        TODO("Repeat records")
+        navigateToRepeat()
     }
 
     override fun onServiceSelected(service: Service) {
@@ -146,7 +162,8 @@ class RealAddRecordComponent(
         coroutineScope.launch(Dispatchers.IO) {
             if (record.value == null) {
                 addRecordUseCase(
-                    saveRecord
+                    saveRecord,
+                    repeat.value
                 )
             } else {
                 recordRepo.updateRecord(saveRecord)
@@ -164,5 +181,9 @@ class RealAddRecordComponent(
 
     override fun onBackClick() {
         navigateBack()
+    }
+
+    override fun onRepeatReceived(repeat: Repeat) {
+        this.repeat.value = repeat
     }
 }

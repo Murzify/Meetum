@@ -84,6 +84,7 @@ internal fun AddRecordUi(
             is24Hour = true
         )
     }
+    component.onTimeChanged(timePickerState.hour, timePickerState.minute)
     val selectedService by component.service.collectAsState()
     val clientName by component.name.collectAsState()
     val description by component.description.collectAsState()
@@ -147,9 +148,7 @@ internal fun AddRecordUi(
                         top.linkTo(timeInput.top, 12.dp)
                         start.linkTo(timeInput.end)
                     },
-                    onClick = {
-
-                    }
+                    onClick = component::onRepeatClicked
                 ) {
                     Icon(painter = painterResource(
                         id = R.drawable.round_repeat_24

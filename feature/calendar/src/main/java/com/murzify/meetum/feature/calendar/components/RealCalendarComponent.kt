@@ -31,7 +31,7 @@ class RealCalendarComponent(
     componentContext: ComponentContext,
     override val navigateToAddService: () -> Unit,
     override val splitScreen: Boolean,
-    private val componentFactory: ComponentFactory
+    private val componentFactory: ComponentFactory,
 ) : ComponentContext by componentContext, CalendarComponent {
 
     private val navigation = StackNavigation<ChildConfig>()
@@ -64,6 +64,7 @@ class RealCalendarComponent(
                 config.date,
                 config.record,
                 navigateBack = navigation::pop,
+                navigateToRepeat = { navigation.push(ChildConfig.RepetitiveEvents) },
                 navigateToAddService = navigateToAddService
             )
         )
@@ -82,6 +83,19 @@ class RealCalendarComponent(
                 }
             )
         )
+
+        ChildConfig.RepetitiveEvents -> CalendarComponent.Child.RepetitiveEvents(
+            RealRepetitiveEventsComponent(
+                componentContext,
+                navigateBack = navigation::pop,
+                finish = { repeat ->
+                    navigation.pop()
+                    val addRecordComponent = (
+                            childStack.value.active.instance as CalendarComponent.Child.AddRecord)
+                    addRecordComponent.component.onRepeatReceived(repeat)
+                }
+            )
+        )
     }
 
     private sealed interface ChildConfig: Parcelable {
@@ -93,6 +107,9 @@ class RealCalendarComponent(
 
         @Parcelize
         data class RecordInfo(val record: @RawValue Record): ChildConfig
+
+        @Parcelize
+        data object RepetitiveEvents: ChildConfig
 
     }
 

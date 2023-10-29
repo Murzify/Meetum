@@ -123,7 +123,6 @@ internal fun AddServiceUi(
 
             if (showAlert) {
                 AlertDialog(onDismissRequest = component::onDeleteCanceled) {
-                    Text(text = "hello")
                     Surface(
                         modifier = Modifier
                             .wrapContentWidth()

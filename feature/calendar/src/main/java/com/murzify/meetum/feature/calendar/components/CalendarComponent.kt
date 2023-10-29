@@ -15,5 +15,7 @@ interface CalendarComponent {
         class AddRecord(val component: AddRecordComponent): Child
 
         class RecordInfo(val component: RecordInfoComponent): Child
+
+        class RepetitiveEvents(val component: RepetitiveEventsComponent): Child
     }
 }

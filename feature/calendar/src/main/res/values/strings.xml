@@ -12,4 +12,51 @@
     <string name="import_contact">Import contact</string>
     <string name="edit">Edit</string>
     <string name="service_label">Service</string>
+    <string name="repeat_every">Repeat every</string>
+    <string name="repetitive_events">Repetitive events</string>
+
+    <string name="day">day</string>
+    <plurals name="day">
+        <item quantity="one">
+            day
+        </item>
+        <item quantity="other">
+            days
+        </item>
+    </plurals>
+    <plurals name="week">
+        <item quantity="one">
+            week
+        </item>
+        <item quantity="other">
+            weeks
+        </item>
+    </plurals>
+    <plurals name="month">
+        <item quantity="one">
+            month
+        </item>
+        <item quantity="other">
+            months
+        </item>
+    </plurals>
+    <plurals name="year">
+        <item quantity="one">
+            year
+        </item>
+        <item quantity="other">
+            years
+        </item>
+    </plurals>
+
+    <string name="end_of_repetition">End of repetition</string>
+    <string name="after">After</string>
+    <plurals name="times">
+        <item quantity="one">
+            time
+        </item>
+        <item quantity="other">
+            times
+        </item>
+    </plurals>
 </resources>

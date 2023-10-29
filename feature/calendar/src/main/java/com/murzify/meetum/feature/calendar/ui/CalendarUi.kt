@@ -15,6 +15,7 @@ fun CalendarUi(component: CalendarComponent) {
             is CalendarComponent.Child.AddRecord -> AddRecordUi(instance.component)
             is CalendarComponent.Child.RecordInfo -> RecordInfoUi(instance.component)
             is CalendarComponent.Child.RecordsManager -> RecordsManagerUi(instance.component)
+            is CalendarComponent.Child.RepetitiveEvents -> RepetitiveEventsUi(instance.component)
         }
     }
 }

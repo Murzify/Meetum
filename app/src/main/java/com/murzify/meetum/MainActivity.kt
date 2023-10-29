@@ -18,13 +18,13 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         val componentFactory = application.koin.get<ComponentFactory>()
         val componentContext = defaultComponentContext()
+        val rootComponent = RealRootComponent(
+            componentContext = componentContext,
+            componentFactory
+        )
         setContent {
             MeetumTheme {
-                val rootComponent = RealRootComponent(
-                    componentContext = componentContext,
-                    componentFactory,
-                    calculateWindowSizeClass(activity = this)
-                )
+                rootComponent.onCalcWindow(calculateWindowSizeClass(activity = this))
                 RootUi(component = rootComponent)
             }
         }
