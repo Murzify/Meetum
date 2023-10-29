@@ -106,7 +106,7 @@ class RealRepetitiveEventsComponent(
         val repeat: Repeat = RepeatRecord.Repeater()
             .every(everyAmount.value, everyPeriod.value)
             .setDaysOfWeek(
-                daysOfWeek.value.map { it.value }
+                daysOfWeek.value.map { it.toCalendar() }
             )
             .apply {
                 when (endType.value) {
@@ -120,5 +120,17 @@ class RealRepetitiveEventsComponent(
 
     override fun onBackClicked() {
         navigateBack()
+    }
+
+    private fun DayOfWeek.toCalendar(): Int {
+        return when (this) {
+            DayOfWeek.MONDAY -> Calendar.MONDAY
+            DayOfWeek.TUESDAY -> Calendar.TUESDAY
+            DayOfWeek.WEDNESDAY -> Calendar.WEDNESDAY
+            DayOfWeek.THURSDAY -> Calendar.THURSDAY
+            DayOfWeek.FRIDAY -> Calendar.FRIDAY
+            DayOfWeek.SATURDAY -> Calendar.SATURDAY
+            DayOfWeek.SUNDAY -> Calendar.SUNDAY
+        }
     }
  }

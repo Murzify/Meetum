@@ -29,12 +29,15 @@ class AddRecordUseCase @Inject constructor(
             while (shouldAddDate()) {
                 while (true) {
                     addWeekRepeat(repeat, startTime, ::shouldAddDate) {
-                        dates.add(time)
+                        if (repeat.repeatTimes != null || time <= repeat.repeatToDate)
+                            dates.add(time)
                     }
+                    add(repeat.period, repeat.periodCount)
                     if (repeat.period == Calendar.WEEK_OF_MONTH) {
                         break
                     }
-                    dates.add(time)
+                    if (repeat.repeatTimes != null || time <= repeat.repeatToDate)
+                        dates.add(time)
                     break
                 }
             }
@@ -63,7 +66,6 @@ class AddRecordUseCase @Inject constructor(
     }
 
     private fun Calendar.shouldAddDate(repeat: Repeat, dates: List<Date>): Boolean {
-        add(repeat.period, repeat.periodCount)
         return if (repeat.repeatTimes != null) {
             val times = repeat.repeatTimes!!
             (dates.size < times)
