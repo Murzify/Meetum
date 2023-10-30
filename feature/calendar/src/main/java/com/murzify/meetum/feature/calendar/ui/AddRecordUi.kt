@@ -11,13 +11,11 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -25,18 +23,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TimeInput
 import androidx.compose.material3.TimePickerState
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
@@ -45,10 +39,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -62,6 +54,7 @@ import com.murzify.meetum.core.domain.model.Repeat
 import com.murzify.meetum.core.ui.AddServiceCard
 import com.murzify.meetum.core.ui.ServiceCard
 import com.murzify.meetum.core.ui.TextField
+import com.murzify.meetum.core.ui.Toolbar
 import com.murzify.meetum.feature.calendar.R
 import com.murzify.meetum.feature.calendar.components.AddRecordComponent
 import java.text.DateFormat
@@ -98,28 +91,17 @@ internal fun AddRecordUi(
     val repeat by component.repeat.collectAsState()
     val showRepeatInfo by component.showRepeatInfo.collectAsState()
 
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-    Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    RecordDate(date = record?.time?.get(0) ?: date)
-                },
-                navigationIcon = {
-                    IconButton(modifier = Modifier
-                        .padding(8.dp),
-                        onClick = component::onBackClick
-                    ) {
-                        Icon(
-                            painter = painterResource(id = com.murzify.ui.R.drawable.round_arrow_back_24),
-                            contentDescription = stringResource(id = com.murzify.ui.R.string.back_button)
-                        )
-                    }
-                },
-                scrollBehavior = scrollBehavior
+    Toolbar(
+        title = {
+            RecordDate(date = record?.time?.get(0) ?: date)
+        },
+        onBackClicked = component::onBackClick,
+        fab = {
+            FloatActionBar(
+                canDelete = record != null,
+                delete = component::onDeleteClicked,
+                save = component::onSaveClicked
             )
-
         }
     ) {
         Column(
@@ -276,16 +258,8 @@ internal fun AddRecordUi(
                     Spacer(modifier = Modifier.width(24.dp))
                 }
             }
-
-            Spacer(modifier = Modifier.height(80.dp))
         }
     }
-
-    FloatActionBar(
-        canDelete = record != null,
-        delete = component::onDeleteClicked,
-        save = component::onSaveClicked
-    )
 
 }
 
@@ -295,36 +269,31 @@ private fun FloatActionBar(
     delete: () -> Unit,
     save: () -> Unit,
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.BottomCenter
-    ) {
-        Row(){
-            if (canDelete) {
-                FloatingActionButton(
-                    modifier = Modifier.padding(16.dp),
-                    onClick = delete,
-                    containerColor = MaterialTheme.colorScheme.errorContainer,
-                    contentColor = MaterialTheme.colorScheme.error
-                ) {
-                    Icon(
-                        painter = painterResource(id = com.murzify.ui.R.drawable.round_delete_outline_24),
-                        contentDescription = stringResource(id = R.string.delete_record)
-                    )
-                }
-            }
-
+    Row(){
+        if (canDelete) {
             FloatingActionButton(
                 modifier = Modifier.padding(16.dp),
-                onClick = save
+                onClick = delete,
+                containerColor = MaterialTheme.colorScheme.errorContainer,
+                contentColor = MaterialTheme.colorScheme.error
             ) {
-                Text(
-                    text = stringResource(id = R.string.save_record),
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                Icon(
+                    painter = painterResource(id = com.murzify.ui.R.drawable.round_delete_outline_24),
+                    contentDescription = stringResource(id = R.string.delete_record)
                 )
             }
-
         }
+
+        FloatingActionButton(
+            modifier = Modifier.padding(16.dp),
+            onClick = save
+        ) {
+            Text(
+                text = stringResource(id = R.string.save_record),
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+        }
+
     }
 }
 

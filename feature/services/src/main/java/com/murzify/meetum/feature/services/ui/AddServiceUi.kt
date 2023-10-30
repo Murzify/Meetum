@@ -1,15 +1,12 @@
 package com.murzify.meetum.feature.services.ui
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -22,7 +19,6 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -34,19 +30,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.murzify.meetum.core.ui.TextField
+import com.murzify.meetum.core.ui.Toolbar
 import com.murzify.meetum.feature.services.R
 import com.murzify.meetum.feature.services.components.AddServiceComponent
 import kotlinx.coroutines.launch
 import java.util.Currency
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun AddServiceUi(
     component: AddServiceComponent
@@ -59,112 +54,132 @@ internal fun AddServiceUi(
     val showAlert by component.showAlert.collectAsState()
     val showDeleteButton by component.showDeleteButton.collectAsState()
 
-    Column(
-        modifier = Modifier
-            .padding(16.dp)
-    ) {
-
-        IconButton(modifier = Modifier.statusBarsPadding(), onClick = component::onBackClick) {
-            Icon(
-                painter = painterResource(id = com.murzify.ui.R.drawable.round_arrow_back_24),
-                contentDescription = stringResource(id = com.murzify.ui.R.string.back_button)
+    Toolbar(
+        title = {
+            Text(
+                text = stringResource(id = R.string.new_service)
             )
-        }
-
-        TextField(
-            value = name,
-            onValueChange = component::onNameChanged,
-            label = { Text(text = stringResource(id = R.string.service_name)) },
-            modifier = Modifier.padding(vertical = 16.dp).width(200.dp),
-            isError = isNameError,
-        )
-
-        Row(
-            modifier = Modifier.fillMaxWidth()
+        },
+        onBackClicked = component::onBackClick,
+        fab = {
+            FabBar(
+                showDeleteButton = showDeleteButton,
+                onDeleteClick = component::onDeleteClick,
+                onDeleteCanceled = component::onDeleteCanceled,
+                showAlert = showAlert,
+                onDeleteConfirmed = component::onDeleteConfirmed,
+                onSaveClick = component::onSaveClick
+            )
+        },
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(it)
+                .padding(16.dp)
         ) {
-
             TextField(
-                value = price,
-                onValueChange = component::onPriceChanged,
-                label = { Text(text = stringResource(R.string.price)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                value = name,
+                onValueChange = component::onNameChanged,
+                label = { Text(text = stringResource(id = R.string.service_name)) },
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 8.dp),
-                isError = isPriceError
+                    .padding(vertical = 16.dp)
+                    .width(200.dp),
+                isError = isNameError,
             )
 
-            CurrencyField(
-                currency,
-                onCurrencyChanged = component::onCurrencyChanged
-            )
-        }
-        
-    }
-
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.BottomCenter
-    ) {
-        Row(){
-            if (showDeleteButton) {
-                FloatingActionButton(
-                    modifier = Modifier.padding(16.dp),
-                    onClick = component::onDeleteClick,
-                    containerColor = MaterialTheme.colorScheme.errorContainer,
-                    contentColor = MaterialTheme.colorScheme.error
-                ) {
-                    Icon(
-                        painter = painterResource(id = com.murzify.ui.R.drawable.round_delete_outline_24),
-                        contentDescription = stringResource(id = R.string.delete_service)
-                    )
-                }
-            }
-
-            if (showAlert) {
-                AlertDialog(onDismissRequest = component::onDeleteCanceled) {
-                    Surface(
-                        modifier = Modifier
-                            .wrapContentWidth()
-                            .wrapContentHeight(),
-                        shape = MaterialTheme.shapes.large,
-                        tonalElevation = AlertDialogDefaults.TonalElevation
-                    ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Text(
-                                text = stringResource(id = R.string.you_have_records),
-                            )
-                            Spacer(modifier = Modifier.height(24.dp))
-                            Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                                TextButton(
-                                    onClick = component::onDeleteCanceled,
-                                ) {
-                                    Text(stringResource(id = R.string.cancel_delete))
-                                }
-                                TextButton(
-                                    onClick = component::onDeleteConfirmed,
-                                ) {
-                                    Text(stringResource(id = R.string.confirm_delete))
-                                }
-                            }
-
-                        }
-                    }
-                }
-
-            }
-
-            FloatingActionButton(
-                modifier = Modifier.padding(16.dp),
-                onClick = component::onSaveClick
+            Row(
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text(
-                    text = stringResource(id = R.string.save),
-                    modifier = Modifier.padding(horizontal = 16.dp)
+
+                TextField(
+                    value = price,
+                    onValueChange = component::onPriceChanged,
+                    label = { Text(text = stringResource(R.string.price)) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp),
+                    isError = isPriceError
+                )
+
+                CurrencyField(
+                    currency,
+                    onCurrencyChanged = component::onCurrencyChanged
                 )
             }
 
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun FabBar(
+    showDeleteButton: Boolean,
+    onDeleteClick: () -> Unit,
+    onDeleteCanceled: () -> Unit,
+    showAlert: Boolean,
+    onDeleteConfirmed: () -> Unit,
+    onSaveClick: () -> Unit
+) {
+    Row(){
+        if (showDeleteButton) {
+            FloatingActionButton(
+                modifier = Modifier.padding(16.dp),
+                onClick = onDeleteClick,
+                containerColor = MaterialTheme.colorScheme.errorContainer,
+                contentColor = MaterialTheme.colorScheme.error
+            ) {
+                Icon(
+                    painter = painterResource(id = com.murzify.ui.R.drawable.round_delete_outline_24),
+                    contentDescription = stringResource(id = R.string.delete_service)
+                )
+            }
+        }
+
+        if (showAlert) {
+            AlertDialog(onDismissRequest = onDeleteCanceled) {
+                Surface(
+                    modifier = Modifier
+                        .wrapContentWidth()
+                        .wrapContentHeight(),
+                    shape = MaterialTheme.shapes.large,
+                    tonalElevation = AlertDialogDefaults.TonalElevation
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            text = stringResource(id = R.string.you_have_records),
+                        )
+                        Spacer(modifier = Modifier.height(24.dp))
+                        Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                            TextButton(
+                                onClick = onDeleteCanceled,
+                            ) {
+                                Text(stringResource(id = R.string.cancel_delete))
+                            }
+                            TextButton(
+                                onClick = onDeleteConfirmed,
+                            ) {
+                                Text(stringResource(id = R.string.confirm_delete))
+                            }
+                        }
+
+                    }
+                }
+            }
+
+        }
+
+        FloatingActionButton(
+            modifier = Modifier.padding(16.dp),
+            onClick = onSaveClick
+        ) {
+            Text(
+                text = stringResource(id = R.string.save),
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+        }
+
     }
 }
 

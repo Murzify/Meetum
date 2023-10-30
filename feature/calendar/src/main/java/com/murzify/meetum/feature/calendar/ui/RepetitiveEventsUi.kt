@@ -94,7 +94,9 @@ internal fun RepetitiveEventsUi(
     val endType by component.endType.collectAsState()
 
     Toolbar(
-        titleText = stringResource(id = R.string.repetitive_events),
+        title = {
+            Text(text = stringResource(id = R.string.repetitive_events))
+        },
         fab = {
             FloatingActionButton(
                 modifier = Modifier.padding(16.dp),

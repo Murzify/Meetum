@@ -10,4 +10,5 @@
     <string name="you_have_records">У вас назначены записи, все связанные записи будут удалены. Вы уверены?</string>
     <string name="confirm_delete">Подтвердить</string>
     <string name="cancel_delete">Отмена</string>
+    <string name="new_service">Новая услуга</string>
 </resources>

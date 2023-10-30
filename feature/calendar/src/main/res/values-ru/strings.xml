@@ -14,7 +14,7 @@
     <string name="service_label">Услуга</string>
     <string name="repeat_every">Повторять раз в</string>
     <string name="end_of_repetition">Окончание повторения</string>
-    <string name="repetitive_events">Повторяющееся события</string>
+    <string name="repetitive_events">Повторения</string>
     <string name="day">день</string>
     <plurals name="day">
         <item quantity="one" tools:ignore="ImpliedQuantity">

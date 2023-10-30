@@ -8,7 +8,6 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
@@ -22,7 +21,7 @@ import com.murzify.ui.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Toolbar(
-    titleText: String,
+    title: @Composable () -> Unit,
     onBackClicked: () -> Unit,
     fab: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit
@@ -34,9 +33,7 @@ fun Toolbar(
         floatingActionButtonPosition = FabPosition.Center,
         topBar = {
             CenterAlignedTopAppBar(
-                title = {
-                    Text(text = titleText)
-                },
+                title = title,
                 navigationIcon = {
                     IconButton(modifier = Modifier
                         .padding(8.dp),
@@ -50,7 +47,6 @@ fun Toolbar(
                 },
                 scrollBehavior = scrollBehavior
             )
-
         }
     ) {
         content(it)
