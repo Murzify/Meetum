@@ -4,7 +4,7 @@
     <string name="calendar_label">Calendar</string>
     <string name="client_name_label">Name (optional)</string>
     <string name="description_label">Description (optional)</string>
-    <string name="phone_label">Phone number (optional)</string>
+    <string name="phone_label">Phone (optional)</string>
     <string name="choose_service">Choose a service</string>
     <string name="add_new_service">Add service</string>
     <string name="delete_record">Delete record</string>

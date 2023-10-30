@@ -24,7 +24,6 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -41,6 +40,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.murzify.meetum.core.ui.TextField
 import com.murzify.meetum.feature.services.R
 import com.murzify.meetum.feature.services.components.AddServiceComponent
 import kotlinx.coroutines.launch
@@ -71,11 +71,11 @@ internal fun AddServiceUi(
             )
         }
 
-        OutlinedTextField(
+        TextField(
             value = name,
             onValueChange = component::onNameChanged,
             label = { Text(text = stringResource(id = R.string.service_name)) },
-            modifier = Modifier.padding(vertical = 16.dp),
+            modifier = Modifier.padding(vertical = 16.dp).width(200.dp),
             isError = isNameError,
         )
 
@@ -83,7 +83,7 @@ internal fun AddServiceUi(
             modifier = Modifier.fillMaxWidth()
         ) {
 
-            OutlinedTextField(
+            TextField(
                 value = price,
                 onValueChange = component::onPriceChanged,
                 label = { Text(text = stringResource(R.string.price)) },
@@ -194,7 +194,7 @@ internal fun CurrencyField(
         modifier = Modifier.width(150.dp)
     ) {
 
-        OutlinedTextField(
+        TextField(
             modifier = Modifier.menuAnchor(),
             value = selectedOptionText,
             onValueChange = {

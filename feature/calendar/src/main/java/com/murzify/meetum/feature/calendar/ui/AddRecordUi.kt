@@ -31,7 +31,6 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TimeInput
@@ -62,6 +61,7 @@ import androidx.core.content.ContextCompat
 import com.murzify.meetum.core.domain.model.Repeat
 import com.murzify.meetum.core.ui.AddServiceCard
 import com.murzify.meetum.core.ui.ServiceCard
+import com.murzify.meetum.core.ui.TextField
 import com.murzify.meetum.feature.calendar.R
 import com.murzify.meetum.feature.calendar.components.AddRecordComponent
 import java.text.DateFormat
@@ -174,7 +174,7 @@ internal fun AddRecordUi(
                     )
                 }
 
-                OutlinedTextField(
+                TextField(
                     modifier = Modifier.constrainAs(textField) {
                         if (showRepeatInfo) {
                             top.linkTo(repeatText.bottom)
@@ -183,7 +183,7 @@ internal fun AddRecordUi(
                         }
                         start.linkTo(parent.start)
                         bottom.linkTo(parent.bottom)
-                    },
+                    }.width(250.dp),
                     value = clientName,
                     onValueChange = component::onNameChanged,
                     leadingIcon = {
@@ -194,7 +194,7 @@ internal fun AddRecordUi(
                     },
                     label = {
                         Text(text = stringResource(id = R.string.client_name_label))
-                    }
+                    },
                 )
 
                 ImportContactButton(
@@ -208,8 +208,11 @@ internal fun AddRecordUi(
                 )
             }
 
-            OutlinedTextField(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+            TextField(
+                modifier = Modifier
+                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                    .width(250.dp),
+                maxLines = Int.MAX_VALUE,
                 value = description,
                 onValueChange = component::onDescriptionChanged,
                 leadingIcon = {
@@ -223,9 +226,12 @@ internal fun AddRecordUi(
                 }
             )
 
-            OutlinedTextField(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+            TextField(
+                modifier = Modifier
+                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                    .width(250.dp),
                 value = phoneNumber,
+                maxLines = Int.MAX_VALUE,
                 onValueChange = component::onPhoneChanged,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 leadingIcon = {
