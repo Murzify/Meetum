@@ -47,4 +47,5 @@ android {
 dependencies {
     implementation(libs.calendar)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.window.size)
 }

@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
         )
         setContent {
             MeetumTheme {
-                rootComponent.onCalcWindow(calculateWindowSizeClass(activity = this))
+                rootComponent.onCalcWindow(calculateWindowSizeClass())
                 RootUi(component = rootComponent)
             }
         }

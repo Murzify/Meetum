@@ -1,7 +1,6 @@
 package com.murzify.meetum
 
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.murzify.meetum.feature.calendar.components.CalendarComponent
 import com.murzify.meetum.feature.services.components.ServicesComponent
@@ -9,7 +8,6 @@ import com.murzify.meetum.navigation.Screen
 import kotlinx.coroutines.flow.StateFlow
 
 interface RootComponent {
-    val widthSizeClass: StateFlow<WindowWidthSizeClass>
     val splitScreen: Boolean
     val shouldShowBottomBar: StateFlow<Boolean>
     val shouldShowNavRail: StateFlow<Boolean>

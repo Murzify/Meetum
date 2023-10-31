@@ -78,7 +78,7 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:domain"))
 
-    implementation(libs.androidx.compose.material3.windowSizeClass)
+    implementation(libs.window.size)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)

@@ -28,6 +28,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -63,6 +66,7 @@ import java.time.format.TextStyle
 import java.util.Date
 import java.util.Locale
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 internal fun RecordsManagerUi(
     component: RecordsManagerComponent
@@ -72,13 +76,14 @@ internal fun RecordsManagerUi(
 
     val allRecords by component.allRecords.collectAsState()
     val records by component.currentRecords.collectAsState()
+    val splitScreen = calculateWindowSizeClass().widthSizeClass != WindowWidthSizeClass.Compact
 
     Box(
         contentAlignment = Alignment.BottomEnd,
         modifier = Modifier.fillMaxSize()
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            if (component.splitScreen) {
+            if (splitScreen) {
                 Calendar(
                     weight = 1f,
                     allRecords = allRecords,
@@ -93,7 +98,7 @@ internal fun RecordsManagerUi(
                     .weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (!component.splitScreen) {
+                if (!splitScreen) {
                     item {
                         Calendar(
                             weight = 1f,
