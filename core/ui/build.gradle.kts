@@ -16,8 +16,8 @@ android {
     }
 
     buildTypes {
-        release {
-            isMinifyEnabled = false
+        getByName("release") {
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -51,7 +51,6 @@ dependencies {
     implementation(libs.ui.tooling.preview)
     implementation(libs.calendar)
     implementation(libs.material3)
-    implementation(libs.navigation)
     implementation(libs.lottie.compose)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)

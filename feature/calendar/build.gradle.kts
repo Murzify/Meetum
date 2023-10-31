@@ -18,8 +18,8 @@ android {
     }
 
     buildTypes {
-        release {
-            isMinifyEnabled = false
+        getByName("release") {
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -39,9 +39,13 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.0"
     }
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+    }
 }
 
 dependencies {
     implementation(libs.calendar)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.window.size)
 }

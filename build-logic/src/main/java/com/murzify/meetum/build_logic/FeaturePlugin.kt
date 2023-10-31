@@ -11,12 +11,14 @@ class FeaturePlugin: Plugin<Project> {
         with(target) {
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
             with(pluginManager) {
-                apply("meetum.hilt")
+                apply("meetum.koin")
+                apply("kotlin-parcelize")
             }
             dependencies {
                 add("implementation", project(":core:ui"))
                 add("implementation", project(":core:domain"))
                 add("implementation", project(":core:data"))
+                add("implementation", project(":core:common"))
 
                 add("implementation", libs.findLibrary("core.ktx").get())
                 add("implementation", libs.findLibrary("lifecycle.runtime.ktx").get())
@@ -26,8 +28,8 @@ class FeaturePlugin: Plugin<Project> {
                 add("implementation", libs.findLibrary("ui.graphics").get())
                 add("implementation", libs.findLibrary("ui.tooling.preview").get())
                 add("implementation", libs.findLibrary("material3").get())
-                add("implementation", libs.findLibrary("navigation").get())
-
+                add("implementation", libs.findLibrary("decompose").get())
+                add("implementation", libs.findLibrary("decompose-extensions").get())
             }
         }
     }

@@ -1,6 +1,9 @@
 package com.murzify.meetum.core.data.repository
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.murzify.meetum.core.database.dao.RecordDao
+import com.murzify.meetum.core.database.model.RecordDatesEntity
 import com.murzify.meetum.core.database.model.toDomain
 import com.murzify.meetum.core.database.model.toEntity
 import com.murzify.meetum.core.domain.model.Record
@@ -33,8 +36,16 @@ class RecordRepositoryImpl @Inject constructor(
         recordDao.deleteLinkedWithService(serviceId)
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override suspend fun addRecord(record: Record) {
         recordDao.add(record.toEntity())
+        val dates = record.time.map {
+            RecordDatesEntity(
+                recordId = record.id,
+                date = it
+            )
+        }.toTypedArray()
+        recordDao.addDate(*dates)
     }
 
     override suspend fun updateRecord(record: Record) {

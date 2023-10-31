@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.com.android.library)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.ksp)
-    id("meetum.hilt")
+    id("meetum.koin")
     id("meetum.unitTests")
     id("meetum.instrumentalTest")
 }
@@ -23,8 +23,8 @@ android {
     }
 
     buildTypes {
-        release {
-            isMinifyEnabled = false
+        getByName("release") {
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -52,6 +52,5 @@ dependencies {
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
 
-    implementation(libs.lifecycle.viewmodel)
     androidTestImplementation(libs.room.testing)
 }

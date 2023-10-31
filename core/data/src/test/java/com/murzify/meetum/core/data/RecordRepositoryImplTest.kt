@@ -2,7 +2,8 @@ package com.murzify.meetum.core.data
 
 import com.murzify.meetum.core.data.repository.RecordRepositoryImpl
 import com.murzify.meetum.core.database.dao.RecordDao
-import com.murzify.meetum.core.database.model.RecordWithService
+import com.murzify.meetum.core.database.model.FullRecord
+import com.murzify.meetum.core.database.model.RecordDatesEntity
 import com.murzify.meetum.core.database.model.toDomain
 import com.murzify.meetum.core.database.model.toEntity
 import com.murzify.meetum.core.domain.model.Record
@@ -21,6 +22,7 @@ import org.mockito.kotlin.verify
 import java.util.Calendar
 import java.util.Currency
 import java.util.Date
+import java.util.UUID
 
 class RecordRepositoryImplTest {
 
@@ -34,15 +36,21 @@ class RecordRepositoryImplTest {
     )
     private val testRecord = Record(
         "Vasya",
-        Date(),
+        listOf(Date()),
         null,
         null,
         testService
     )
-    private val testRecordWithService = RecordWithService(
-        testRecord.toEntity(), testService.toEntity()
+    private val testFullRecord = FullRecord(
+        testRecord.toEntity(), testService.toEntity(), listOf(
+            RecordDatesEntity(
+                dateId = UUID.randomUUID(),
+                date = testRecord.time[0],
+                recordId = testRecord.id
+            )
+        )
     )
-    private val recordsList = List(5) { testRecordWithService }
+    private val recordsList = List(5) { testFullRecord }
 
     @Before
     fun setup() {

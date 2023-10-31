@@ -2,7 +2,6 @@
 plugins {
     alias(libs.plugins.com.android.library)
     alias(libs.plugins.org.jetbrains.kotlin.android)
-    alias(libs.plugins.hilt)
     id("meetum.feature")
     id("meetum.unitTests")
 }
@@ -19,8 +18,8 @@ android {
     }
 
     buildTypes {
-        release {
-            isMinifyEnabled = false
+        getByName("release") {
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -46,5 +45,6 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.calendar)
+    implementation(libs.androidx.constraintlayout)
 }

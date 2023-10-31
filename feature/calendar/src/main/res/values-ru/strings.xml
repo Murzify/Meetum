@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="add_record">Добавить запись</string>
     <string name="calendar_label">Календарь</string>
     <string name="client_name_label">Имя (опционально)</string>
     <string name="description_label">Описание (опционально)</string>
-    <string name="phone_label">Номер телефона (опционально)</string>
+    <string name="phone_label">Телефон (опционально)</string>
     <string name="choose_service">Выберите услугу</string>
     <string name="add_new_service">Добавить услугу</string>
     <string name="delete_record">Удалить запись</string>
@@ -12,4 +12,70 @@
     <string name="import_contact">Импортировать контакт</string>
     <string name="edit">Редактировать</string>
     <string name="service_label">Услуга</string>
+    <string name="repeat_every">Повторять раз в</string>
+    <string name="end_of_repetition">Окончание повторения</string>
+    <string name="repetitive_events">Повторения</string>
+    <string name="day">день</string>
+    <plurals name="day">
+        <item quantity="one" tools:ignore="ImpliedQuantity">
+            день
+        </item>
+        <item quantity="many">
+            дней
+        </item>
+        <item quantity="few">
+            дня
+        </item>
+    </plurals>
+    <plurals name="week">
+        <item quantity="one" tools:ignore="ImpliedQuantity">
+            неделю
+        </item>
+        <item quantity="many">
+            недель
+        </item>
+        <item quantity="few">
+            недели
+        </item>
+    </plurals>
+    <plurals name="month">
+        <item quantity="one" tools:ignore="ImpliedQuantity">
+            месяц
+        </item>
+        <item quantity="many">
+            месяцев
+        </item>
+        <item quantity="few">
+            месяца
+        </item>
+        <item quantity="other">
+            месяца
+        </item>
+    </plurals>
+    <plurals name="year">
+        <item quantity="one" tools:ignore="ImpliedQuantity">
+            год
+        </item>
+        <item quantity="many">
+            лет
+        </item>
+        <item quantity="few">
+            годa
+        </item>
+
+    </plurals>
+
+    <string name="after">после</string>
+    <string name="ending">Окончание: %s</string>
+    <plurals name="times">
+        <item quantity="one" tools:ignore="ImpliedQuantity">
+            раза
+        </item>
+        <item quantity="many">
+            раз
+        </item>
+        <item quantity="few">
+            раз
+        </item>
+    </plurals>
 </resources>
