@@ -71,11 +71,9 @@ import java.util.Locale
 internal fun RecordsManagerUi(
     component: RecordsManagerComponent
 ) {
-    val selectedDate by component.selectedDate.collectAsState()
     val listState = rememberLazyListState()
+    val model by component.model.collectAsState()
 
-    val allRecords by component.allRecords.collectAsState()
-    val records by component.currentRecords.collectAsState()
     val splitScreen = calculateWindowSizeClass().widthSizeClass != WindowWidthSizeClass.Compact
 
     Box(
@@ -86,8 +84,8 @@ internal fun RecordsManagerUi(
             if (splitScreen) {
                 Calendar(
                     weight = 1f,
-                    allRecords = allRecords,
-                    selectedDate = selectedDate,
+                    allRecords = model.allRecords,
+                    selectedDate = model.selectedDate,
                     selectDate = component::onDateClick
                 )
             }
@@ -103,15 +101,15 @@ internal fun RecordsManagerUi(
                         Calendar(
                             weight = 1f,
                             selectDate = component::onDateClick,
-                            allRecords = allRecords,
-                            selectedDate = selectedDate,
+                            allRecords = model.allRecords,
+                            selectedDate = model.selectedDate,
                         )
                     }
                 }
                 item {
-                    DayTitle(selectedDate = selectedDate)
+                    DayTitle(selectedDate = model.selectedDate)
                 }
-                items(records) {
+                items(model.currentRecords) {
                     RecordCard(
                         it,
                         onClick = component::onRecordClick
@@ -160,6 +158,7 @@ private fun RowScope.Calendar(
         outDateStyle = OutDateStyle.EndOfGrid
     )
 
+
     HorizontalCalendar(
         state = state,
         dayContent = {
@@ -167,6 +166,7 @@ private fun RowScope.Calendar(
                 it,
                 isSelected = selectedDate == it.date,
                 showBadge = allRecords.any { record ->
+                    record.clientName
                     val recordDates =
                         record.time.map { date ->
                             date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()

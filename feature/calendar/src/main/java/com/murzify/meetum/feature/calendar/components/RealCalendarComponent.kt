@@ -49,7 +49,7 @@ class RealCalendarComponent(
     ): CalendarComponent.Child = when (config) {
         is ChildConfig.RecordsManager -> CalendarComponent.Child.RecordsManager(
             componentFactory.createRecordsManagerComponent(
-                componentContext, splitScreen,
+                componentContext,
                 navigateToAddRecord = { date, record ->
                     navigation.push(ChildConfig.AddRecord(date, record))
                 },

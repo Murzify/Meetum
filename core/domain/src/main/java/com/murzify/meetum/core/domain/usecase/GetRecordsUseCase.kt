@@ -6,9 +6,9 @@ import kotlinx.coroutines.flow.Flow
 import java.util.Calendar
 import java.util.Date
 import java.util.TimeZone
-import javax.inject.Inject
 
-class GetRecordsUseCase @Inject constructor(
+
+class GetRecordsUseCase constructor(
     private val recordRepository: RecordRepository
 ) {
     suspend operator fun invoke(date: Date): Flow<List<Record>> {

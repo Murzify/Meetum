@@ -6,9 +6,8 @@ import com.murzify.meetum.core.domain.repository.RecordRepository
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import javax.inject.Inject
 
-class AddRecordUseCase @Inject constructor(
+class AddRecordUseCase constructor(
     private val recordRepository: RecordRepository
 ) {
 
