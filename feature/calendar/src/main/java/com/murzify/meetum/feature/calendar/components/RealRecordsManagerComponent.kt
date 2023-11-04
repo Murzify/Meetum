@@ -3,6 +3,8 @@ package com.murzify.meetum.feature.calendar.components
 import com.arkivanov.decompose.ComponentContext
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.common.componentCoroutineScope
+import com.murzify.meetum.core.common.registerKeeper
+import com.murzify.meetum.core.common.restore
 import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.core.domain.repository.RecordRepository
 import com.murzify.meetum.core.domain.usecase.GetRecordsUseCase
@@ -42,12 +44,8 @@ class RealRecordsManagerComponent constructor (
     private val getRecordsUseCase: GetRecordsUseCase,
 ): ComponentContext by componentContext, RecordsManagerComponent {
 
-    companion object {
-        const val STATE_KEY = "STATE"
-    }
-
     override val model = MutableStateFlow(
-        stateKeeper.consume(key = STATE_KEY, strategy = Model.serializer()) ?: Model(
+        restore(Model.serializer()) ?: Model(
             currentRecords = emptyList(),
             services = emptyList(),
             allRecords = emptyList(),
@@ -58,8 +56,7 @@ class RealRecordsManagerComponent constructor (
     private val coroutineScope = componentCoroutineScope()
 
     init {
-        stateKeeper.register(key = STATE_KEY, strategy = Model.serializer()) { model.value }
-
+        registerKeeper(Model.serializer()) { model.value }
         coroutineScope.launch(Dispatchers.IO) {
             getServicesUseCase()
                 .collect { services ->

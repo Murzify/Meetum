@@ -6,6 +6,8 @@ import android.provider.ContactsContract
 import com.arkivanov.decompose.ComponentContext
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.common.componentCoroutineScope
+import com.murzify.meetum.core.common.registerKeeper
+import com.murzify.meetum.core.common.restore
 import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.core.domain.model.Repeat
 import com.murzify.meetum.core.domain.model.RepeatRecord
@@ -55,7 +57,7 @@ class RealAddRecordComponent(
 ) :  ComponentContext by componentContext, AddRecordComponent {
 
     override val model = MutableStateFlow(
-        stateKeeper.consume("STATE", Model.serializer()) ?: Model(
+        restore(Model.serializer()) ?: Model(
             date = date,
             name = record?.clientName ?: "",
             description = record?.description ?: "",
@@ -72,11 +74,10 @@ class RealAddRecordComponent(
         )
     )
 
-
     private val coroutineScope = componentCoroutineScope()
 
     init {
-        stateKeeper.register("STATE", Model.serializer()) { model.value }
+        registerKeeper(Model.serializer()) { model.value }
         coroutineScope.launch(Dispatchers.IO) {
             getServicesUseCase()
                 .collect { services ->
@@ -84,8 +85,6 @@ class RealAddRecordComponent(
                 }
         }
     }
-
-
 
     override fun onTimeChanged(hours: Int, minutes: Int) {
         Calendar.getInstance().apply {
