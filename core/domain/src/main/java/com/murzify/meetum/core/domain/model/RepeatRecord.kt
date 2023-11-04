@@ -1,34 +1,40 @@
 package com.murzify.meetum.core.domain.model
 
+import kotlinx.serialization.Serializable
 import java.util.Calendar
 import java.util.Date
 
-interface Repeat {
+@Serializable
+sealed interface Repeat {
     val daysOfWeek: List<Int>
     val period: Int
     val periodCount: Int
     val repeatTimes: Int?
     val repeatToDate: Date?
 
-    interface Builder {
+    @Serializable
+    sealed interface Builder {
 
         fun setDaysOfWeek(daysOfWeek: List<Int>): Builder
 
         fun every(every: Int, period: Int): Builder
 
-        fun repeat(): RepeatRecord
+        fun repeat(): Repeat
 
     }
 }
 
+@Serializable
 class RepeatRecord private constructor(
     override val daysOfWeek: List<Int>,
     override val period: Int,
     override val periodCount: Int,
     override val repeatTimes: Int?,
+    @Serializable(with = DateSerializer::class)
     override val repeatToDate: Date?
 ): Repeat {
 
+    @Serializable
     class Repeater: Repeat.Builder {
 
         private var daysOfWeek = listOf(
@@ -44,6 +50,7 @@ class RepeatRecord private constructor(
         private var period: Int = Calendar.DATE
         private var periodCount: Int = 1
         private var repeatTimes: Int? = null
+        @Serializable(with = DateSerializer::class)
         private var repeatToDate: Date? = null
 
         override fun setDaysOfWeek(daysOfWeek: List<Int>) = apply {

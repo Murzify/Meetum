@@ -2,23 +2,16 @@ package com.murzify.meetum.feature.calendar.components
 
 import android.content.ContentResolver
 import android.net.Uri
+import com.murzify.meetum.core.domain.model.DateSerializer
 import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.core.domain.model.Repeat
 import com.murzify.meetum.core.domain.model.Service
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.serialization.Serializable
 import java.util.Date
 
 interface AddRecordComponent {
-    val date: StateFlow<Date>
-    val name: StateFlow<String>
-    val description: StateFlow<String>
-    val phone: StateFlow<String>
-    val service: StateFlow<Service?>
-    val isServiceError: StateFlow<Boolean>
-    val record: StateFlow<Record?>
-    val services: StateFlow<List<Service>>
-    val repeat: StateFlow<Repeat>
-    val showRepeatInfo: StateFlow<Boolean>
+    val model: StateFlow<Model>
     val onAddServiceClick: () -> Unit
 
     fun onTimeChanged(hours: Int, minutes: Int)
@@ -43,4 +36,18 @@ interface AddRecordComponent {
 
     fun onRepeatReceived(repeat: Repeat)
 
+    @Serializable
+    data class Model(
+        @Serializable(with = DateSerializer::class)
+        val date: Date,
+        val name: String,
+        val description: String,
+        val phone: String,
+        val service: Service?,
+        val isServiceError: Boolean,
+        val record: Record?,
+        val services: List<Service>,
+        val repeat: Repeat,
+        val showRepeatInfo: Boolean
+    )
 }

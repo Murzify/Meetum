@@ -47,18 +47,13 @@ class RealRecordsManagerComponent constructor (
     }
 
     override val model = MutableStateFlow(
-        test() ?: Model(
+        stateKeeper.consume(key = STATE_KEY, strategy = Model.serializer()) ?: Model(
             currentRecords = emptyList(),
             services = emptyList(),
             allRecords = emptyList(),
             selectedDate = LocalDate.now()
         )
     )
-
-    fun test(): Model? {
-        val r = stateKeeper.consume(key = STATE_KEY, strategy = Model.serializer())
-        return r
-    }
 
     private val coroutineScope = componentCoroutineScope()
 

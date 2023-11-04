@@ -69,7 +69,7 @@ import java.util.Locale
 internal fun AddRecordUi(
     component: AddRecordComponent
 ) {
-    val date by component.date.collectAsState()
+    val model by component.model.collectAsState()
     val defCalendar = Calendar.getInstance().apply {
         time = Date()
     }
@@ -82,23 +82,15 @@ internal fun AddRecordUi(
         )
     }
     component.onTimeChanged(timePickerState.hour, timePickerState.minute)
-    val selectedService by component.service.collectAsState()
-    val clientName by component.name.collectAsState()
-    val description by component.description.collectAsState()
-    val phoneNumber by component.phone.collectAsState()
-    val record by component.record.collectAsState()
-    val services by component.services.collectAsState()
-    val repeat by component.repeat.collectAsState()
-    val showRepeatInfo by component.showRepeatInfo.collectAsState()
 
     Toolbar(
         title = {
-            RecordDate(date = record?.time?.get(0) ?: date)
+            RecordDate(date = model.record?.time?.get(0) ?: model.date)
         },
         onBackClicked = component::onBackClick,
         fab = {
             FloatActionBar(
-                canDelete = record != null,
+                canDelete = model.record != null,
                 delete = component::onDeleteClicked,
                 save = component::onSaveClicked
             )
@@ -146,9 +138,9 @@ internal fun AddRecordUi(
                     )
                 }
 
-                if (showRepeatInfo) {
+                if (model.showRepeatInfo) {
                     RepeatText(
-                        repeat = repeat,
+                        repeat = model.repeat,
                         modifier = Modifier.constrainAs(repeatText) {
                             top.linkTo(timeInput.bottom)
                             start.linkTo(parent.start)
@@ -157,16 +149,18 @@ internal fun AddRecordUi(
                 }
 
                 TextField(
-                    modifier = Modifier.constrainAs(textField) {
-                        if (showRepeatInfo) {
-                            top.linkTo(repeatText.bottom)
-                        } else {
-                            top.linkTo(timeInput.bottom)
+                    modifier = Modifier
+                        .constrainAs(textField) {
+                            if (model.showRepeatInfo) {
+                                top.linkTo(repeatText.bottom)
+                            } else {
+                                top.linkTo(timeInput.bottom)
+                            }
+                            start.linkTo(parent.start)
+                            bottom.linkTo(parent.bottom)
                         }
-                        start.linkTo(parent.start)
-                        bottom.linkTo(parent.bottom)
-                    }.width(250.dp),
-                    value = clientName,
+                        .width(250.dp),
+                    value = model.name,
                     onValueChange = component::onNameChanged,
                     leadingIcon = {
                         Icon(
@@ -195,7 +189,7 @@ internal fun AddRecordUi(
                     .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
                     .width(250.dp),
                 maxLines = Int.MAX_VALUE,
-                value = description,
+                value = model.description,
                 onValueChange = component::onDescriptionChanged,
                 leadingIcon = {
                     Icon(
@@ -212,7 +206,7 @@ internal fun AddRecordUi(
                 modifier = Modifier
                     .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
                     .width(250.dp),
-                value = phoneNumber,
+                value = model.phone,
                 maxLines = Int.MAX_VALUE,
                 onValueChange = component::onPhoneChanged,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
@@ -227,11 +221,9 @@ internal fun AddRecordUi(
                 }
             )
 
-            val isServiceError by component.isServiceError.collectAsState()
-
             Text(
                 text = stringResource(id = R.string.choose_service),
-                color = if (isServiceError) MaterialTheme.colorScheme.error else Color.Unspecified,
+                color = if (model.isServiceError) MaterialTheme.colorScheme.error else Color.Unspecified,
                 modifier = Modifier.padding(start = 16.dp, top = 8.dp)
             )
 
@@ -244,11 +236,11 @@ internal fun AddRecordUi(
                         component.onAddServiceClick()
                     }
                 }
-                items(services) { service ->
+                items(model.services) { service ->
                     ServiceCard(
                         service = service,
                         modifier = Modifier.width(180.dp),
-                        border = if (selectedService == service) {
+                        border = if (model.service == service) {
                             BorderStroke(4.dp, MaterialTheme.colorScheme.primary)
                         } else null,
                         onClick = component::onServiceSelected
