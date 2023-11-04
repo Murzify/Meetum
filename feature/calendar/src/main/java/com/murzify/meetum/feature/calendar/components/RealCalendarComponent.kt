@@ -10,7 +10,6 @@ import com.arkivanov.essenty.parcelable.Parcelable
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.common.toStateFlow
 import com.murzify.meetum.core.domain.model.Record
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
@@ -69,9 +68,9 @@ class RealCalendarComponent(
             )
         )
         is ChildConfig.RecordInfo -> CalendarComponent.Child.RecordInfo(
-            componentFactory.createRecordInfoComponent(
+            RealRecordInfoComponent(
                 componentContext,
-                MutableStateFlow(config.record),
+                config.record,
                 navigateBack = navigation::pop,
                 navigateToEdit = {
                     navigation.push(
