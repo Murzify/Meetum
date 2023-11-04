@@ -84,14 +84,7 @@ internal fun RepetitiveEventsPreview() {
 internal fun RepetitiveEventsUi(
     component: RepetitiveEventsComponent
 ) {
-    val everyAmount by component.everyAmount.collectAsState()
-    val everyPeriod by component.everyPeriod.collectAsState()
-    val daysOfWeek by component.daysOfWeek.collectAsState()
-    val showDaysOfWeek by component.showDaysOfWeek.collectAsState()
-    val endTimes by component.endTimes.collectAsState()
-    val endDate by component.endDate.collectAsState()
-    val showDatePicker by component.showDatePicker.collectAsState()
-    val endType by component.endType.collectAsState()
+    val model by component.model.collectAsState()
 
     Toolbar(
         title = {
@@ -122,57 +115,58 @@ internal fun RepetitiveEventsUi(
                     bottom = 8.dp
                 )
             )
-            Row {
-                TextField(
-                    value = everyAmount.toString(),
-                    onValueChange = component::onEveryAmountChanged,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    textStyle = LocalTextStyle.current.copy(
-                        textAlign = TextAlign.Center,
-                        fontSize = 16.sp
-                    ),
-                    modifier = Modifier
-                        .size(64.dp)
-                        .padding(end = 8.dp, bottom = 8.dp),
+            model.apply {
+                Row {
+                    TextField(
+                        value = everyAmount.toString(),
+                        onValueChange = component::onEveryAmountChanged,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        textStyle = LocalTextStyle.current.copy(
+                            textAlign = TextAlign.Center,
+                            fontSize = 16.sp
+                        ),
+                        modifier = Modifier
+                            .size(64.dp)
+                            .padding(end = 8.dp, bottom = 8.dp),
+                    )
+                    PeriodField(
+                        periodAmount = everyAmount,
+                        period = everyPeriod,
+                        onPeriodChanged = component::onPeriodChanged
+                    )
+                }
+
+                if (showDaysOfWeek) {
+                    DaysOfWeekSelection(
+                        daysOfWeek,
+                        component::onDayOfWeekClick
+                    )
+                }
+                HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
+                Text(
+                    text = stringResource(id = R.string.end_of_repetition),
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(
+                        vertical = 8.dp
+                    )
                 )
-                PeriodField(
-                    periodAmount = everyAmount,
-                    period = everyPeriod,
-                    onPeriodChanged = component::onPeriodChanged
+
+                EndRadio(
+                    endType = endType,
+                    endTimes = endTimes,
+                    endDate = endDate,
+                    onEndTypeChanged = component::onEndTypeChanged,
+                    onDateClick = component::onPickDateClicked,
+                    onTimesChanged = component::onEndTimesChanged
                 )
+
+                if (showDatePicker) {
+                    DatePickerDialog(
+                        onDateSelected = component::onDatePickerOk,
+                        onDismiss = component::onDatePickerCancel
+                    )
+                }
             }
-
-            if (showDaysOfWeek) {
-                DaysOfWeekSelection(
-                    daysOfWeek,
-                    component::onDayOfWeekClick
-                )
-            }
-            HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
-            Text(
-                text = stringResource(id = R.string.end_of_repetition),
-                fontSize = 16.sp,
-                modifier = Modifier.padding(
-                    vertical = 8.dp
-                )
-            )
-
-            EndRadio(
-                endType = endType,
-                endTimes = endTimes,
-                endDate = endDate,
-                onEndTypeChanged = component::onEndTypeChanged,
-                onDateClick = component::onPickDateClicked,
-                onTimesChanged = component::onEndTimesChanged
-            )
-
-            if (showDatePicker) {
-                DatePickerDialog(
-                    onDateSelected = component::onDatePickerOk,
-                    onDismiss = component::onDatePickerCancel
-                )
-            }
-
         }
     }
 
