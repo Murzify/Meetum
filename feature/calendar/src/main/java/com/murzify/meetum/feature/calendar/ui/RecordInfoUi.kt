@@ -35,6 +35,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.murzify.meetum.core.ui.localStyleForeignFormat
+import com.murzify.meetum.feature.calendar.R.drawable.round_description_24
+import com.murzify.meetum.feature.calendar.R.drawable.round_person_24
+import com.murzify.meetum.feature.calendar.R.drawable.round_phone_24
 import com.murzify.meetum.feature.calendar.components.RecordInfoComponent
 import com.murzify.ui.R
 import java.text.DateFormat
@@ -47,7 +50,7 @@ import java.util.Locale
 internal fun RecordInfoUi(
     component: RecordInfoComponent
 ) {
-    val record by component.record.collectAsState()
+    val model by component.model.collectAsState()
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     Scaffold(
@@ -55,7 +58,7 @@ internal fun RecordInfoUi(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    RecordDateTime(date = record.time[0])
+                    RecordDateTime(date = model.record.time[0])
                 },
                 navigationIcon = {
                     IconButton(modifier = Modifier
@@ -97,71 +100,73 @@ internal fun RecordInfoUi(
                 end = 16.dp
             )
         ) {
-            record.clientName?.let {
-                item() {
-                    InfoField(
-                        iconId = com.murzify.meetum.feature.calendar.R.drawable.round_person_24,
-                        contentDescriptionId = com.murzify.meetum.feature.calendar.R.string.client_name_label,
-                        text = it
-                    )
+            model.apply {
+                record.clientName?.let {
+                    item() {
+                        InfoField(
+                            iconId = round_person_24,
+                            contentDescriptionId = com.murzify.meetum.feature.calendar.R.string.client_name_label,
+                            text = it
+                        )
+                    }
                 }
-            }
-            record.phone?.let { phone ->
+                record.phone?.let { phone ->
+                    item {
+                        val context = LocalContext.current
+                        InfoField(
+                            iconId = round_phone_24,
+                            contentDescriptionId = com.murzify.meetum.feature.calendar.R.string.phone_label,
+                            text = phone,
+                            onLongPress = { component.onPhoneLongClick(context) }
+                        )
+                    }
+                }
                 item {
-                    val context = LocalContext.current
-                    InfoField(
-                        iconId = com.murzify.meetum.feature.calendar.R.drawable.round_phone_24,
-                        contentDescriptionId = com.murzify.meetum.feature.calendar.R.string.phone_label,
-                        text = phone,
-                        onLongPress = { component.onPhoneLongClick(context) }
-                    )
-                }
-            }
-            item {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        modifier = Modifier.padding(start = 8.dp),
-                        painter = painterResource(id = R.drawable.round_handshake_24),
-                        contentDescription = stringResource(id =
-                        com.murzify.meetum.feature.calendar.R.string.service_label
-                        ),
-                    )
-                    Spacer(Modifier.width(16.dp))
-                    Column(
-                        Modifier.weight(1f),
-                        verticalArrangement = Arrangement.Center
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
+                        Icon(
+                            modifier = Modifier.padding(start = 8.dp),
+                            painter = painterResource(id = R.drawable.round_handshake_24),
+                            contentDescription = stringResource(id =
+                            com.murzify.meetum.feature.calendar.R.string.service_label
+                            ),
+                        )
+                        Spacer(Modifier.width(16.dp))
+                        Column(
+                            Modifier.weight(1f),
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = record.service.name,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                fontSize = 24.sp
+                            )
+                        }
+                        val format = localStyleForeignFormat(Locale.getDefault())
+                        format.currency = record.service.currency
+                        val price = format.format(record.service.price)
+
                         Text(
-                            text = record.service.name,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
+                            text = price,
+                            modifier = Modifier.padding(start = 2.dp),
                             fontSize = 24.sp
                         )
                     }
-                    val format = localStyleForeignFormat(Locale.getDefault())
-                    format.currency = record.service.currency
-                    val price = format.format(record.service.price)
-
-                    Text(
-                        text = price,
-                        modifier = Modifier.padding(start = 2.dp),
-                        fontSize = 24.sp
-                    )
+                    HorizontalDivider()
                 }
-                HorizontalDivider()
-            }
-            record.description?.let {
-                item() {
-                    InfoField(
-                        iconId = com.murzify.meetum.feature.calendar.R.drawable.round_description_24,
-                        contentDescriptionId = com.murzify.meetum.feature.calendar.R.string.description_label,
-                        text = it
-                    )
+                record.description?.let {
+                    item() {
+                        InfoField(
+                            iconId = round_description_24,
+                            contentDescriptionId = com.murzify.meetum.feature.calendar.R.string.description_label,
+                            text = it
+                        )
+                    }
                 }
             }
         }

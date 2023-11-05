@@ -6,9 +6,9 @@ import com.murzify.meetum.core.database.model.toEntity
 import com.murzify.meetum.core.domain.model.Service
 import com.murzify.meetum.core.domain.repository.ServiceRepository
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
-class ServiceRepositoryImpl @Inject constructor(
+
+class ServiceRepositoryImpl constructor(
     private val serviceDao: ServiceDao
 ): ServiceRepository {
     override suspend fun getAllServices() = serviceDao.getAll().map { serviceList ->

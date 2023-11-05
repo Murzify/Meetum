@@ -1,6 +1,7 @@
 plugins {
     id("java-library")
     alias(libs.plugins.org.jetbrains.kotlin.jvm)
+    alias(libs.plugins.serialization)
     id("meetum.unitTests")
 }
 
@@ -14,6 +15,6 @@ kotlin {
 }
 
 dependencies {
-    implementation(libs.inject)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.serialization)
 }

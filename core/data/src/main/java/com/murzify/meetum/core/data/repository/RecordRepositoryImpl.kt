@@ -11,9 +11,9 @@ import com.murzify.meetum.core.domain.repository.RecordRepository
 import kotlinx.coroutines.flow.map
 import java.util.Date
 import java.util.UUID
-import javax.inject.Inject
 
-class RecordRepositoryImpl @Inject constructor(
+
+class RecordRepositoryImpl constructor(
     private val recordDao: RecordDao,
 ): RecordRepository {
 

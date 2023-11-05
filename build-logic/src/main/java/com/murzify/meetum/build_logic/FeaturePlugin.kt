@@ -30,6 +30,7 @@ class FeaturePlugin: Plugin<Project> {
                 add("implementation", libs.findLibrary("material3").get())
                 add("implementation", libs.findLibrary("decompose").get())
                 add("implementation", libs.findLibrary("decompose-extensions").get())
+                add("implementation", libs.findLibrary("kotlinx-serialization").get())
             }
         }
     }

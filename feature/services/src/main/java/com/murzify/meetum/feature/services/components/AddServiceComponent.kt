@@ -1,18 +1,13 @@
 package com.murzify.meetum.feature.services.components
 
+import com.murzify.meetum.core.domain.model.CurrencySerializer
 import com.murzify.meetum.core.domain.model.Service
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.serialization.Serializable
 import java.util.Currency
 
 interface AddServiceComponent {
-    val service: StateFlow<Service?>
-    val name: StateFlow<String>
-    val isNameError: StateFlow<Boolean>
-    val price: StateFlow<String>
-    val isPriceError: StateFlow<Boolean>
-    val currency: StateFlow<Currency>
-    val showAlert: StateFlow<Boolean>
-    val showDeleteButton: StateFlow<Boolean>
+    val model: StateFlow<Model>
 
     fun onBackClick()
 
@@ -29,5 +24,18 @@ interface AddServiceComponent {
     fun onDeleteConfirmed()
 
     fun onDeleteCanceled()
+
+    @Serializable
+    data class Model(
+        val service: Service?,
+        val name: String,
+        val isNameError: Boolean,
+        val price: String,
+        val isPriceError: Boolean,
+        @Serializable(with = CurrencySerializer::class)
+        val currency: Currency,
+        val showAlert: Boolean,
+        val showDeleteButton: Boolean,
+    )
 
 }

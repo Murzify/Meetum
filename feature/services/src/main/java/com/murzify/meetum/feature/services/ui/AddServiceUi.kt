@@ -46,13 +46,7 @@ import java.util.Currency
 internal fun AddServiceUi(
     component: AddServiceComponent
 ) {
-    val name by component.name.collectAsState()
-    val isNameError by component.isNameError.collectAsState()
-    val price by component.price.collectAsState()
-    val isPriceError by component.isPriceError.collectAsState()
-    val currency by component.currency.collectAsState()
-    val showAlert by component.showAlert.collectAsState()
-    val showDeleteButton by component.showDeleteButton.collectAsState()
+    val model by component.model.collectAsState()
 
     Toolbar(
         title = {
@@ -63,10 +57,10 @@ internal fun AddServiceUi(
         onBackClicked = component::onBackClick,
         fab = {
             FabBar(
-                showDeleteButton = showDeleteButton,
+                showDeleteButton = model.showDeleteButton,
                 onDeleteClick = component::onDeleteClick,
                 onDeleteCanceled = component::onDeleteCanceled,
-                showAlert = showAlert,
+                showAlert = model.showAlert,
                 onDeleteConfirmed = component::onDeleteConfirmed,
                 onSaveClick = component::onSaveClick
             )
@@ -78,13 +72,13 @@ internal fun AddServiceUi(
                 .padding(16.dp)
         ) {
             TextField(
-                value = name,
+                value = model.name,
                 onValueChange = component::onNameChanged,
                 label = { Text(text = stringResource(id = R.string.service_name)) },
                 modifier = Modifier
                     .padding(vertical = 16.dp)
                     .width(200.dp),
-                isError = isNameError,
+                isError = model.isNameError,
             )
 
             Row(
@@ -92,18 +86,18 @@ internal fun AddServiceUi(
             ) {
 
                 TextField(
-                    value = price,
+                    value = model.price,
                     onValueChange = component::onPriceChanged,
                     label = { Text(text = stringResource(R.string.price)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     modifier = Modifier
                         .weight(1f)
                         .padding(end = 8.dp),
-                    isError = isPriceError
+                    isError = model.isPriceError
                 )
 
                 CurrencyField(
-                    currency,
+                    model.currency,
                     onCurrencyChanged = component::onCurrencyChanged
                 )
             }
@@ -234,7 +228,7 @@ internal fun CurrencyField(
                 }
             },
         ) {
-            options.forEach { selectionOption ->
+            options.take(2).forEach { selectionOption ->
                 DropdownMenuItem(
                     text = { Text(selectionOption.currencyCode) },
                     onClick = {

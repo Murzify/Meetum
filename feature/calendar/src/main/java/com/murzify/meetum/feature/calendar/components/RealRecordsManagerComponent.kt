@@ -3,13 +3,16 @@ package com.murzify.meetum.feature.calendar.components
 import com.arkivanov.decompose.ComponentContext
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.common.componentCoroutineScope
+import com.murzify.meetum.core.common.registerKeeper
+import com.murzify.meetum.core.common.restore
 import com.murzify.meetum.core.domain.model.Record
-import com.murzify.meetum.core.domain.model.Service
 import com.murzify.meetum.core.domain.repository.RecordRepository
 import com.murzify.meetum.core.domain.usecase.GetRecordsUseCase
 import com.murzify.meetum.core.domain.usecase.GetServicesUseCase
+import com.murzify.meetum.feature.calendar.components.RecordsManagerComponent.Model
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.get
 import java.time.LocalDate
@@ -19,7 +22,6 @@ import java.util.Date
 
 fun ComponentFactory.createRecordsManagerComponent(
     componentContext: ComponentContext,
-    splitScreen: Boolean,
     navigateToAddRecord: (date: Date, record: Record?) -> Unit,
     navigateToRecordInfo: (record: Record) -> Unit,
 ): RecordsManagerComponent {
@@ -27,7 +29,6 @@ fun ComponentFactory.createRecordsManagerComponent(
         componentContext,
         navigateToAddRecord,
         navigateToRecordInfo,
-        splitScreen,
         get(),
         get(),
         get()
@@ -38,38 +39,40 @@ class RealRecordsManagerComponent constructor (
     componentContext: ComponentContext,
     private val navigateToAddRecord: (date: Date, record: Record?) -> Unit,
     private val navigateToRecordInfo: (record: Record) -> Unit,
-    override val splitScreen: Boolean,
     private val getServicesUseCase: GetServicesUseCase,
     private val recordRepository: RecordRepository,
     private val getRecordsUseCase: GetRecordsUseCase,
 ): ComponentContext by componentContext, RecordsManagerComponent {
-    override val currentRecords: MutableStateFlow<List<Record>> = MutableStateFlow(emptyList())
 
-    override val services: MutableStateFlow<List<Service>> = MutableStateFlow(emptyList())
-
-    override val allRecords: MutableStateFlow<List<Record>> = MutableStateFlow(emptyList())
-
-    override val selectedDate: MutableStateFlow<LocalDate> = MutableStateFlow(LocalDate.now())
+    override val model = MutableStateFlow(
+        restore(Model.serializer()) ?: Model(
+            currentRecords = emptyList(),
+            services = emptyList(),
+            allRecords = emptyList(),
+            selectedDate = LocalDate.now()
+        )
+    )
 
     private val coroutineScope = componentCoroutineScope()
 
     init {
+        registerKeeper(Model.serializer()) { model.value }
         coroutineScope.launch(Dispatchers.IO) {
             getServicesUseCase()
-                .collect {
-                    services.value = it
+                .collect { services ->
+                    model.update { it.copy(services = services) }
                 }
         }
 
         coroutineScope.launch(Dispatchers.IO) {
-            recordRepository.getAllRecords().collect {
-                allRecords.value = it
+            recordRepository.getAllRecords().collect { allRecords ->
+                model.update { it.copy(allRecords = allRecords) }
             }
         }
 
         coroutineScope.launch(Dispatchers.IO) {
-            getRecordsUseCase(selectedDate.value.toDate()).collect {
-                currentRecords.value = it
+            getRecordsUseCase(model.value.selectedDate.toDate()).collect { currentRecords ->
+                model.update { it.copy(currentRecords = currentRecords) }
             }
         }
     }
@@ -81,16 +84,17 @@ class RealRecordsManagerComponent constructor (
             set(Calendar.HOUR, currentCal.get(Calendar.HOUR))
             set(Calendar.MINUTE, currentCal.get(Calendar.MINUTE))
         }.time
-        selectedDate.value = time.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+        val newSelectedDate = time.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+        model.update { it.copy(selectedDate = newSelectedDate) }
         coroutineScope.launch(Dispatchers.IO) {
-            getRecordsUseCase(date.toDate()).collect {
-                currentRecords.value = it
+            getRecordsUseCase(date.toDate()).collect { currentRecords ->
+                model.update { it.copy(currentRecords = currentRecords) }
             }
         }
     }
 
     override fun onAddRecordClick() {
-        navigateToAddRecord(selectedDate.value.toDate(), null)
+        navigateToAddRecord(model.value.selectedDate.toDate(), null)
     }
 
     override fun onRecordClick(record: Record) {
