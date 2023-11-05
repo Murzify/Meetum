@@ -152,7 +152,7 @@ internal fun AddRecordUi(
                     modifier = Modifier
                         .constrainAs(textField) {
                             if (model.showRepeatInfo) {
-                                top.linkTo(repeatText.bottom)
+                                top.linkTo(repeatText.bottom, 8.dp)
                             } else {
                                 top.linkTo(timeInput.bottom)
                             }
@@ -393,13 +393,13 @@ private fun RepeatText(repeat: Repeat, modifier: Modifier) {
     var repeatText = "${stringResource(R.string.repeat_every)} ${repeat.periodCount} " +
             pluralStringResource(periodsRes[repeat.period]!!, repeat.periodCount)
     if (repeat.period == Calendar.WEEK_OF_MONTH) {
-        repeatText += "("
-        repeat.daysOfWeek.forEach {
-            repeatText += it.toDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.getDefault())
-            repeatText += ", "
+        repeatText += repeat.daysOfWeek.joinToString(
+            separator = ", ",
+            prefix = "(",
+            postfix = ")"
+        ) {
+            it.toDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.getDefault())
         }
-        repeatText = repeatText.removeSuffix(", ")
-        repeatText += ")"
     }
 
     val ending = if (repeat.repeatTimes != null) {
