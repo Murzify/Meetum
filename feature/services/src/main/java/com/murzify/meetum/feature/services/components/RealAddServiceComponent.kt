@@ -3,13 +3,17 @@ package com.murzify.meetum.feature.services.components
 import com.arkivanov.decompose.ComponentContext
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.common.componentCoroutineScope
+import com.murzify.meetum.core.common.registerKeeper
+import com.murzify.meetum.core.common.restore
 import com.murzify.meetum.core.domain.model.Service
 import com.murzify.meetum.core.domain.repository.RecordRepository
 import com.murzify.meetum.core.domain.repository.ServiceRepository
 import com.murzify.meetum.core.domain.usecase.AddServiceUseCase
+import com.murzify.meetum.feature.services.components.AddServiceComponent.Model
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.get
@@ -23,7 +27,7 @@ fun ComponentFactory.createAddServiceComponent(
     navigateBack: () -> Unit
 ) = RealAddServiceComponent(
     componentContext,
-    MutableStateFlow(service),
+    service,
     navigateBack,
     get(),
     get(),
@@ -31,29 +35,30 @@ fun ComponentFactory.createAddServiceComponent(
 )
 class RealAddServiceComponent(
     componentContext: ComponentContext,
-    override val service: MutableStateFlow<Service?> = MutableStateFlow(null),
+    service: Service? = null,
     private val navigateBack: () -> Unit,
     private val addServicesUseCase: AddServiceUseCase,
     private val recordRepository: RecordRepository,
     private val serviceRepository: ServiceRepository
 ) : ComponentContext by componentContext, AddServiceComponent {
 
-    override val name: MutableStateFlow<String> = MutableStateFlow(
-        service.value?.name ?: ""
+    override val model = MutableStateFlow(
+        restore(Model.serializer()) ?: Model(
+            service = service,
+            name = service?.name ?: "",
+            isNameError = false,
+            price = service?.name ?: "",
+            isPriceError = false,
+            currency = service?.currency ?: Currency.getInstance(Locale.getDefault()),
+            showAlert = false,
+            showDeleteButton = service != null
+        )
     )
-    override val isNameError: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
-    override val price: MutableStateFlow<String> = MutableStateFlow(
-        service.value?.price?.toString() ?: ""
-    )
-    override val isPriceError: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    init {
+        registerKeeper(Model.serializer()) { model.value }
+    }
 
-    override val currency: MutableStateFlow<Currency> = MutableStateFlow(
-        service.value?.currency ?: Currency.getInstance(Locale.getDefault())
-    )
-
-    override val showAlert: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    override val showDeleteButton: StateFlow<Boolean> = MutableStateFlow(service.value != null)
     override fun onBackClick() {
         navigateBack()
     }
@@ -63,7 +68,7 @@ class RealAddServiceComponent(
     private val coroutineScope = componentCoroutineScope()
     init {
         coroutineScope.launch(Dispatchers.IO) {
-            service.value?.let {
+            model.value.service?.let {
                 recordRepository.futureRecords(it.id).apply {
                     if (isNotEmpty()) {
                         deleteAlertNeeded.emit(true)
@@ -76,43 +81,51 @@ class RealAddServiceComponent(
     }
 
     override fun onNameChanged(name: String) {
-        this.name.value = name.removePrefix(" ")
+        model.update { it.copy(name = name.removePrefix(" ")) }
     }
 
     override fun onPriceChanged(price: String) {
-        isPriceError.value = false
+        model.update { it.copy(isPriceError = false) }
         try {
-            this.price.value = price
-                .replace(",", ".")
-                .replace("-", "")
-                .toDouble()
-                .toString()
+            model.update {
+                it.copy(
+                    price = price
+                        .replace(",", ".")
+                        .replace("-", "")
+                        .toDouble()
+                        .toString()
+                )
+            }
         } catch (e: Throwable) {
-            isPriceError.value = true
+            model.update { it.copy(isPriceError = true) }
         }
     }
 
     override fun onCurrencyChanged(currency: Currency?) {
-        currency?.let {
-            this.currency.value = it
+        currency?.let { cur ->
+            model.update { it.copy(currency = cur) }
         }
     }
 
     override fun onSaveClick() {
         coroutineScope.launch(Dispatchers.IO) {
-            isNameError.value = name.value.isEmpty()
-            if (!isNameError.value) {
-                val service = Service(
-                    name.value,
-                    price.value.toDouble(),
-                    currency.value,
-                    service.value?.id ?: UUID.randomUUID()
-                )
-                addServicesUseCase(service)
-                withContext(Dispatchers.Main) {
-                    navigateBack()
+            model.updateAndGet {
+                it.copy(isNameError = model.value.name.isEmpty())
+            }.apply {
+                if (!isNameError) {
+                    val service = Service(
+                        name,
+                        price.toDouble(),
+                        currency,
+                        service?.id ?: UUID.randomUUID()
+                    )
+                    addServicesUseCase(service)
+                    withContext(Dispatchers.Main) {
+                        navigateBack()
+                    }
                 }
             }
+
 
         }
     }
@@ -120,7 +133,7 @@ class RealAddServiceComponent(
     override fun onDeleteClick() {
         coroutineScope.launch(Dispatchers.IO) {
             if (deleteAlertNeeded.value) {
-                showAlert.value = true
+                model.update { it.copy(showAlert = true) }
             } else {
                 onDeleteConfirmed()
             }
@@ -130,8 +143,8 @@ class RealAddServiceComponent(
 
     override fun onDeleteConfirmed() {
         coroutineScope.launch(Dispatchers.IO) {
-            showAlert.value = false
-            service.value?.let {
+            model.update { it.copy(showAlert = false) }
+            model.value.service?.let {
                 recordRepository.deleteLinkedRecords(it.id)
                 serviceRepository.deleteService(it)
             }
@@ -142,7 +155,7 @@ class RealAddServiceComponent(
     }
 
     override fun onDeleteCanceled() {
-        showAlert.value = false
+        model.update { it.copy(showAlert = false) }
     }
 
 }
