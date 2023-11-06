@@ -47,7 +47,7 @@ class RealAddServiceComponent(
             service = service,
             name = service?.name ?: "",
             isNameError = false,
-            price = service?.name ?: "",
+            price = service?.price?.toString() ?: "",
             isPriceError = false,
             currency = service?.currency ?: Currency.getInstance(Locale.getDefault()),
             showAlert = false,
