@@ -42,4 +42,7 @@ interface RecordDao {
     @Query("DELETE FROM records WHERE service_id == :serviceId")
     fun deleteLinkedWithService(serviceId: UUID)
 
+    @Query("DELETE FROM record_dates WHERE :recordId == record_id AND :date == date")
+    fun deleteDate(recordId: UUID, date: Date)
+
 }

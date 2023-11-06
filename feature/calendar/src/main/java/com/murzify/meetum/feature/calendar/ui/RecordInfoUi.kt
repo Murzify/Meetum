@@ -58,7 +58,7 @@ internal fun RecordInfoUi(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    RecordDateTime(date = model.record.time[0])
+                    RecordDateTime(date = model.date)
                 },
                 navigationIcon = {
                     IconButton(modifier = Modifier

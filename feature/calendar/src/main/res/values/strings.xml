@@ -59,4 +59,9 @@
             times
         </item>
     </plurals>
+    
+    <string name="delete_series_alert">This appointment is part of a series of events. Do you want to delete just this appointment, or the entire series?</string>
+    <string name="cancel">Cancel</string>
+    <string name="this_appointment">This appointment</string>
+    <string name="entire_series">Entire series</string>
 </resources>

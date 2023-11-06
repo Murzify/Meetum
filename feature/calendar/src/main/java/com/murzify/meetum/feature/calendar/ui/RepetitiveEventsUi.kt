@@ -79,7 +79,6 @@ internal fun RepetitiveEventsPreview() {
     RepetitiveEventsUi(component = FakeRepetitiveEventsComponent())
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun RepetitiveEventsUi(
     component: RepetitiveEventsComponent

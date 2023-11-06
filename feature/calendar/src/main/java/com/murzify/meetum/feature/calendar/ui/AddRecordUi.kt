@@ -16,19 +16,26 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimeInput
 import androidx.compose.material3.TimePickerState
 import androidx.compose.runtime.Composable
@@ -57,6 +64,7 @@ import com.murzify.meetum.core.ui.TextField
 import com.murzify.meetum.core.ui.Toolbar
 import com.murzify.meetum.feature.calendar.R
 import com.murzify.meetum.feature.calendar.components.AddRecordComponent
+import com.murzify.meetum.feature.calendar.components.AddRecordComponent.DeleteType
 import java.text.DateFormat
 import java.time.DayOfWeek
 import java.time.format.TextStyle
@@ -71,7 +79,7 @@ internal fun AddRecordUi(
 ) {
     val model by component.model.collectAsState()
     val defCalendar = Calendar.getInstance().apply {
-        time = Date()
+        time = model.date
     }
 
     val timePickerState = remember {
@@ -85,7 +93,7 @@ internal fun AddRecordUi(
 
     Toolbar(
         title = {
-            RecordDate(date = model.record?.time?.get(0) ?: model.date)
+            RecordDate(date = model.date)
         },
         onBackClicked = component::onBackClick,
         fab = {
@@ -251,6 +259,13 @@ internal fun AddRecordUi(
                 }
             }
         }
+
+        if (model.showSeriesAlert) {
+            DeleteAlert(
+                onDeleteCanceled = component::onDeleteCancel,
+                onDeleteSelected = component::onAlertDeleteTypeSelected
+            )
+        }
     }
 
 }
@@ -286,6 +301,49 @@ private fun FloatActionBar(
             )
         }
 
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DeleteAlert(
+    onDeleteCanceled: () -> Unit,
+    onDeleteSelected: (DeleteType) -> Unit,
+
+) {
+    AlertDialog(onDismissRequest = onDeleteCanceled) {
+        Surface(
+            modifier = Modifier
+                .wrapContentWidth()
+                .wrapContentHeight(),
+            shape = MaterialTheme.shapes.large,
+            tonalElevation = AlertDialogDefaults.TonalElevation
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = stringResource(id = R.string.delete_series_alert),
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                    TextButton(
+                        onClick = onDeleteCanceled,
+                    ) {
+                        Text(stringResource(id = R.string.cancel))
+                    }
+                    TextButton(
+                        onClick = { onDeleteSelected(DeleteType.Date) },
+                    ) {
+                        Text(stringResource(id = R.string.this_appointment))
+                    }
+                    TextButton(
+                        onClick = { onDeleteSelected(DeleteType.Series) },
+                    ) {
+                        Text(stringResource(id = R.string.entire_series))
+                    }
+                }
+
+            }
+        }
     }
 }
 

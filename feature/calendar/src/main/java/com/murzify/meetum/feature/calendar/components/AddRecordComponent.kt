@@ -32,6 +32,10 @@ interface AddRecordComponent {
 
     fun onDeleteClicked()
 
+    fun onAlertDeleteTypeSelected(deleteType: DeleteType)
+
+    fun onDeleteCancel()
+
     fun onBackClick()
 
     fun onRepeatReceived(repeat: Repeat)
@@ -48,6 +52,13 @@ interface AddRecordComponent {
         val record: Record?,
         val services: List<Service>,
         val repeat: Repeat,
-        val showRepeatInfo: Boolean
+        val showRepeatInfo: Boolean,
+        val showSeriesAlert: Boolean
     )
+
+    sealed interface DeleteType {
+        data object Series: DeleteType
+
+        data object Date: DeleteType
+    }
 }

@@ -3,6 +3,7 @@ package com.murzify.meetum.feature.calendar.components
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
@@ -52,8 +53,8 @@ class RealCalendarComponent(
                 navigateToAddRecord = { date, record ->
                     navigation.push(ChildConfig.AddRecord(date, record))
                 },
-                navigateToRecordInfo = { record ->
-                    navigation.push(ChildConfig.RecordInfo(record))
+                navigateToRecordInfo = { record, date ->
+                    navigation.push(ChildConfig.RecordInfo(record, date))
                 }
             )
         )
@@ -63,6 +64,7 @@ class RealCalendarComponent(
                 config.date,
                 config.record,
                 navigateBack = navigation::pop,
+                navigateToCalendar = { navigation.bringToFront(ChildConfig.RecordsManager) },
                 navigateToRepeat = { navigation.push(ChildConfig.RepetitiveEvents) },
                 navigateToAddService = navigateToAddService
             )
@@ -71,11 +73,12 @@ class RealCalendarComponent(
             RealRecordInfoComponent(
                 componentContext,
                 config.record,
+                date = config.date,
                 navigateBack = navigation::pop,
                 navigateToEdit = {
                     navigation.push(
                         ChildConfig.AddRecord(
-                            config.record.time.first(),
+                            config.date,
                             config.record
                         )
                     )
@@ -105,7 +108,7 @@ class RealCalendarComponent(
         data class AddRecord(val date: Date, val record: @RawValue Record? = null): ChildConfig
 
         @Parcelize
-        data class RecordInfo(val record: @RawValue Record): ChildConfig
+        data class RecordInfo(val record: @RawValue Record, val date: Date): ChildConfig
 
         @Parcelize
         data object RepetitiveEvents: ChildConfig

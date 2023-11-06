@@ -15,11 +15,13 @@ import com.murzify.meetum.core.domain.model.Service
 import com.murzify.meetum.core.domain.repository.RecordRepository
 import com.murzify.meetum.core.domain.usecase.AddRecordUseCase
 import com.murzify.meetum.core.domain.usecase.GetServicesUseCase
+import com.murzify.meetum.feature.calendar.components.AddRecordComponent.DeleteType
 import com.murzify.meetum.feature.calendar.components.AddRecordComponent.Model
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.component.get
 import java.util.Calendar
 import java.util.Date
@@ -30,11 +32,13 @@ fun ComponentFactory.createAddRecordComponent(
     date: Date,
     record: Record?,
     navigateBack: () -> Unit,
+    navigateToCalendar: () -> Unit,
     navigateToAddService: () -> Unit,
     navigateToRepeat: () -> Unit
 ) : AddRecordComponent = RealAddRecordComponent(
     componentContext,
     navigateBack,
+    navigateToCalendar,
     navigateToRepeat,
     navigateToAddService,
     date,
@@ -47,10 +51,11 @@ fun ComponentFactory.createAddRecordComponent(
 class RealAddRecordComponent(
     componentContext: ComponentContext,
     private val navigateBack: () -> Unit,
+    private val navigateToCalendar: () -> Unit,
     private val navigateToRepeat: () -> Unit,
     override val onAddServiceClick: () -> Unit,
-    val date: Date,
-    val record: Record? = null,
+    date: Date,
+    record: Record? = null,
     private val addRecordUseCase: AddRecordUseCase,
     private val getServicesUseCase: GetServicesUseCase,
     private val recordRepo: RecordRepository
@@ -69,8 +74,8 @@ class RealAddRecordComponent(
             repeat = RepeatRecord.Repeater()
                 .end(1)
                 .repeat(),
-            showRepeatInfo = false
-
+            showRepeatInfo = false,
+            showSeriesAlert = false
         )
     )
 
@@ -173,18 +178,44 @@ class RealAddRecordComponent(
                 } else {
                     recordRepo.updateRecord(saveRecord)
                 }
-                navigateBack()
+                withContext(Dispatchers.Main) {
+                    navigateToCalendar()
+                }
             }
         }
-
 
     }
 
     override fun onDeleteClicked() {
         coroutineScope.launch(Dispatchers.IO) {
-            recordRepo.deleteRecord(model.value.record!!)
-            navigateBack()
+            val record = model.value.record!!
+            if (record.time.size > 1) {
+                model.update { it.copy(showSeriesAlert = true) }
+                return@launch
+            }
+            recordRepo.deleteRecord(record)
+            withContext(Dispatchers.Main) {
+                navigateToCalendar()
+            }
         }
+    }
+
+    override fun onAlertDeleteTypeSelected(deleteType: DeleteType) {
+        coroutineScope.launch(Dispatchers.IO) {
+            val record = model.value.record!!
+            when (deleteType) {
+                DeleteType.Date -> recordRepo.deleteDate(record.id, model.value.date)
+                DeleteType.Series -> recordRepo.deleteRecord(record)
+            }
+            model.update { it.copy(showSeriesAlert = false) }
+            withContext(Dispatchers.Main) {
+                navigateToCalendar()
+            }
+        }
+    }
+
+    override fun onDeleteCancel() {
+        model.update { it.copy(showSeriesAlert = false) }
     }
 
     override fun onBackClick() {

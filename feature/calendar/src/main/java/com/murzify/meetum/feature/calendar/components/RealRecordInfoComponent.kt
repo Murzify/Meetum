@@ -9,16 +9,18 @@ import com.murzify.meetum.core.common.restore
 import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.feature.calendar.components.RecordInfoComponent.Model
 import kotlinx.coroutines.flow.MutableStateFlow
+import java.util.Date
 
 class RealRecordInfoComponent(
     componentContext: ComponentContext,
-    val record: Record,
+    record: Record,
+    date: Date,
     private val navigateToEdit: (record: Record) -> Unit,
     private val navigateBack: () -> Unit
 ) : ComponentContext by componentContext, RecordInfoComponent {
 
     override val model = MutableStateFlow(
-        restore(Model.serializer()) ?: Model(record)
+        restore(Model.serializer()) ?: Model(record, date)
     )
 
     init {

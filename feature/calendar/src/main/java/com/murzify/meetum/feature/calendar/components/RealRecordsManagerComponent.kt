@@ -23,7 +23,7 @@ import java.util.Date
 fun ComponentFactory.createRecordsManagerComponent(
     componentContext: ComponentContext,
     navigateToAddRecord: (date: Date, record: Record?) -> Unit,
-    navigateToRecordInfo: (record: Record) -> Unit,
+    navigateToRecordInfo: (record: Record, date: Date) -> Unit,
 ): RecordsManagerComponent {
     return RealRecordsManagerComponent(
         componentContext,
@@ -38,7 +38,7 @@ fun ComponentFactory.createRecordsManagerComponent(
 class RealRecordsManagerComponent constructor (
     componentContext: ComponentContext,
     private val navigateToAddRecord: (date: Date, record: Record?) -> Unit,
-    private val navigateToRecordInfo: (record: Record) -> Unit,
+    private val navigateToRecordInfo: (record: Record, date:Date) -> Unit,
     private val getServicesUseCase: GetServicesUseCase,
     private val recordRepository: RecordRepository,
     private val getRecordsUseCase: GetRecordsUseCase,
@@ -94,11 +94,28 @@ class RealRecordsManagerComponent constructor (
     }
 
     override fun onAddRecordClick() {
-        navigateToAddRecord(model.value.selectedDate.toDate(), null)
+        val currentCalendar = Calendar.getInstance().apply {
+            time = Date()
+        }
+        val selectedDate = Calendar.getInstance().apply {
+            time = model.value.selectedDate.toDate()
+            set(Calendar.HOUR_OF_DAY, currentCalendar.get(Calendar.HOUR_OF_DAY))
+            set(Calendar.MINUTE, currentCalendar.get(Calendar.MINUTE))
+        }.time
+        navigateToAddRecord(selectedDate, null)
     }
 
     override fun onRecordClick(record: Record) {
-        navigateToRecordInfo(record)
+        val recordCalendar = Calendar.getInstance().apply {
+            time = record.time[0]
+        }
+        val date = Calendar.getInstance().apply {
+            time = model.value.selectedDate.toDate()
+            set(Calendar.HOUR_OF_DAY, recordCalendar.get(Calendar.HOUR_OF_DAY))
+            set(Calendar.MINUTE, recordCalendar.get(Calendar.MINUTE))
+        }.time
+
+        navigateToRecordInfo(record, date)
     }
 
     private fun LocalDate.toDate(): Date {

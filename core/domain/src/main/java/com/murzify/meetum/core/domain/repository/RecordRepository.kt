@@ -20,4 +20,6 @@ interface RecordRepository {
     suspend fun futureRecords(serviceId: UUID): List<Record>
 
     suspend fun deleteLinkedRecords(serviceId: UUID)
+
+    suspend fun deleteDate(recordId: UUID, date: Date)
 }

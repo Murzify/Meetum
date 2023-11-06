@@ -78,4 +78,8 @@
             раз
         </item>
     </plurals>
+    <string name="delete_series_alert">Эта запись является частью серии событий. Вы хотите удалить только эту запись или всю серию?</string>
+    <string name="cancel">Отмена</string>
+    <string name="this_appointment">Эту запись</string>
+    <string name="entire_series">Всю серию</string>
 </resources>

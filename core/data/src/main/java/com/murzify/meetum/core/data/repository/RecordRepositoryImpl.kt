@@ -36,6 +36,10 @@ class RecordRepositoryImpl constructor(
         recordDao.deleteLinkedWithService(serviceId)
     }
 
+    override suspend fun deleteDate(recordId: UUID, date: Date) {
+        recordDao.deleteDate(recordId, date)
+    }
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override suspend fun addRecord(record: Record) {
         recordDao.add(record.toEntity())
