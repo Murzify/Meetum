@@ -3,10 +3,10 @@ package com.murzify.meetum.feature.calendar.components
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
-import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
+import com.arkivanov.decompose.router.stack.replaceAll
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.common.toStateFlow
@@ -64,7 +64,7 @@ class RealCalendarComponent(
                 config.date,
                 config.record,
                 navigateBack = navigation::pop,
-                navigateToCalendar = { navigation.bringToFront(ChildConfig.RecordsManager) },
+                navigateToCalendar = { navigation.replaceAll(ChildConfig.RecordsManager) },
                 navigateToRepeat = { navigation.push(ChildConfig.RepetitiveEvents) },
                 navigateToAddService = navigateToAddService
             )

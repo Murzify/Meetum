@@ -26,6 +26,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
@@ -76,11 +77,25 @@ internal fun RecordsManagerUi(
 
     val splitScreen = calculateWindowSizeClass().widthSizeClass != WindowWidthSizeClass.Compact
 
-    Box(
-        contentAlignment = Alignment.BottomEnd,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                modifier = Modifier.padding(end = 8.dp, bottom = 8.dp),
+                onClick = {
+                    component.onAddRecordClick()
+                }
+            ) {
+                Icon(
+                    painter = painterResource(id = com.murzify.ui.R.drawable.round_add_24),
+                    contentDescription = stringResource(id = R.string.add_record)
+                )
+            }
+        }
+    ) { paddingValues ->
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(paddingValues)
+        ) {
             if (splitScreen) {
                 Calendar(
                     weight = 1f,
@@ -122,20 +137,7 @@ internal fun RecordsManagerUi(
                 }
             }
         }
-
-        FloatingActionButton(
-            modifier = Modifier.padding(end = 8.dp, bottom = 8.dp),
-            onClick = {
-                component.onAddRecordClick()
-            }
-        ) {
-            Icon(
-                painter = painterResource(id = com.murzify.ui.R.drawable.round_add_24),
-                contentDescription = stringResource(id = R.string.add_record)
-            )
-        }
     }
-
 }
 
 @Composable
