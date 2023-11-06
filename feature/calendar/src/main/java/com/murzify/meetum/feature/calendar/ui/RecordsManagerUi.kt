@@ -94,14 +94,14 @@ internal fun RecordsManagerUi(
     ) { paddingValues ->
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(paddingValues)
         ) {
             if (splitScreen) {
                 Calendar(
                     weight = 1f,
                     allRecords = model.allRecords,
                     selectedDate = model.selectedDate,
-                    selectDate = component::onDateClick
+                    selectDate = component::onDateClick,
+                    modifier = Modifier.padding(top = paddingValues.calculateTopPadding())
                 )
             }
             LazyColumn(
@@ -109,7 +109,8 @@ internal fun RecordsManagerUi(
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(1f),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                contentPadding = paddingValues
             ) {
                 if (!splitScreen) {
                     item {
@@ -145,6 +146,7 @@ private fun RowScope.Calendar(
     weight: Float,
     allRecords: List<Record>,
     selectedDate: LocalDate,
+    modifier: Modifier = Modifier,
     selectDate: (LocalDate) -> Unit
 ) {
     val currentMonth = remember { YearMonth.now() }
@@ -192,7 +194,7 @@ private fun RowScope.Calendar(
                 container()
             }
         },
-        modifier = Modifier
+        modifier = modifier
             .weight(weight)
     )
 }

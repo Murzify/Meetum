@@ -75,7 +75,8 @@ internal fun ServicesListUi(
         LazyVerticalGrid(
             columns = GridCells.Adaptive(150.dp),
             state = gridState,
-            modifier = Modifier.fillMaxSize().padding(paddingValues)
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = paddingValues
         ) {
 
             items(services) {

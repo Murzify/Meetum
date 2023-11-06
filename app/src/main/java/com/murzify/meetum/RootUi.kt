@@ -1,7 +1,6 @@
 package com.murzify.meetum
 
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -61,7 +60,10 @@ fun RootUi(
             }
         }
     ) { paddingValues ->
-        Row {
+        Row(
+            modifier = Modifier
+                .padding(bottom = paddingValues.calculateBottomPadding())
+        ) {
             if (shouldShowNavRail) {
                 NavigationRail(modifier = Modifier.fillMaxHeight()) {
                     screensList.forEach { screen ->
@@ -87,7 +89,6 @@ fun RootUi(
             Children(
                 childStack,
                 animation = stackAnimation(fade()),
-                modifier = Modifier.consumeWindowInsets(paddingValues).padding(paddingValues)
             ){
                 when (val instance = it.instance) {
                     is RootComponent.Child.Calendar -> CalendarUi(instance.component)
