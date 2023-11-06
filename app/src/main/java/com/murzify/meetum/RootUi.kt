@@ -1,5 +1,6 @@
 package com.murzify.meetum
 
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.stackAnimation
+import com.murzify.meetum.RootComponent.Child
 import com.murzify.meetum.feature.calendar.ui.CalendarUi
 import com.murzify.meetum.feature.services.ui.ServicesUi
 import com.murzify.meetum.navigation.Screen
@@ -60,6 +62,7 @@ fun RootUi(
             }
         }
     ) { paddingValues ->
+
         Row(
             modifier = Modifier
                 .padding(bottom = paddingValues.calculateBottomPadding())
@@ -86,23 +89,26 @@ fun RootUi(
                 }
             }
 
+            val animOrientation = if (shouldShowNavRail)
+                Orientation.Vertical else Orientation.Horizontal
+
             Children(
                 childStack,
                 animation = stackAnimation(fade()),
             ){
                 when (val instance = it.instance) {
-                    is RootComponent.Child.Calendar -> CalendarUi(instance.component)
-                    is RootComponent.Child.Services -> ServicesUi(instance.component)
+                    is Child.Calendar -> CalendarUi(instance.component, animOrientation)
+                    is Child.Services -> ServicesUi(instance.component, animOrientation)
                 }
             }
-            
+
         }
     }
 }
 
-private fun RootComponent.Child.toScreen() = when (this) {
-    is RootComponent.Child.Calendar -> Screen.Calendar
-    is RootComponent.Child.Services -> Screen.Services
+private fun Child.toScreen() = when (this) {
+    is Child.Calendar -> Screen.Calendar
+    is Child.Services -> Screen.Services
 }
 
 
