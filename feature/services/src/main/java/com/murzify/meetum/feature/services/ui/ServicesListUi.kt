@@ -36,10 +36,6 @@ internal fun ServicesListUi(
     val showGhostLottie by component.showGhostLottie.collectAsState()
     val services by component.services.collectAsState()
 
-    if (showGhostLottie) {
-        EmptyScreenLottie()
-    }
-
     val gridState = rememberLazyGridState()
     val fabVisibility = remember {
         derivedStateOf {
@@ -72,6 +68,9 @@ internal fun ServicesListUi(
             }
         }
     ) { paddingValues ->
+        if (showGhostLottie) {
+            EmptyScreenLottie()
+        }
         LazyVerticalGrid(
             columns = GridCells.Adaptive(150.dp),
             state = gridState,
