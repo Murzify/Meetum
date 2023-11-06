@@ -4,13 +4,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.Children
+import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.stackAnimation
 import com.murzify.meetum.feature.calendar.components.CalendarComponent
 
 @Composable
 fun CalendarUi(component: CalendarComponent) {
     val childStack by component.childStack.collectAsState()
 
-    Children(childStack) { child ->
+    Children(
+        childStack,
+        animation = stackAnimation(fade())
+    ) { child ->
         when (val instance = child.instance) {
             is CalendarComponent.Child.AddRecord -> AddRecordUi(instance.component)
             is CalendarComponent.Child.RecordInfo -> RecordInfoUi(instance.component)
