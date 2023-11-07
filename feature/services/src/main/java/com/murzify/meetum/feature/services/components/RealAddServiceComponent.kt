@@ -152,7 +152,7 @@ class RealAddServiceComponent(
                 recordRepository.deleteLinkedRecords(it.id)
                 serviceRepository.deleteService(it)
             }
-            withContext(Dispatchers.IO){
+            withContext(Dispatchers.Main){
                 navigateBack()
             }
         }
