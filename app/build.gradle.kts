@@ -5,6 +5,7 @@ import java.io.FileInputStream
 plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
+    alias(libs.plugins.crashlytics)
     id("meetum.koin")
     id("meetum.feature")
     id("meetum.unitTests")
@@ -78,6 +79,8 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:domain"))
 
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
     implementation(libs.window.size)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

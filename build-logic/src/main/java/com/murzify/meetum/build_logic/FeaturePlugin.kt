@@ -13,6 +13,7 @@ class FeaturePlugin: Plugin<Project> {
             with(pluginManager) {
                 apply("meetum.koin")
                 apply("kotlin-parcelize")
+                apply("com.google.gms.google-services")
             }
             dependencies {
                 add("implementation", project(":core:ui"))
