@@ -87,15 +87,19 @@ class RealAddServiceComponent(
     override fun onPriceChanged(price: String) {
         model.update { it.copy(isPriceError = false) }
         try {
-            model.update {
-                it.copy(
-                    price = price
-                        .replace(",", ".")
-                        .replace("-", "")
-                        .toDouble()
-                        .toString()
-                )
-            }
+            price
+                .replace(",", ".")
+                .replace("-", "")
+                .toDouble()
+                .takeIf {
+                    it != Double.POSITIVE_INFINITY && it != Double.NEGATIVE_INFINITY
+                }?.let { formattedPrice ->
+                    model.update { model ->
+                        model.copy(
+                            price = formattedPrice.toString()
+                        )
+                    }
+                }
         } catch (e: Throwable) {
             model.update { it.copy(isPriceError = true) }
         }

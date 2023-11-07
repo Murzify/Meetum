@@ -20,7 +20,6 @@ class MainActivity : ComponentActivity() {
             componentContext = componentContext,
             componentFactory
         )
-//        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             MeetumTheme {
                 rootComponent.onCalcWindow(calculateWindowSizeClass())
