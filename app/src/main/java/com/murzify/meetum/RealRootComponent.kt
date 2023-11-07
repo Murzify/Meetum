@@ -9,8 +9,6 @@ import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
-import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.Parcelize
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.common.toStateFlow
 import com.murzify.meetum.feature.calendar.components.createCalendarComponent
@@ -18,6 +16,7 @@ import com.murzify.meetum.feature.services.components.createServicesComponent
 import com.murzify.meetum.navigation.Screen
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.serialization.Serializable
 
 class RealRootComponent(
     componentContext: ComponentContext,
@@ -32,6 +31,7 @@ class RealRootComponent(
 
     override val childStack: StateFlow<ChildStack<*, RootComponent.Child>> = childStack(
         source = navigation,
+        serializer = ChildConfig.serializer(),
         initialConfiguration = ChildConfig.Calendar,
         handleBackButton = true,
         childFactory = ::createChild
@@ -71,12 +71,13 @@ class RealRootComponent(
         )
     }
 
-    private sealed interface ChildConfig : Parcelable {
+    @Serializable
+    private sealed interface ChildConfig {
 
-        @Parcelize
+        @Serializable
         data object Calendar : ChildConfig
 
-        @Parcelize
+        @Serializable
         data class Services(val addService: Boolean) : ChildConfig
     }
 }

@@ -7,13 +7,12 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.router.stack.replaceAll
-import com.arkivanov.essenty.parcelable.Parcelable
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.common.toStateFlow
+import com.murzify.meetum.core.domain.model.DateSerializer
 import com.murzify.meetum.core.domain.model.Record
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.parcelize.Parcelize
-import kotlinx.parcelize.RawValue
+import kotlinx.serialization.Serializable
 import java.util.Date
 
 fun ComponentFactory.createCalendarComponent(
@@ -38,6 +37,7 @@ class RealCalendarComponent(
 
     override val childStack: StateFlow<ChildStack<*, CalendarComponent.Child>> = childStack(
         source = navigation,
+        serializer = ChildConfig.serializer(),
         initialConfiguration = ChildConfig.RecordsManager,
         handleBackButton = true,
         childFactory = ::createChild
@@ -100,17 +100,26 @@ class RealCalendarComponent(
         )
     }
 
-    private sealed interface ChildConfig: Parcelable {
-        @Parcelize
+    @Serializable
+    private sealed interface ChildConfig {
+        @Serializable
         data object RecordsManager: ChildConfig
 
-        @Parcelize
-        data class AddRecord(val date: Date, val record: @RawValue Record? = null): ChildConfig
+        @Serializable
+        data class AddRecord(
+            @Serializable(with = DateSerializer::class)
+            val date: Date,
+            val record: Record? = null
+        ): ChildConfig
 
-        @Parcelize
-        data class RecordInfo(val record: @RawValue Record, val date: Date): ChildConfig
+        @Serializable
+        data class RecordInfo(
+            val record: Record,
+            @Serializable(with = DateSerializer::class)
+            val date: Date
+        ): ChildConfig
 
-        @Parcelize
+        @Serializable
         data object RepetitiveEvents: ChildConfig
 
     }

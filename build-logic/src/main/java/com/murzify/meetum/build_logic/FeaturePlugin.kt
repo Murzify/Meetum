@@ -12,8 +12,8 @@ class FeaturePlugin: Plugin<Project> {
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
             with(pluginManager) {
                 apply("meetum.koin")
-                apply("kotlin-parcelize")
                 apply("com.google.gms.google-services")
+                apply("org.jetbrains.kotlin.plugin.serialization")
             }
             dependencies {
                 add("implementation", project(":core:ui"))
