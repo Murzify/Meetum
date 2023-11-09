@@ -23,6 +23,8 @@ interface RecordsManagerComponent {
 
     fun onRecordClick(record: Record)
 
+    fun onDismissToStart(record: Record)
+
     @Serializable
     data class Model(
         val currentRecords: List<Record>,

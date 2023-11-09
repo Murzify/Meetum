@@ -1,4 +1,4 @@
-package com.murzify.meetum.ui.theme
+package com.murzify.meetum.core.ui
 
 import androidx.compose.ui.graphics.Color
 

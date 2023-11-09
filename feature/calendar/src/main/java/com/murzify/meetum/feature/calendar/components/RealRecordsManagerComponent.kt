@@ -11,6 +11,7 @@ import com.murzify.meetum.core.domain.usecase.GetRecordsUseCase
 import com.murzify.meetum.core.domain.usecase.GetServicesUseCase
 import com.murzify.meetum.feature.calendar.components.RecordsManagerComponent.Model
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -71,7 +72,11 @@ class RealRecordsManagerComponent constructor (
         }
 
         coroutineScope.launch(Dispatchers.IO) {
-            getRecordsUseCase(model.value.selectedDate.toDate()).collect { currentRecords ->
+            val selectedDate = model.value.selectedDate.toDate()
+            getRecordsUseCase(selectedDate).collect { currentRecords ->
+                currentRecords.map {
+                    it.copy(time = listOf(getSelectedDate(it)))
+                }
                 model.update { it.copy(currentRecords = currentRecords) }
             }
         }
@@ -116,6 +121,25 @@ class RealRecordsManagerComponent constructor (
         }.time
 
         navigateToRecordInfo(record, date)
+    }
+
+    override fun onDismissToStart(record: Record) {
+        val selectedDate = getSelectedDate(record)
+        coroutineScope.launch(Dispatchers.IO) {
+            delay(500)
+            recordRepository.deleteDate(record.id, selectedDate)
+        }
+    }
+
+    private fun getSelectedDate(record: Record): Date {
+        val recordCalendar = Calendar.getInstance().apply {
+            time = record.time[0]
+        }
+        return Calendar.getInstance().apply {
+            time = model.value.selectedDate.toDate()
+            set(Calendar.HOUR_OF_DAY, recordCalendar.get(Calendar.HOUR_OF_DAY))
+            set(Calendar.MINUTE, recordCalendar.get(Calendar.MINUTE))
+        }.time
     }
 
     private fun LocalDate.toDate(): Date {

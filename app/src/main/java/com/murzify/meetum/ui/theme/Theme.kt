@@ -15,6 +15,12 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.murzify.meetum.core.ui.Pink40
+import com.murzify.meetum.core.ui.Pink80
+import com.murzify.meetum.core.ui.Purple40
+import com.murzify.meetum.core.ui.Purple80
+import com.murzify.meetum.core.ui.PurpleGrey40
+import com.murzify.meetum.core.ui.PurpleGrey80
 import com.murzify.meetum.core.ui.meetumTypography
 
 private val DarkColorScheme = darkColorScheme(
