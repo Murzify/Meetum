@@ -80,6 +80,7 @@ dependencies {
     implementation(project(":core:domain"))
 
     implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.analytics)
     implementation(libs.window.size)
     testImplementation(libs.junit)
