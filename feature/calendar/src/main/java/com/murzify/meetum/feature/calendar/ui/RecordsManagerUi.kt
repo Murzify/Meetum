@@ -1,9 +1,7 @@
 package com.murzify.meetum.feature.calendar.ui
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -28,6 +26,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.DismissState
 import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -157,6 +156,9 @@ internal fun RecordsManagerUi(
                 }
                 items(
                     model.currentRecords,
+                    key = {
+                        it.hashCode().toString() + it.time[0]
+                    }
                 ) { record ->
                     var show by remember {
                         mutableStateOf(true)
@@ -171,26 +173,23 @@ internal fun RecordsManagerUi(
                             } else false
                         }
                     )
-                    AnimatedVisibility(
-                        visible = show,
-                        exit = fadeOut()
-                    ) {
-                        Column {
-                            SwipeToDismiss(
-                                state = dismissSate,
-                                background = {
-                                    DismissBackground(dismissSate = dismissSate)
-                                },
-                                dismissContent = {
-                                    RecordCard(
-                                        record,
-                                        onClick = component::onRecordClick
-                                    )
-                                },
-                                modifier = Modifier.animateItemPlacement()
-                            )
-                            HorizontalDivider()
-                        }
+                    Column(modifier = Modifier.animateItemPlacement()) {
+                        SwipeToDismiss(
+                            state = dismissSate,
+                            background = {
+                                DismissBackground(dismissSate = dismissSate)
+                            },
+                            dismissContent = {
+                                RecordCard(
+                                    record,
+                                    onClick = component::onRecordClick
+                                )
+                            },
+                            directions = mutableSetOf(DismissDirection.StartToEnd).apply {
+                                if (!splitScreen) add(DismissDirection.EndToStart)
+                            }
+                        )
+                        HorizontalDivider()
                     }
                 }
                 item {
@@ -219,6 +218,7 @@ private fun DismissBackground(dismissSate: DismissState) {
     }
     Box(
         modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
             .fillMaxSize()
             .background(color = color),
         contentAlignment = contentAlignment
