@@ -435,8 +435,6 @@ private fun RequestContactsPermission(onGranted: @Composable () -> Unit) {
         SideEffect {
             launcher.launch(Manifest.permission.READ_CONTACTS)
         }
-    } else {
-        onGranted()
     }
 }
 
