@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS records (
+    record_id TEXT NOT NULL,
+    client_name TEXT,
+    description TEXT,
+    phone TEXT,
+    service_id TEXT NOT NULL,
+    PRIMARY KEY(record_id)
+);
