@@ -7,6 +7,8 @@ import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import com.murzify.meetum.core.database.dao.RecordDao
 import com.murzify.meetum.core.database.dao.RecordDaoImpl
+import com.murzify.meetum.core.database.dao.ServiceDao
+import com.murzify.meetum.core.database.dao.ServiceDaoImpl
 import com.murzify.meetum.`meetum-database`
 import org.koin.dsl.module
 import java.util.UUID
@@ -18,10 +20,6 @@ val databaseModule = module {
             MeetumDatabase::class.java,
             "meetum-database"
         ).addMigrations(MIGRATION_2_3).build()
-    }
-    single {
-        val db = get<MeetumDatabase>()
-        db.serviceDao()
     }
     single<SqlDriver> {
         `meetum-database`.Schema
@@ -55,15 +53,19 @@ val databaseModule = module {
         )
     }
     single {
-        val driver: SqlDriver = get()
-        `meetum-database`(driver).recordsQueries
+        `meetum-database`(get()).recordsQueries
     }
     single {
-        val driver: SqlDriver = get()
-        `meetum-database`(driver).recordDatesQueries
+        `meetum-database`(get()).recordDatesQueries
+    }
+    single {
+        `meetum-database`(get()).servicesQueries
     }
     single<RecordDao> {
         RecordDaoImpl(get(), get())
+    }
+    single<ServiceDao>{
+        ServiceDaoImpl(get())
     }
 
 }

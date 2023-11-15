@@ -3,6 +3,7 @@ package com.murzify.meetum.core.database.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.murzify.meetum.core.database.Services
 import com.murzify.meetum.core.domain.model.Service
 import java.util.Currency
 import java.util.UUID
@@ -15,13 +16,6 @@ data class ServiceEntity(
     @ColumnInfo(name = "currency") val currency: Currency,
 )
 
-fun ServiceEntity.toDomain() = Service(
-    name,
-    price,
-    currency,
-    serviceId
-)
-
-fun Service.toEntity() = ServiceEntity(
-    id, name, price, currency
+fun Service.toEntity() = Services(
+    id.toString(), name, price, currency.currencyCode
 )

@@ -5,3 +5,21 @@ CREATE TABLE services (
     currency TEXT NOT NULL,
     PRIMARY KEY(service_id)
 );
+
+getAll:
+SELECT * FROM services;
+
+add:
+INSERT INTO services
+VALUES ?;
+
+edit:
+UPDATE services
+SET name = ?,
+    price = ?,
+    currency = ?
+WHERE service_id = ?;
+
+delete:
+DELETE FROM services
+WHERE service_id = ?;

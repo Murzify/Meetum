@@ -6,7 +6,6 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.murzify.meetum.core.database.dao.ServiceDao
 import com.murzify.meetum.core.database.model.RecordDatesEntity
 import com.murzify.meetum.core.database.model.RecordEntity
 import com.murzify.meetum.core.database.model.ServiceEntity
@@ -22,7 +21,6 @@ import java.util.UUID
 )
 @TypeConverters(Converters::class)
 abstract class MeetumDatabase: RoomDatabase() {
-    abstract fun serviceDao(): ServiceDao
 
 }
 
