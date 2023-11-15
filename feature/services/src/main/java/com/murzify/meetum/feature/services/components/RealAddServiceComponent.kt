@@ -116,17 +116,23 @@ class RealAddServiceComponent(
             model.updateAndGet {
                 it.copy(isNameError = model.value.name.isEmpty())
             }.apply {
-                if (!isNameError) {
-                    val service = Service(
-                        name,
-                        price.toDouble(),
-                        currency,
-                        service?.id ?: UUID.randomUUID()
-                    )
+                if (isNameError) {
+                    return@apply
+                }
+                val service = Service(
+                    name,
+                    price.toDouble(),
+                    currency,
+                    service?.id ?: UUID.randomUUID()
+                )
+                if (showDeleteButton) {
+                    serviceRepository.editService(service)
+                } else {
                     addServicesUseCase(service)
-                    withContext(Dispatchers.Main) {
-                        navigateBack()
-                    }
+                }
+
+                withContext(Dispatchers.Main) {
+                    navigateBack()
                 }
             }
 
