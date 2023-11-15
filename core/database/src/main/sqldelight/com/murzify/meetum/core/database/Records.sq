@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS records (
+CREATE TABLE records (
     record_id TEXT NOT NULL,
     client_name TEXT,
     description TEXT,
@@ -6,3 +6,47 @@ CREATE TABLE IF NOT EXISTS records (
     service_id TEXT NOT NULL,
     PRIMARY KEY(record_id)
 );
+
+getAllRecords:
+SELECT * FROM records
+INNER JOIN services ON records.service_id = services.service_id
+INNER JOIN record_dates ON records.record_id = record_dates.record_id;
+
+getByDate:
+SELECT * FROM records
+INNER JOIN services ON records.service_id = services.service_id
+INNER JOIN record_dates ON records.record_id = record_dates.record_id
+WHERE EXISTS (
+    SELECT 1 FROM record_dates
+    WHERE record_dates.record_id = records.record_id
+    AND record_dates.date BETWEEN :startDate AND :endDate
+);
+
+getFuture:
+SELECT * FROM records
+INNER JOIN services ON records.service_id = services.service_id
+INNER JOIN record_dates ON records.record_id = record_dates.record_id
+    AND record_dates.date > :currentTime
+WHERE records.service_id == :serviceId AND EXISTS
+    (SELECT 1 FROM record_dates
+        WHERE record_dates.record_id == records.record_id
+        AND record_dates.date > :currentTime
+    );
+
+add:
+INSERT INTO records
+VALUES ?;
+
+update:
+UPDATE records
+    SET client_name = ?,
+        description = ?,
+        phone = ?,
+        service_id = ?
+WHERE ? = records.record_id;
+
+delete:
+DELETE FROM records WHERE :id = record_id;
+
+deleteLinkedWithSerivce:
+DELETE FROM records WHERE service_id == :serviceId;

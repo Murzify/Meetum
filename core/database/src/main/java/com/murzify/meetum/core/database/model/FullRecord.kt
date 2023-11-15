@@ -1,21 +1,17 @@
 package com.murzify.meetum.core.database.model
 
-import androidx.room.Embedded
-import androidx.room.Relation
-import com.murzify.meetum.core.domain.model.Record
-
 data class FullRecord(
-    @Embedded val record: RecordEntity,
-    @Relation(parentColumn = "service_id", entityColumn = "service_id") val service: ServiceEntity,
-    @Relation(parentColumn = "record_id", entityColumn = "record_id") val dates: List<RecordDatesEntity>
-)
-
-fun FullRecord.toDomain() = Record(
-    record.clientName,
-    dates.map { it.date },
-    record.description,
-    record.phone,
-    service.toDomain(),
-    record.recordId
+    val record_id: String,
+    val client_name: String?,
+    val description: String?,
+    val phone: String?,
+    val service_id: String,
+    val service_id_: String,
+    val name: String,
+    val price: Double,
+    val currency: String,
+    val date_id: String,
+    val record_id_: String,
+    val date: Long
 )
 

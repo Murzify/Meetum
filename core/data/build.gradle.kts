@@ -39,5 +39,6 @@ dependencies {
     implementation(project(":core:domain"))
     implementation(project(":core:database"))
 
+    implementation(libs.sqldelight.coroutines)
     implementation(libs.inject)
 }

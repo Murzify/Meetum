@@ -3,6 +3,7 @@ package com.murzify.meetum.core.database.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.murzify.meetum.core.database.Records
 import com.murzify.meetum.core.domain.model.Record
 import java.util.UUID
 
@@ -15,10 +16,10 @@ data class RecordEntity(
     @ColumnInfo(name = "service_id") val serviceId: UUID
 )
 
-fun Record.toEntity() = RecordEntity(
-    id,
+fun Record.toEntity() = Records(
+    id.toString(),
     clientName,
     description,
     phone,
-    service.id
+    service.id.toString()
 )

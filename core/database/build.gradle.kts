@@ -58,8 +58,7 @@ android {
 
 dependencies {
     implementation(project(":core:domain"))
-
-
+    implementation(libs.sqldelight.coroutines)
     implementation(libs.core.ktx)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
