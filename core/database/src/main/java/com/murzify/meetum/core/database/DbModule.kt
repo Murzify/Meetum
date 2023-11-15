@@ -1,6 +1,5 @@
 package com.murzify.meetum.core.database
 
-import androidx.room.Room
 import androidx.sqlite.db.SupportSQLiteDatabase
 import app.cash.sqldelight.db.AfterVersion
 import app.cash.sqldelight.db.SqlDriver
@@ -14,13 +13,6 @@ import org.koin.dsl.module
 import java.util.UUID
 
 val databaseModule = module {
-    single {
-        Room.databaseBuilder(
-            get(),
-            MeetumDatabase::class.java,
-            "meetum-database"
-        ).addMigrations(MIGRATION_2_3).build()
-    }
     single<SqlDriver> {
         `meetum-database`.Schema
         AndroidSqliteDriver(

@@ -13,7 +13,6 @@ material3 = "1.2.0-alpha07"
 kotlin = "1.9.0"
 calendar = "2.4.0"
 ksp = "1.9.0-1.0.13"
-room = "2.6.0"
 coroutines = "1.7.3"
 mockito = "5.5.0"
 mockito-inline = "5.2.0"
@@ -43,7 +42,6 @@ androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 test-runner = { group = "androidx.test", name = "runner", version.ref = "androidx-test" }
 test-rules = { group = "androidx.test", name = "rules", version.ref = "androidx-test-rules" }
-room-testing = { group = "androidx.room", name = "room-testing", version.ref = "room" }
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
@@ -57,9 +55,6 @@ material3 = { group = "androidx.compose.material3", name = "material3", version.
 material = { group = "androidx.compose.material", name = "material" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 calendar = { module = "com.kizitonwose.calendar:compose", version.ref = "calendar" }
-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 inject = { module = "javax.inject:javax.inject", version = "1" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
@@ -70,8 +65,6 @@ androidx-test-core = { group = "androidx.test", name = "core", version.ref = "an
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraint-layout" }
 lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie" }
 toolbar-compose = { module = "me.onebone:toolbar-compose", version.ref = "toolbar-compose" }
-appmetrica-analytics = { group = "io.appmetrica.analytics", name = "analytics", version.ref = "appmetrica" }
-appmetrica-gradle = { group = "io.appmetrica.analytics", name = "gradle", version.ref = "appmetrica-gradle" }
 androidx-compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class" }
 decompose = { group = "com.arkivanov.decompose", name = "decompose", version.ref = "decompose" }
 decompose-extensions = { group = "com.arkivanov.decompose", name = "extensions-compose-jetpack", version.ref = "decompose" }
