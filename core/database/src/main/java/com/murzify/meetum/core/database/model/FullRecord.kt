@@ -1,17 +1,17 @@
 package com.murzify.meetum.core.database.model
 
 data class FullRecord(
-    val record_id: String,
-    val client_name: String?,
+    val recordId: String,
+    val clientName: String?,
     val description: String?,
     val phone: String?,
-    val service_id: String,
-    val service_id_: String,
+    val serviceId: String,
+    val serviceIdService: String,
     val name: String,
     val price: Double,
     val currency: String,
-    val date_id: String,
-    val record_id_: String,
+    val dateId: String,
+    val recordIdDate: String,
     val date: Long
 )
 

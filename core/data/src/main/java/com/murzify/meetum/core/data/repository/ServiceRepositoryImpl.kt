@@ -35,5 +35,4 @@ class ServiceRepositoryImpl constructor(
         serviceDao.edit(service = service.toEntity())
     }
 
-
 }
