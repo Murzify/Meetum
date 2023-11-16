@@ -1,18 +1,26 @@
 package com.murzify.meetum.core.data.repository
 
 import com.murzify.meetum.core.database.dao.ServiceDao
-import com.murzify.meetum.core.database.model.toDomain
 import com.murzify.meetum.core.database.model.toEntity
 import com.murzify.meetum.core.domain.model.Service
 import com.murzify.meetum.core.domain.repository.ServiceRepository
 import kotlinx.coroutines.flow.map
+import java.util.Currency
+import java.util.UUID
 
 
 class ServiceRepositoryImpl constructor(
     private val serviceDao: ServiceDao
 ): ServiceRepository {
     override suspend fun getAllServices() = serviceDao.getAll().map { serviceList ->
-        serviceList.map { it.toDomain() }
+        serviceList.map {
+            Service(
+                it.name,
+                it.price,
+                Currency.getInstance(it.currency),
+                UUID.fromString(it.service_id)
+            )
+        }
     }
 
     override suspend fun addService(service: Service) {

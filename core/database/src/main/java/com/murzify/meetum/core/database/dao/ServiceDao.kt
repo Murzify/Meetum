@@ -1,25 +1,15 @@
 package com.murzify.meetum.core.database.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
-import com.murzify.meetum.core.database.model.ServiceEntity
+import com.murzify.meetum.core.database.Services
 import kotlinx.coroutines.flow.Flow
 
-@Dao
 interface ServiceDao {
-    @Query("SELECT * FROM services")
-    fun getAll(): Flow<List<ServiceEntity>>
+    fun getAll(): Flow<List<Services>>
 
-    @Insert
-    fun add(service: ServiceEntity)
+    fun add(service: Services)
 
-    @Update
-    fun edit(service: ServiceEntity)
+    fun edit(service: Services)
 
-    @Delete
-    fun delete(service: ServiceEntity)
+    fun delete(service: Services)
 
 }

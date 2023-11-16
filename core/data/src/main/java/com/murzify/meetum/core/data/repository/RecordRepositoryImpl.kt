@@ -1,10 +1,6 @@
 package com.murzify.meetum.core.data.repository
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.murzify.meetum.core.database.dao.RecordDao
-import com.murzify.meetum.core.database.model.RecordDatesEntity
-import com.murzify.meetum.core.database.model.toDomain
 import com.murzify.meetum.core.database.model.toEntity
 import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.core.domain.repository.RecordRepository
@@ -18,18 +14,16 @@ class RecordRepositoryImpl constructor(
 ): RecordRepository {
 
     override suspend fun getAllRecords() = recordDao.getAll().map { recordList ->
-        recordList.map { it.toDomain() }
+        recordList.mapToRecord()
     }
 
     override suspend fun getRecords(starDate: Date, endDate: Date) = recordDao
         .getByDate(starDate, endDate).map { recordList ->
-            recordList.map { it.toDomain() }
+            recordList.mapToRecord()
         }
 
     override suspend fun futureRecords(serviceId: UUID): List<Record> {
-        return recordDao.getFuture(serviceId, Date()).map {
-            it.toDomain()
-        }
+        return recordDao.getFuture(serviceId, Date()).mapToRecord()
     }
 
     override suspend fun deleteLinkedRecords(serviceId: UUID) {
@@ -40,16 +34,8 @@ class RecordRepositoryImpl constructor(
         recordDao.deleteDate(recordId, date)
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override suspend fun addRecord(record: Record) {
-        recordDao.add(record.toEntity())
-        val dates = record.time.map {
-            RecordDatesEntity(
-                recordId = record.id,
-                date = it
-            )
-        }.toTypedArray()
-        recordDao.addDate(*dates)
+        recordDao.add(record.toEntity(), record.time)
     }
 
     override suspend fun updateRecord(record: Record) {

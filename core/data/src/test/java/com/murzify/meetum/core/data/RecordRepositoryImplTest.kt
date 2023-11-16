@@ -1,10 +1,10 @@
 package com.murzify.meetum.core.data
 
 import com.murzify.meetum.core.data.repository.RecordRepositoryImpl
+import com.murzify.meetum.core.data.repository.mapToRecord
+import com.murzify.meetum.core.database.Record_dates
 import com.murzify.meetum.core.database.dao.RecordDao
 import com.murzify.meetum.core.database.model.FullRecord
-import com.murzify.meetum.core.database.model.RecordDatesEntity
-import com.murzify.meetum.core.database.model.toDomain
 import com.murzify.meetum.core.database.model.toEntity
 import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.core.domain.model.Service
@@ -41,14 +41,24 @@ class RecordRepositoryImplTest {
         null,
         testService
     )
+    private val testDate = Record_dates(
+        UUID.randomUUID().toString(),
+        testRecord.id.toString(),
+        Date().time
+    )
     private val testFullRecord = FullRecord(
-        testRecord.toEntity(), testService.toEntity(), listOf(
-            RecordDatesEntity(
-                dateId = UUID.randomUUID(),
-                date = testRecord.time[0],
-                recordId = testRecord.id
-            )
-        )
+        testRecord.id.toString(),
+        testRecord.clientName,
+        testRecord.description,
+                testRecord.phone,
+        testRecord.service.id.toString(),
+                testService.id.toString(),
+        testService.name,
+        testService.price,
+        testService.currency.currencyCode,
+        testDate.date_id,
+        testDate.record_id,
+        testDate.date
     )
     private val recordsList = List(5) { testFullRecord }
 
@@ -67,7 +77,7 @@ class RecordRepositoryImplTest {
         )
         assertEquals(
             repo.getAllRecords().first(),
-            recordsFlow.first().map { it.toDomain() }
+            recordsFlow.first().mapToRecord()
         )
     }
 
@@ -85,14 +95,14 @@ class RecordRepositoryImplTest {
         }.toInstant()
         assertEquals(
             repo.getRecords(Date.from(startDate), Date.from(endDate)).first(),
-            recordsFlow.first().map { it.toDomain() }
+            recordsFlow.first().mapToRecord()
         )
     }
 
     @Test
     fun `should call add method`() = runTest {
         repo.addRecord(testRecord)
-        verify(recordDao).add(testRecord.toEntity())
+        verify(recordDao).add(testRecord.toEntity(), testRecord.time)
     }
 
     @Test

@@ -1,48 +1,30 @@
 package com.murzify.meetum.core.database.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Transaction
-import androidx.room.Update
+import com.murzify.meetum.core.database.Record_dates
+import com.murzify.meetum.core.database.Records
 import com.murzify.meetum.core.database.model.FullRecord
-import com.murzify.meetum.core.database.model.RecordDatesEntity
-import com.murzify.meetum.core.database.model.RecordEntity
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
 import java.util.UUID
 
-@Dao
 interface RecordDao {
-    @Transaction
-    @Query("SELECT * FROM records")
-    fun getAll(): Flow<List<FullRecord>>
 
-    @Transaction
-    @Query("SELECT * FROM records WHERE EXISTS (SELECT 1 FROM record_dates WHERE record_dates.record_id = records.record_id AND record_dates.date BETWEEN :startDate AND :endDate)")
-    fun getByDate(startDate: Date, endDate: Date): Flow<List<FullRecord>>
+    suspend fun getAll(): Flow<List<FullRecord>>
 
-    @Insert
-    fun add(record: RecordEntity)
+    suspend fun getByDate(startDate: Date, endDate: Date): Flow<List<FullRecord>>
 
-    @Insert
-    fun addDate(vararg recordDates: RecordDatesEntity)
+    suspend fun add(record: Records, dates: List<Date>)
 
-    @Update
-    fun update(record: RecordEntity)
+    suspend fun addDate(vararg recordDates: Record_dates)
 
-    @Delete
-    fun delete(record: RecordEntity)
+    suspend fun update(record: Records)
 
-    @Transaction
-    @Query("SELECT * FROM records WHERE service_id == :serviceId AND EXISTS (SELECT 1 FROM record_dates WHERE record_dates.record_id == records.record_id AND record_dates.date > :currentTime)")
-    fun getFuture(serviceId: UUID, currentTime: Date): List<FullRecord>
+    suspend fun delete(record: Records)
 
-    @Query("DELETE FROM records WHERE service_id == :serviceId")
-    fun deleteLinkedWithService(serviceId: UUID)
+    suspend fun getFuture(serviceId: UUID, currentTime: Date): List<FullRecord>
 
-    @Query("DELETE FROM record_dates WHERE :recordId == record_id AND :date == date")
-    fun deleteDate(recordId: UUID, date: Date)
+    suspend fun deleteLinkedWithService(serviceId: UUID)
+
+    suspend fun deleteDate(recordId: UUID, date: Date)
 
 }

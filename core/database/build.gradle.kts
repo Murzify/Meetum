@@ -2,10 +2,18 @@
 plugins {
     alias(libs.plugins.com.android.library)
     alias(libs.plugins.org.jetbrains.kotlin.android)
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.sqldelight)
     id("meetum.koin")
     id("meetum.unitTests")
     id("meetum.instrumentalTest")
+}
+
+sqldelight {
+    databases {
+        create("meetum-database") {
+            packageName.set("com.murzify.meetum")
+        }
+    }
 }
 
 android {
@@ -17,9 +25,6 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas")
-        }
     }
 
     buildTypes {
@@ -38,19 +43,13 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-    sourceSets {
-        // Adds exported schema location as test app assets.
-        getByName("androidTest").assets.srcDir("$projectDir/schemas")
+    dependencies {
+        implementation(libs.sqldelight.android)
     }
 }
 
 dependencies {
     implementation(project(":core:domain"))
-
+    implementation(libs.sqldelight.coroutines)
     implementation(libs.core.ktx)
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    ksp(libs.room.compiler)
-
-    androidTestImplementation(libs.room.testing)
 }

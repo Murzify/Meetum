@@ -11,7 +11,9 @@ import com.murzify.meetum.core.domain.usecase.GetRecordsUseCase
 import com.murzify.meetum.core.domain.usecase.GetServicesUseCase
 import com.murzify.meetum.feature.calendar.components.RecordsManagerComponent.Model
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.get
@@ -71,12 +73,18 @@ class RealRecordsManagerComponent constructor (
         }
 
         coroutineScope.launch(Dispatchers.IO) {
-            val selectedDate = model.value.selectedDate.toDate()
-            getRecordsUseCase(selectedDate).collect { currentRecords ->
-                val new = currentRecords.map {
-                    it.copy(time = listOf(getSelectedDate(it)))
+            var currentRecordsJob: Job? = null
+
+            model.map { it.selectedDate }.collect { selectedDate ->
+                currentRecordsJob?.cancel()
+                currentRecordsJob = launch {
+                    getRecordsUseCase(selectedDate.toDate()).collect { currentRecords ->
+                        val new = currentRecords.map {
+                            it.copy(time = listOf(getSelectedDate(it)))
+                        }
+                        model.update { it.copy(currentRecords = new) }
+                    }
                 }
-                model.update { it.copy(currentRecords = new) }
             }
         }
     }
