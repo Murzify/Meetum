@@ -1,5 +1,6 @@
 package com.murzify.meetum.feature.services.ui
 
+import android.view.KeyEvent.ACTION_DOWN
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AlertDialogDefaults
@@ -31,8 +33,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.murzify.meetum.core.ui.TextField
@@ -71,14 +79,27 @@ internal fun AddServiceUi(
                 .padding(it)
                 .padding(16.dp)
         ) {
+            val focusManager = LocalFocusManager.current
             TextField(
                 value = model.name,
                 onValueChange = component::onNameChanged,
                 label = { Text(text = stringResource(id = R.string.service_name)) },
                 modifier = Modifier
                     .padding(vertical = 16.dp)
-                    .width(200.dp),
+                    .width(200.dp)
+                    .onPreviewKeyEvent { event ->
+                        if (event.key == Key.Tab && event.nativeKeyEvent.action == ACTION_DOWN){
+                            focusManager.moveFocus(FocusDirection.Down)
+                            true
+                        } else {
+                            false
+                        }
+                    },
                 isError = model.isNameError,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                )
             )
 
             Row(
@@ -89,7 +110,15 @@ internal fun AddServiceUi(
                     value = model.price,
                     onValueChange = component::onPriceChanged,
                     label = { Text(text = stringResource(R.string.price)) },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Decimal,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus(true)
+                        }
+                    ),
                     modifier = Modifier
                         .weight(1f)
                         .padding(end = 8.dp),

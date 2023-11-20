@@ -119,12 +119,18 @@ class RealAddServiceComponent(
                 if (isNameError) {
                     return@apply
                 }
-                val service = Service(
-                    name,
-                    price.toDouble(),
-                    currency,
-                    service?.id ?: UUID.randomUUID()
-                )
+
+                val service = try {
+                    Service(
+                        name,
+                        price.toDouble(),
+                        currency,
+                        service?.id ?: UUID.randomUUID()
+                    )
+                } catch (e: NumberFormatException) {
+                    model.update { it.copy(isPriceError = true) }
+                    return@apply
+                }
                 if (showDeleteButton) {
                     serviceRepository.editService(service)
                 } else {
@@ -135,8 +141,6 @@ class RealAddServiceComponent(
                     navigateBack()
                 }
             }
-
-
         }
     }
 
