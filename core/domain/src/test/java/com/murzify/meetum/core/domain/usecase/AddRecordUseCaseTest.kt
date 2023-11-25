@@ -6,28 +6,29 @@ import com.murzify.meetum.core.domain.model.RepeatRecord
 import com.murzify.meetum.core.domain.model.Service
 import com.murzify.meetum.core.domain.repository.RecordRepository
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
 import org.junit.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
-import java.util.Calendar
+import java.time.DayOfWeek
 import java.util.Currency
-import java.util.Date
 
 class AddRecordUseCaseTest {
 
     private val recordRepository: RecordRepository = mock()
-    val testService = Service(
+    private val testService = Service(
         "",
         0.0,
         Currency.getInstance("USD")
     )
-    val testRecord = Record(
+    private val testRecord = Record(
         "Vasya",
         listOf(
-            Calendar.getInstance().apply {
-                time = Date()
-                set(Calendar.DAY_OF_MONTH, 15)
-            }.time
+            Clock.System.now()
         ),
         null,
         "+10000000000",
@@ -44,13 +45,12 @@ class AddRecordUseCaseTest {
     @Test
     fun `should repeat records correctly`() = runTest {
         val useCase = AddRecordUseCase(recordRepository)
-        val endDate = Calendar.getInstance().apply {
-            time = testRecord.time.first()
-            add(Calendar.MONTH, 3)
-        }.time
+        val end = LocalDateTime(2023, 12, 31, 17, 29, 0, 0)
+
         val repeat: Repeat = RepeatRecord.Repeater()
-            .every(1, Calendar.MONTH)
-            .end(endDate)
+            .every(2, DateTimeUnit.WEEK)
+            .setDaysOfWeek(listOf(DayOfWeek.MONDAY, DayOfWeek.FRIDAY))
+            .end(end.toInstant(TimeZone.currentSystemDefault()))
             .repeat()
 
         useCase(testRecord, repeat)

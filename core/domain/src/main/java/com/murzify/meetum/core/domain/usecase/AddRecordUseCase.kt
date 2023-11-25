@@ -3,9 +3,11 @@ package com.murzify.meetum.core.domain.usecase
 import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.core.domain.model.Repeat
 import com.murzify.meetum.core.domain.repository.RecordRepository
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
+import kotlinx.datetime.plus
+import kotlinx.datetime.toLocalDateTime
 
 class AddRecordUseCase constructor(
     private val recordRepository: RecordRepository
@@ -21,61 +23,34 @@ class AddRecordUseCase constructor(
         val dates = record.time.toMutableList()
         val startTime = record.time.first()
 
-        Calendar.getInstance(Locale.getDefault()).apply {
-            time = startTime
-            fun shouldAddDate() = shouldAddDate(repeat, dates)
+        val tz = TimeZone.currentSystemDefault()
+        var currentDate = startTime.plus(1, DateTimeUnit.DAY, tz)
+        while ((repeat.repeatToDate != null && currentDate <= repeat.repeatToDate!!) ||
+            (repeat.repeatTimes != null && dates.size < repeat.repeatTimes!!)) {
 
-            while (shouldAddDate()) {
-                while (true) {
-                    addWeekRepeat(repeat, startTime, ::shouldAddDate) {
-                        if (repeat.repeatTimes != null || time <= repeat.repeatToDate)
-                            dates.add(time)
-                    }
-                    add(repeat.period, repeat.periodCount)
-                    if (repeat.period == Calendar.WEEK_OF_MONTH) {
-                        break
-                    }
-                    if (repeat.repeatTimes != null || time <= repeat.repeatToDate)
-                        dates.add(time)
-                    break
+            if (repeat.period == DateTimeUnit.WEEK) {
+                val ldt= currentDate.toLocalDateTime(tz)
+                if (ldt.dayOfWeek in repeat.daysOfWeek) {
+                     dates.add(currentDate)
                 }
+                if (ldt.dayOfWeek == repeat.daysOfWeek.last()) {
+                    val firstInWeek = dates[dates.size - repeat.daysOfWeek.size]
+                    currentDate = firstInWeek
+                        .plus(repeat.periodCount, DateTimeUnit.WEEK, tz)
+                        .minus(1, DateTimeUnit.DAY, tz)
+                }
+                currentDate = currentDate.plus(1, DateTimeUnit.DAY, tz)
+                continue
             }
+
+            currentDate = currentDate.plus(repeat.periodCount, repeat.period, tz)
+            dates.add(currentDate)
         }
+
         val newRecord = record.copy(
             time = dates
         )
         recordRepository.addRecord(newRecord)
     }
 
-    private inline fun Calendar.addWeekRepeat(
-        repeat: Repeat,
-        startTime: Date,
-        shouldAddDate: () -> Boolean,
-        block: () -> Unit
-    ) {
-        repeat.daysOfWeek.forEach { dayOfWeek ->
-            set(Calendar.DAY_OF_WEEK, dayOfWeek)
-            if (timeInMillis > startTime.time) {
-                if (shouldAddDate()) {
-                    block()
-                    return@forEach
-                }
-            }
-        }
-    }
-
-    private fun Calendar.shouldAddDate(repeat: Repeat, dates: List<Date>): Boolean {
-        return if (repeat.repeatTimes != null) {
-            val times = repeat.repeatTimes!!
-            (dates.size < times)
-        } else if (repeat.repeatToDate != null) {
-            val endDate = Calendar.getInstance().apply {
-                time = repeat.repeatToDate
-            }
-            (dates.last().time < repeat.repeatToDate!!.time
-                    && this <= endDate)
-        } else {
-            false
-        }
-    }
 }
