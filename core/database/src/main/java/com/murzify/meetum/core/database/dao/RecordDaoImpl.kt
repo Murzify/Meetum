@@ -9,7 +9,7 @@ import com.murzify.meetum.core.database.RecordsQueries
 import com.murzify.meetum.core.database.model.FullRecord
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import java.util.Date
+import kotlinx.datetime.Instant
 import java.util.UUID
 
 class RecordDaoImpl(
@@ -21,23 +21,23 @@ class RecordDaoImpl(
         .asFlow()
         .mapToList(Dispatchers.IO)
 
-    override suspend fun getByDate(startDate: Date, endDate: Date): Flow<List<FullRecord>> = recordsQueries
+    override suspend fun getByDate(startDate: Instant, endDate: Instant): Flow<List<FullRecord>> = recordsQueries
         .getByDate(
-            startDate.time,
-            endDate.time,
+            startDate.toEpochMilliseconds(),
+            endDate.toEpochMilliseconds(),
             mapper = ::FullRecord
         )
         .asFlow()
         .mapToList(Dispatchers.IO)
 
-    override suspend fun add(record: Records, dates: List<Date>) {
+    override suspend fun add(record: Records, dates: List<Instant>) {
         recordDatesQueries.transaction {
             recordsQueries.add(record)
             dates.forEach { date ->
                 val recordDate = Record_dates(
                     UUID.randomUUID().toString(),
                     record.record_id,
-                    date.time
+                    date.toEpochMilliseconds()
                 )
                 recordDatesQueries.add(recordDate)
             }
@@ -66,9 +66,9 @@ class RecordDaoImpl(
         recordsQueries.delete(record.record_id)
     }
 
-    override suspend fun getFuture(serviceId: UUID, currentTime: Date): List<FullRecord> = recordsQueries
+    override suspend fun getFuture(serviceId: UUID, currentTime: Instant): List<FullRecord> = recordsQueries
         .getFuture(
-            Date().time,
+            currentTime.toEpochMilliseconds(),
             serviceId.toString(),
             mapper = ::FullRecord
         )
@@ -78,7 +78,7 @@ class RecordDaoImpl(
         recordsQueries.deleteLinkedWithSerivce(serviceId.toString())
     }
 
-    override suspend fun deleteDate(recordId: UUID, date: Date) {
-        recordDatesQueries.delete(recordId.toString(), date.time)
+    override suspend fun deleteDate(recordId: UUID, date: Instant) {
+        recordDatesQueries.delete(recordId.toString(), date.toEpochMilliseconds())
     }
 }

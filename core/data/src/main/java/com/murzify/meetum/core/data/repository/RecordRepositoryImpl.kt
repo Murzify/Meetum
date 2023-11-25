@@ -5,7 +5,8 @@ import com.murzify.meetum.core.database.model.toEntity
 import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.core.domain.repository.RecordRepository
 import kotlinx.coroutines.flow.map
-import java.util.Date
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import java.util.UUID
 
 
@@ -17,20 +18,20 @@ class RecordRepositoryImpl constructor(
         recordList.mapToRecord()
     }
 
-    override suspend fun getRecords(starDate: Date, endDate: Date) = recordDao
+    override suspend fun getRecords(starDate: Instant, endDate: Instant) = recordDao
         .getByDate(starDate, endDate).map { recordList ->
             recordList.mapToRecord()
         }
 
     override suspend fun futureRecords(serviceId: UUID): List<Record> {
-        return recordDao.getFuture(serviceId, Date()).mapToRecord()
+        return recordDao.getFuture(serviceId, Clock.System.now()).mapToRecord()
     }
 
     override suspend fun deleteLinkedRecords(serviceId: UUID) {
         recordDao.deleteLinkedWithService(serviceId)
     }
 
-    override suspend fun deleteDate(recordId: UUID, date: Date) {
+    override suspend fun deleteDate(recordId: UUID, date: Instant) {
         recordDao.deleteDate(recordId, date)
     }
 
