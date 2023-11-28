@@ -5,6 +5,7 @@ import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalTextStyle
@@ -29,6 +30,7 @@ fun TextField(
     maxLines: Int = 1,
     textStyle: TextStyle = LocalTextStyle.current,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     contentPadding: PaddingValues = PaddingValues(16.dp),
     label: @Composable (() -> Unit)? = null,
     isError: Boolean = false,
@@ -48,6 +50,7 @@ fun TextField(
         value = value,
         onValueChange = onValueChange,
         keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
         textStyle = mergedTextStyle,
         interactionSource = interactionSource,
         cursorBrush = SolidColor(colors.cursorColor),
