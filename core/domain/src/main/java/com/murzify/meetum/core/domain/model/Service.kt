@@ -1,5 +1,6 @@
 package com.murzify.meetum.core.domain.model
 
+import com.benasher44.uuid.Uuid
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -17,7 +18,7 @@ data class Service(
     @Serializable(with = CurrencySerializer::class)
     val currency: Currency,
     @Serializable(with = UUIDSerializer::class)
-    val id: UUID = UUID.randomUUID()
+    val id: UUID = Uuid.randomUUID()
 )
 
 object CurrencySerializer: KSerializer<Currency> {

@@ -4,6 +4,7 @@ import android.content.ContentResolver
 import android.net.Uri
 import android.provider.ContactsContract
 import com.arkivanov.decompose.ComponentContext
+import com.benasher44.uuid.Uuid
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.common.componentCoroutineScope
 import com.murzify.meetum.core.common.registerKeeper
@@ -29,7 +30,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import org.koin.core.component.get
-import java.util.UUID
 
 fun ComponentFactory.createAddRecordComponent(
     componentContext: ComponentContext,
@@ -170,7 +170,7 @@ class RealAddRecordComponent(
                 description = description.takeIf { it.isNotEmpty() },
                 phone = phone.takeIf { it.isNotEmpty() },
                 service = service!!,
-                id = record?.id ?: UUID.randomUUID()
+                id = record?.id ?: Uuid.randomUUID()
             )
 
             coroutineScope.launch(Dispatchers.IO) {

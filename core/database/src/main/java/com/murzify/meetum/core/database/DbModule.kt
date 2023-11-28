@@ -4,13 +4,13 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import app.cash.sqldelight.db.AfterVersion
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
+import com.benasher44.uuid.Uuid
 import com.murzify.meetum.core.database.dao.RecordDao
 import com.murzify.meetum.core.database.dao.RecordDaoImpl
 import com.murzify.meetum.core.database.dao.ServiceDao
 import com.murzify.meetum.core.database.dao.ServiceDaoImpl
 import com.murzify.meetum.`meetum-database`
 import org.koin.dsl.module
-import java.util.UUID
 
 val databaseModule = module {
     single<SqlDriver> {
@@ -28,7 +28,7 @@ val databaseModule = module {
                         mapper = { cursor ->
                             val recordId = cursor.getString(0)
                             val time = cursor.getLong(1)
-                            val dateId = UUID.randomUUID().toString()
+                            val dateId = Uuid.randomUUID().toString()
                             driver.execute(null, "INSERT INTO `record_dates` (`date_id`, `record_id`, `date`) VALUES ('$dateId', '$recordId', $time);", 3)
                             cursor.next()
                         },
