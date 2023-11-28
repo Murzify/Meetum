@@ -6,6 +6,7 @@ import com.murzify.meetum.core.domain.repository.RecordRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.Clock
 import org.junit.Assert
 import org.junit.Test
 import org.mockito.Mockito
@@ -27,7 +28,7 @@ class GetRecordsUseCaseTest {
         )
         val testRecord = Record(
             "Vasya",
-            listOf(Date()),
+            listOf(Clock.System.now()),
             null,
             "+10000000000",
             testService

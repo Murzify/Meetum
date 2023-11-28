@@ -40,6 +40,11 @@ import com.murzify.meetum.feature.calendar.R.drawable.round_person_24
 import com.murzify.meetum.feature.calendar.R.drawable.round_phone_24
 import com.murzify.meetum.feature.calendar.components.RecordInfoComponent
 import com.murzify.ui.R
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toJavaInstant
+import kotlinx.datetime.toLocalDateTime
 import java.text.DateFormat
 import java.util.Date
 import java.util.Locale
@@ -58,7 +63,7 @@ internal fun RecordInfoUi(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    RecordDateTime(date = model.date)
+                    RecordDateTime(localDateTime = model.date.toLocalDateTime(TimeZone.currentSystemDefault()))
                 },
                 navigationIcon = {
                     IconButton(modifier = Modifier
@@ -207,13 +212,18 @@ private fun InfoField(
 }
 
 @Composable
-private fun RecordDateTime(date: Date) {
+private fun RecordDateTime(localDateTime: LocalDateTime) {
     Row(
         horizontalArrangement = Arrangement.Center
     ) {
 
         val dateFormat = DateFormat.getDateTimeInstance(
             DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault()
+        )
+        val date = Date.from(
+            localDateTime
+                .toInstant(TimeZone.currentSystemDefault())
+                .toJavaInstant()
         )
         val dateFormatted = dateFormat.format(
             date

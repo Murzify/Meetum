@@ -2,13 +2,12 @@ package com.murzify.meetum.feature.calendar.components
 
 import android.content.ContentResolver
 import android.net.Uri
-import com.murzify.meetum.core.domain.model.DateSerializer
 import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.core.domain.model.Repeat
 import com.murzify.meetum.core.domain.model.Service
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
-import java.util.Date
 
 interface AddRecordComponent {
     val model: StateFlow<Model>
@@ -42,8 +41,7 @@ interface AddRecordComponent {
 
     @Serializable
     data class Model(
-        @Serializable(with = DateSerializer::class)
-        val date: Date,
+        val date: Instant,
         val name: String,
         val description: String,
         val phone: String,

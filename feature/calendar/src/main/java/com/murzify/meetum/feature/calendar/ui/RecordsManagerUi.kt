@@ -75,10 +75,17 @@ import com.murzify.meetum.feature.calendar.R
 import com.murzify.meetum.feature.calendar.components.RecordsManagerComponent
 import com.murzify.meetum.feature.calendar.components.fake.FakeRecordsManagerComponent
 import com.murzify.ui.R.drawable
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toJavaInstant
+import kotlinx.datetime.toJavaLocalDate
+import kotlinx.datetime.toKotlinLocalDate
+import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.todayIn
 import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.time.DayOfWeek
-import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
 import java.time.format.TextStyle
@@ -251,6 +258,7 @@ private fun RowScope.Calendar(
         firstDayOfWeek = firstDayOfWeek,
         outDateStyle = OutDateStyle.EndOfGrid
     )
+    val tz = TimeZone.currentSystemDefault()
 
 
     HorizontalCalendar(
@@ -258,18 +266,19 @@ private fun RowScope.Calendar(
         dayContent = {
             Day(
                 it,
-                isSelected = selectedDate == it.date,
+                isSelected = selectedDate == it.date.toKotlinLocalDate(),
                 showBadge = allRecords.any { record ->
                     record.clientName
                     val recordDates =
                         record.time.map { date ->
-                            date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+                            date.toLocalDateTime(tz).date
                         }
-                    recordDates.contains(it.date)
+                    recordDates.contains(it.date.toKotlinLocalDate())
                 }
             ) { day ->
-                if (selectedDate != day.date) {
-                    selectDate(day.date)
+                val kotlinLocalDate = day.date.toKotlinLocalDate()
+                if (selectedDate != kotlinLocalDate) {
+                    selectDate(kotlinLocalDate)
                 }
             }
         },
@@ -296,7 +305,8 @@ private fun Day(
     showBadge: Boolean,
     onClick: (CalendarDay) -> Unit,
 ) {
-    val border = remember { LocalDate.now() == day.date }
+    val now = Clock.System.todayIn(TimeZone.currentSystemDefault())
+    val border = remember { now == day.date.toKotlinLocalDate() }
     val bgColor = if (day.position == DayPosition.MonthDate) {
         CardDefaults.cardColors()
     } else {
@@ -376,7 +386,9 @@ private fun DayTitle(
     selectedDate: LocalDate,
 ) {
     val f = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.getDefault())
-    val date = Date.from(selectedDate.atStartOfDay(ZoneId.systemDefault())?.toInstant())
+    val date = Date.from(
+        selectedDate.toJavaLocalDate().atStartOfDay(ZoneId.systemDefault())?.toInstant()
+    )
     val dateFormatted = f.format(
         date
     )
@@ -448,9 +460,9 @@ private fun RecordCard(
             Text(text = record.service.name, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
         val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
-
+        val date = Date.from(record.time[0].toJavaInstant())
         Text(
-            text = sdf.format(record.time[0]),
+            text = sdf.format(date),
             modifier = Modifier.padding(start = 2.dp, end = 16.dp)
         )
     }

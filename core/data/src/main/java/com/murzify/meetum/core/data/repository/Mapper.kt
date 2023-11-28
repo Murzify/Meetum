@@ -3,8 +3,8 @@ package com.murzify.meetum.core.data.repository
 import com.murzify.meetum.core.database.model.FullRecord
 import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.core.domain.model.Service
+import kotlinx.datetime.Instant
 import java.util.Currency
-import java.util.Date
 import java.util.UUID
 
 fun List<FullRecord>.mapToRecord() = groupBy { it.recordIdDate }
@@ -12,7 +12,7 @@ fun List<FullRecord>.mapToRecord() = groupBy { it.recordIdDate }
         val record = records.first()
         Record(
             clientName = record.clientName,
-            time = records.map { Date(it.date) },
+            time = records.map { Instant.fromEpochMilliseconds(it.date) },
             description = record.description,
             phone = record.phone,
             service = Service(

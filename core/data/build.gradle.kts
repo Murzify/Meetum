@@ -39,6 +39,7 @@ dependencies {
     implementation(project(":core:domain"))
     implementation(project(":core:database"))
 
+    implementation(libs.kotlinx.datetime)
     implementation(libs.sqldelight.coroutines)
     implementation(libs.inject)
 }
