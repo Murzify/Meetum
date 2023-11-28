@@ -1,13 +1,7 @@
 package com.murzify.meetum.core.domain.model
 
 import kotlinx.datetime.Instant
-import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
-import java.util.Date
 import java.util.UUID
 
 @Serializable
@@ -20,18 +14,3 @@ data class Record(
     @Serializable(with = UUIDSerializer::class)
     val id: UUID = UUID.randomUUID()
 )
-
-object DateSerializer: KSerializer<Date> {
-    override val descriptor = PrimitiveSerialDescriptor("Date", PrimitiveKind.LONG)
-
-    override fun deserialize(decoder: Decoder): Date {
-        val long = decoder.decodeLong()
-        return Date(long)
-    }
-
-    override fun serialize(encoder: Encoder, value: Date) {
-        val long = value.time
-        encoder.encodeLong(long)
-    }
-
-}

@@ -65,10 +65,14 @@ import com.murzify.meetum.core.ui.Toolbar
 import com.murzify.meetum.feature.calendar.R
 import com.murzify.meetum.feature.calendar.components.AddRecordComponent
 import com.murzify.meetum.feature.calendar.components.AddRecordComponent.DeleteType
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toJavaInstant
+import kotlinx.datetime.toLocalDateTime
 import java.text.DateFormat
-import java.time.DayOfWeek
 import java.time.format.TextStyle
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -78,14 +82,13 @@ internal fun AddRecordUi(
     component: AddRecordComponent
 ) {
     val model by component.model.collectAsState()
-    val defCalendar = Calendar.getInstance().apply {
-        time = model.date
-    }
+    val tz = TimeZone.currentSystemDefault()
+    val localDateTime = model.date.toLocalDateTime(tz)
 
     val timePickerState = remember {
         TimePickerState(
-            initialHour = defCalendar.get(Calendar.HOUR_OF_DAY),
-            initialMinute = defCalendar.get(Calendar.MINUTE),
+            initialHour = localDateTime.hour,
+            initialMinute = localDateTime.minute,
             is24Hour = true
         )
     }
@@ -93,7 +96,7 @@ internal fun AddRecordUi(
 
     Toolbar(
         title = {
-            RecordDate(date = model.date)
+            RecordDate(localDateTime = localDateTime)
         },
         onBackClicked = component::onBackClick,
         fab = {
@@ -348,18 +351,22 @@ private fun DeleteAlert(
 }
 
 @Composable
-private fun RecordDate(date: Date) {
+private fun RecordDate(localDateTime: LocalDateTime) {
     Row(
         horizontalArrangement = Arrangement.Center
     ) {
+        val date = Date.from(
+            localDateTime
+                .toInstant(TimeZone.currentSystemDefault())
+                .toJavaInstant()
 
+        )
         val dateFormat = DateFormat.getDateInstance(
             DateFormat.DEFAULT, Locale.getDefault()
         )
         val dateFormatted = dateFormat.format(
             date
         )
-
         Text(
             text = dateFormatted,
             fontSize = 24.sp
@@ -441,20 +448,20 @@ private fun RequestContactsPermission(onGranted: @Composable () -> Unit) {
 @Composable
 private fun RepeatText(repeat: Repeat, modifier: Modifier) {
     val periodsRes = mapOf(
-        Calendar.DATE to R.plurals.day,
-        Calendar.WEEK_OF_MONTH to R.plurals.week,
-        Calendar.MONTH to R.plurals.month,
-        Calendar.YEAR to R.plurals.year,
+        DateTimeUnit.DAY to R.plurals.day,
+        DateTimeUnit.WEEK to R.plurals.week,
+        DateTimeUnit.MONTH to R.plurals.month,
+        DateTimeUnit.YEAR to R.plurals.year,
     )
     var repeatText = "${stringResource(R.string.repeat_every)} ${repeat.periodCount} " +
             pluralStringResource(periodsRes[repeat.period]!!, repeat.periodCount)
-    if (repeat.period == Calendar.WEEK_OF_MONTH) {
+    if (repeat.period == DateTimeUnit.WEEK) {
         repeatText += repeat.daysOfWeek.joinToString(
             separator = ", ",
             prefix = "(",
             postfix = ")"
         ) {
-            it.toDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.getDefault())
+            it.getDisplayName(TextStyle.SHORT, Locale.getDefault())
         }
     }
 
@@ -468,26 +475,13 @@ private fun RepeatText(repeat: Repeat, modifier: Modifier) {
             DateFormat.DEFAULT, Locale.getDefault()
         )
         val dateFormatted = dateFormat.format(
-            repeat.repeatToDate!!.time
+            repeat.repeatToDate
         )
         stringResource(id = R.string.ending, dateFormatted)
     }
     Column(modifier = modifier) {
         Text(text = repeatText)
         Text(text = ending)
-    }
-}
-
-private fun Int.toDayOfWeek(): DayOfWeek {
-    return when (this) {
-        Calendar.MONDAY -> DayOfWeek.MONDAY
-        Calendar.TUESDAY -> DayOfWeek.TUESDAY
-        Calendar.WEDNESDAY -> DayOfWeek.WEDNESDAY
-        Calendar.THURSDAY -> DayOfWeek.THURSDAY
-        Calendar.FRIDAY -> DayOfWeek.FRIDAY
-        Calendar.SATURDAY -> DayOfWeek.SATURDAY
-        Calendar.SUNDAY -> DayOfWeek.SUNDAY
-        else -> throw IllegalStateException()
     }
 }
 

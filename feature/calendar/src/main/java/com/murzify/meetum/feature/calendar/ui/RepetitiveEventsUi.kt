@@ -66,10 +66,19 @@ import com.murzify.meetum.core.ui.Toolbar
 import com.murzify.meetum.feature.calendar.R
 import com.murzify.meetum.feature.calendar.components.RepetitiveEventsComponent
 import com.murzify.meetum.feature.calendar.components.fake.FakeRepetitiveEventsComponent
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toJavaInstant
+import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.todayIn
 import java.text.DateFormat
 import java.time.DayOfWeek
 import java.time.format.TextStyle
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -174,25 +183,26 @@ internal fun RepetitiveEventsUi(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerDialog(
-    onDateSelected: (Date?) -> Unit,
+    onDateSelected: (LocalDateTime?) -> Unit,
     onDismiss: () -> Unit
 ) {
+    val tz = TimeZone.currentSystemDefault()
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = Date().time,
+        initialSelectedDateMillis = Clock.System.now().toEpochMilliseconds(),
         selectableDates = object : SelectableDates {
             override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                val currentDay = Calendar.getInstance().apply {
-                    set(Calendar.HOUR_OF_DAY, 0)
-                    set(Calendar.MINUTE, 0)
-                   set(Calendar.SECOND, 0)
-                  set(Calendar.MILLISECOND, 0)
-              }.time
-             return utcTimeMillis >= currentDay.time
+                val localDate = Clock.System.todayIn(tz)
+                val localTime = LocalTime(0, 0, 0)
+             return utcTimeMillis >= LocalDateTime(localDate, localTime)
+                 .toInstant(tz)
+                 .toEpochMilliseconds()
            }
         }
     )
 
-    val selectedDate = datePickerState.selectedDateMillis?.let { Date(it) }
+    val selectedDate = datePickerState.selectedDateMillis?.let {
+        Instant.fromEpochMilliseconds(it).toLocalDateTime(tz)
+    }
 
     DatePickerDialog(
         onDismissRequest = { onDismiss() },
@@ -224,7 +234,7 @@ fun DatePickerDialog(
 private fun EndRadio(
     endType: RepetitiveEventsComponent.EndType,
     endTimes: Int,
-    endDate: Date,
+    endDate: Instant,
     onEndTypeChanged: (RepetitiveEventsComponent.EndType) -> Unit,
     onDateClick: () -> Unit,
     onTimesChanged: (String) -> Unit
@@ -267,7 +277,7 @@ private fun EndRadio(
                                 DateFormat.DEFAULT, Locale.getDefault()
                             )
                             val dateFormatted = dateFormat.format(
-                                endDate
+                                Date.from(endDate.toJavaInstant())
                             )
                             Text(
                                 text = dateFormatted,
@@ -359,14 +369,14 @@ private fun DaysOfWeekSelection(
 @Composable
 private fun PeriodField(
     periodAmount: Int,
-    period: Int,
-    onPeriodChanged: (period: Int) -> Unit
+    period: DateTimeUnit,
+    onPeriodChanged: (period: DateTimeUnit) -> Unit
 ) {
     val periodsRes = mapOf(
-        Calendar.DATE to R.plurals.day,
-        Calendar.WEEK_OF_MONTH to R.plurals.week,
-        Calendar.MONTH to R.plurals.month,
-        Calendar.YEAR to R.plurals.year,
+        DateTimeUnit.DAY to R.plurals.day,
+        DateTimeUnit.WEEK to R.plurals.week,
+        DateTimeUnit.MONTH to R.plurals.month,
+        DateTimeUnit.YEAR to R.plurals.year,
     )
 
     var expanded by remember { mutableStateOf(false) }

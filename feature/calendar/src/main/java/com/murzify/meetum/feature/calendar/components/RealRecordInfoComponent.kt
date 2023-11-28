@@ -9,12 +9,12 @@ import com.murzify.meetum.core.common.restore
 import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.feature.calendar.components.RecordInfoComponent.Model
 import kotlinx.coroutines.flow.MutableStateFlow
-import java.util.Date
+import kotlinx.datetime.Instant
 
 class RealRecordInfoComponent(
     componentContext: ComponentContext,
     record: Record,
-    date: Date,
+    date: Instant,
     private val navigateToEdit: (record: Record) -> Unit,
     private val navigateBack: () -> Unit
 ) : ComponentContext by componentContext, RecordInfoComponent {

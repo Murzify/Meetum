@@ -32,6 +32,7 @@ class FeaturePlugin: Plugin<Project> {
                 add("implementation", libs.findLibrary("decompose").get())
                 add("implementation", libs.findLibrary("decompose-extensions").get())
                 add("implementation", libs.findLibrary("kotlinx-serialization").get())
+                add("implementation", libs.findLibrary("kotlinx-datetime").get())
             }
         }
     }

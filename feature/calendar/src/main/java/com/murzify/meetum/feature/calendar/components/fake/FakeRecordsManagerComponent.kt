@@ -6,9 +6,11 @@ import com.murzify.meetum.feature.calendar.components.RecordsManagerComponent
 import com.murzify.meetum.feature.calendar.components.RecordsManagerComponent.Model
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import java.time.LocalDate
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.todayIn
 import java.util.Currency
-import java.util.Date
 
 class FakeRecordsManagerComponent : RecordsManagerComponent {
     override val model: StateFlow<Model> = MutableStateFlow(
@@ -16,7 +18,7 @@ class FakeRecordsManagerComponent : RecordsManagerComponent {
             currentRecords = listOf(
                 Record(
                     clientName = "Test",
-                    time = listOf(Date()),
+                    time = listOf(Clock.System.now()),
                     description = "test test test",
                     service = Service(
                         name = "test service",
@@ -27,7 +29,7 @@ class FakeRecordsManagerComponent : RecordsManagerComponent {
             ),
             services = listOf(),
             allRecords = emptyList(),
-            selectedDate = LocalDate.now()
+            selectedDate = Clock.System.todayIn(TimeZone.currentSystemDefault())
         )
     )
 

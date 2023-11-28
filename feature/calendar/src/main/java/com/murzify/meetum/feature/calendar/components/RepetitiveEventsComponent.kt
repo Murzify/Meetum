@@ -3,9 +3,12 @@ package com.murzify.meetum.feature.calendar.components
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import com.murzify.meetum.core.domain.model.DateSerializer
 import com.murzify.meetum.feature.calendar.R
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -13,33 +16,30 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import java.time.DayOfWeek
-import java.util.Date
 
 interface RepetitiveEventsComponent {
     val model: StateFlow<Model>
 
     fun onEveryAmountChanged(amount: String)
-    fun onPeriodChanged(period: Int)
+    fun onPeriodChanged(period: DateTimeUnit)
     fun onEndTimesChanged(times: String)
-    fun ondEndDateChanged(date: Date)
+    fun ondEndDateChanged(date: LocalDateTime)
     fun onEndTypeChanged(endType: EndType)
     fun onDayOfWeekClick(dayOfWeek: DayOfWeek)
     fun onPickDateClicked()
     fun onDatePickerCancel()
-    fun onDatePickerOk(date: Date?)
+    fun onDatePickerOk(date: LocalDateTime?)
     fun onSaveClicked()
     fun onBackClicked()
 
     @Serializable
     data class Model(
         val everyAmount: Int,
-        val everyPeriod: Int,
+        val everyPeriod: DateTimeUnit,
         val daysOfWeek: List<DayOfWeek>,
         val showDaysOfWeek: Boolean,
         val endTimes: Int,
-        @Serializable(with = DateSerializer::class)
-        val endDate: Date,
+        val endDate: Instant,
         val endType: EndType,
         val showDatePicker: Boolean
     )

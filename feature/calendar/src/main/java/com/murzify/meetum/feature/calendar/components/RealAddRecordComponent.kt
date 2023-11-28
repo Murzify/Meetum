@@ -22,14 +22,18 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 import org.koin.core.component.get
-import java.util.Calendar
-import java.util.Date
 import java.util.UUID
 
 fun ComponentFactory.createAddRecordComponent(
     componentContext: ComponentContext,
-    date: Date,
+    date: Instant,
     record: Record?,
     navigateBack: () -> Unit,
     navigateToCalendar: () -> Unit,
@@ -54,7 +58,7 @@ class RealAddRecordComponent(
     private val navigateToCalendar: () -> Unit,
     private val navigateToRepeat: () -> Unit,
     override val onAddServiceClick: () -> Unit,
-    date: Date,
+    date: Instant,
     record: Record? = null,
     private val addRecordUseCase: AddRecordUseCase,
     private val getServicesUseCase: GetServicesUseCase,
@@ -92,12 +96,12 @@ class RealAddRecordComponent(
     }
 
     override fun onTimeChanged(hours: Int, minutes: Int) {
-        Calendar.getInstance().apply {
-            time = model.value.date
-            set(Calendar.HOUR_OF_DAY, hours)
-            set(Calendar.MINUTE, minutes)
-            model.update { it.copy(date = time) }
-        }
+        val tz = TimeZone.currentSystemDefault()
+        val currentDateTime = model.value.date.toLocalDateTime(tz)
+        val localDate = currentDateTime.date
+        val localTime = LocalTime(hours, minutes, 0, 0)
+        val newInstant = LocalDateTime(localDate, localTime).toInstant(tz)
+        model.update { it.copy(date = newInstant) }
     }
 
     override fun onNameChanged(name: String) {

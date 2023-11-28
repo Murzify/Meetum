@@ -16,16 +16,22 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.todayIn
 import org.koin.core.component.get
-import java.time.LocalDate
-import java.time.ZoneId
-import java.util.Calendar
-import java.util.Date
+
 
 fun ComponentFactory.createRecordsManagerComponent(
     componentContext: ComponentContext,
-    navigateToAddRecord: (date: Date, record: Record?) -> Unit,
-    navigateToRecordInfo: (record: Record, date: Date) -> Unit,
+    navigateToAddRecord: (date: Instant, record: Record?) -> Unit,
+    navigateToRecordInfo: (record: Record, date: Instant) -> Unit,
 ): RecordsManagerComponent {
     return RealRecordsManagerComponent(
         componentContext,
@@ -39,8 +45,8 @@ fun ComponentFactory.createRecordsManagerComponent(
 
 class RealRecordsManagerComponent constructor (
     componentContext: ComponentContext,
-    private val navigateToAddRecord: (date: Date, record: Record?) -> Unit,
-    private val navigateToRecordInfo: (record: Record, date:Date) -> Unit,
+    private val navigateToAddRecord: (date: Instant, record: Record?) -> Unit,
+    private val navigateToRecordInfo: (record: Record, date: Instant) -> Unit,
     private val getServicesUseCase: GetServicesUseCase,
     private val recordRepository: RecordRepository,
     private val getRecordsUseCase: GetRecordsUseCase,
@@ -51,7 +57,7 @@ class RealRecordsManagerComponent constructor (
             currentRecords = emptyList(),
             services = emptyList(),
             allRecords = emptyList(),
-            selectedDate = LocalDate.now()
+            selectedDate = Clock.System.todayIn(TimeZone.currentSystemDefault())
         )
     )
 
@@ -78,7 +84,7 @@ class RealRecordsManagerComponent constructor (
             model.map { it.selectedDate }.collect { selectedDate ->
                 currentRecordsJob?.cancel()
                 currentRecordsJob = launch {
-                    getRecordsUseCase(selectedDate.toDate()).collect { currentRecords ->
+                    getRecordsUseCase(selectedDate.toInstant()).collect { currentRecords ->
                         val new = currentRecords.map {
                             it.copy(time = listOf(getSelectedDate(it)))
                         }
@@ -90,44 +96,25 @@ class RealRecordsManagerComponent constructor (
     }
 
     override fun onDateClick(date: LocalDate) {
-        val currentCal = Calendar.getInstance().apply { time = Date() }
-        val time = Calendar.getInstance().apply {
-            time = date.toDate()
-            set(Calendar.HOUR, currentCal.get(Calendar.HOUR))
-            set(Calendar.MINUTE, currentCal.get(Calendar.MINUTE))
-        }.time
-        val newSelectedDate = time.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-        model.update { it.copy(selectedDate = newSelectedDate) }
+        model.update { it.copy(selectedDate = date) }
         coroutineScope.launch(Dispatchers.IO) {
-            getRecordsUseCase(date.toDate()).collect { currentRecords ->
+            getRecordsUseCase(date.toInstant()).collect { currentRecords ->
                 model.update { it.copy(currentRecords = currentRecords) }
             }
         }
     }
 
     override fun onAddRecordClick() {
-        val currentCalendar = Calendar.getInstance().apply {
-            time = Date()
-        }
-        val selectedDate = Calendar.getInstance().apply {
-            time = model.value.selectedDate.toDate()
-            set(Calendar.HOUR_OF_DAY, currentCalendar.get(Calendar.HOUR_OF_DAY))
-            set(Calendar.MINUTE, currentCalendar.get(Calendar.MINUTE))
-        }.time
-        navigateToAddRecord(selectedDate, null)
+        val tz = TimeZone.currentSystemDefault()
+        val currentTime = Clock.System.now().toLocalDateTime(tz).time
+        val selectedDate = model.value.selectedDate
+        val selectedDateTime = LocalDateTime(selectedDate, currentTime)
+        navigateToAddRecord(selectedDateTime.toInstant(tz), null)
     }
 
     override fun onRecordClick(record: Record) {
-        val recordCalendar = Calendar.getInstance().apply {
-            time = record.time[0]
-        }
-        val date = Calendar.getInstance().apply {
-            time = model.value.selectedDate.toDate()
-            set(Calendar.HOUR_OF_DAY, recordCalendar.get(Calendar.HOUR_OF_DAY))
-            set(Calendar.MINUTE, recordCalendar.get(Calendar.MINUTE))
-        }.time
-
-        navigateToRecordInfo(record, date)
+        val localDateTime = getSelectedDate(record)
+        navigateToRecordInfo(record, localDateTime)
     }
 
     override fun onDismissToStart(record: Record) {
@@ -142,23 +129,16 @@ class RealRecordsManagerComponent constructor (
         }
     }
 
-    private fun getSelectedDate(record: Record): Date {
-        val recordCalendar = Calendar.getInstance().apply {
-            time = record.time[0]
-        }
-        return Calendar.getInstance().apply {
-            time = model.value.selectedDate.toDate()
-            set(Calendar.HOUR_OF_DAY, recordCalendar.get(Calendar.HOUR_OF_DAY))
-            set(Calendar.MINUTE, recordCalendar.get(Calendar.MINUTE))
-        }.time
+    private fun getSelectedDate(record: Record): Instant {
+        val tz = TimeZone.currentSystemDefault()
+        val recordTime = record.time.first().toLocalDateTime(tz).time
+        val selectedDate = model.value.selectedDate
+        return LocalDateTime(selectedDate, recordTime).toInstant(tz)
     }
 
-    private fun LocalDate.toDate(): Date {
-        return Date.from(
-            this
-                .atStartOfDay(ZoneId.systemDefault())
-                .toInstant()
-        )
+    private fun LocalDate.toInstant(): Instant {
+        val localTime = LocalTime(0, 0, 0, 0)
+        return LocalDateTime(this, localTime).toInstant(TimeZone.currentSystemDefault())
     }
 
 }

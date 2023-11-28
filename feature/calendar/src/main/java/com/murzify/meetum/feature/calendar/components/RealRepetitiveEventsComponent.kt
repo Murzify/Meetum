@@ -9,9 +9,14 @@ import com.murzify.meetum.feature.calendar.components.RepetitiveEventsComponent.
 import com.murzify.meetum.feature.calendar.components.RepetitiveEventsComponent.Model
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import java.time.DayOfWeek
-import java.util.Calendar
-import java.util.Date
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.plus
+import kotlinx.datetime.toInstant
 
 class RealRepetitiveEventsComponent(
     componentContext: ComponentContext,
@@ -22,14 +27,15 @@ class RealRepetitiveEventsComponent(
     override val model = MutableStateFlow(
         restore(Model.serializer()) ?: Model(
             everyAmount = 1,
-            everyPeriod = Calendar.DATE,
+            everyPeriod = DateTimeUnit.DAY,
             daysOfWeek = listOf(),
             showDaysOfWeek = false,
             endTimes = 3,
-            endDate = Calendar.getInstance().apply {
-                time = Date()
-                add(Calendar.DATE, 3)
-            }.time,
+            endDate = Clock.System.now().plus(
+                3,
+                DateTimeUnit.DAY,
+                TimeZone.currentSystemDefault()
+            ),
             endType = EndType.Times,
             showDatePicker = false
         )
@@ -47,19 +53,19 @@ class RealRepetitiveEventsComponent(
         model.update { it.copy(everyAmount = amount.toInt()) }
     }
 
-    override fun onPeriodChanged(period: Int) {
+    override fun onPeriodChanged(period: DateTimeUnit) {
         val allowedPeriods = listOf(
-            Calendar.DATE,
-            Calendar.WEEK_OF_MONTH,
-            Calendar.MONTH,
-            Calendar.YEAR
+            DateTimeUnit.DAY,
+            DateTimeUnit.WEEK,
+            DateTimeUnit.MONTH,
+            DateTimeUnit.YEAR
         )
         if (period !in allowedPeriods) {
             throw IllegalStateException()
         }
         model.update {
             it.copy(
-                showDaysOfWeek = period == Calendar.WEEK_OF_MONTH,
+                showDaysOfWeek = period == DateTimeUnit.WEEK,
                 everyPeriod = period
             )
         }
@@ -80,15 +86,13 @@ class RealRepetitiveEventsComponent(
         } catch (_: NumberFormatException) {}
     }
 
-    override fun ondEndDateChanged(date: Date) {
+    override fun ondEndDateChanged(date: LocalDateTime) {
+        val localDate = date.date
+        val localTime = LocalTime(23, 59, 59, 0)
         model.update {
             it.copy(
-                endDate = Calendar.getInstance().apply {
-                    time = date
-                    set(Calendar.HOUR_OF_DAY, 23)
-                    set(Calendar.MINUTE, 59)
-                    set(Calendar.SECOND, 59)
-                }.time
+                endDate = LocalDateTime(localDate, localTime)
+                    .toInstant(TimeZone.currentSystemDefault())
             )
         }
     }
@@ -118,10 +122,10 @@ class RealRepetitiveEventsComponent(
         model.update { it.copy(showDatePicker = false) }
     }
 
-    override fun onDatePickerOk(date: Date?) {
+    override fun onDatePickerOk(date: LocalDateTime?) {
         model.update { it.copy(showDatePicker = false) }
         if (date != null) {
-            model.update { it.copy(endDate = date) }
+            model.update { it.copy(endDate = date.toInstant(TimeZone.currentSystemDefault())) }
         }
     }
 
@@ -130,7 +134,7 @@ class RealRepetitiveEventsComponent(
             val repeat: Repeat = RepeatRecord.Repeater()
                 .every(everyAmount, everyPeriod)
                 .setDaysOfWeek(
-                    daysOfWeek.map { it.toCalendar() }
+                    daysOfWeek
                 )
                 .apply {
                     when (endType) {
@@ -145,17 +149,5 @@ class RealRepetitiveEventsComponent(
 
     override fun onBackClicked() {
         navigateBack()
-    }
-
-    private fun DayOfWeek.toCalendar(): Int {
-        return when (this) {
-            DayOfWeek.MONDAY -> Calendar.MONDAY
-            DayOfWeek.TUESDAY -> Calendar.TUESDAY
-            DayOfWeek.WEDNESDAY -> Calendar.WEDNESDAY
-            DayOfWeek.THURSDAY -> Calendar.THURSDAY
-            DayOfWeek.FRIDAY -> Calendar.FRIDAY
-            DayOfWeek.SATURDAY -> Calendar.SATURDAY
-            DayOfWeek.SUNDAY -> Calendar.SUNDAY
-        }
     }
  }

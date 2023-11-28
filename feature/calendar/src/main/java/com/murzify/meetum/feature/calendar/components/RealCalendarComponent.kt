@@ -9,11 +9,10 @@ import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.router.stack.replaceAll
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.common.toStateFlow
-import com.murzify.meetum.core.domain.model.DateSerializer
 import com.murzify.meetum.core.domain.model.Record
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
-import java.util.Date
 
 fun ComponentFactory.createCalendarComponent(
     componentContext: ComponentContext,
@@ -107,16 +106,14 @@ class RealCalendarComponent(
 
         @Serializable
         data class AddRecord(
-            @Serializable(with = DateSerializer::class)
-            val date: Date,
+            val date: Instant,
             val record: Record? = null
         ): ChildConfig
 
         @Serializable
         data class RecordInfo(
             val record: Record,
-            @Serializable(with = DateSerializer::class)
-            val date: Date
+            val date: Instant
         ): ChildConfig
 
         @Serializable
