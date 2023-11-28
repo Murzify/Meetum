@@ -41,5 +41,5 @@ dependencies {
 
     implementation(libs.kotlinx.datetime)
     implementation(libs.sqldelight.coroutines)
-    implementation(libs.inject)
+    implementation(libs.uuid)
 }

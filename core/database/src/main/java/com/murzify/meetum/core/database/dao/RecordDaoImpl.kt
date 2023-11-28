@@ -2,6 +2,7 @@ package com.murzify.meetum.core.database.dao
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
+import com.benasher44.uuid.Uuid
 import com.murzify.meetum.core.database.RecordDatesQueries
 import com.murzify.meetum.core.database.Record_dates
 import com.murzify.meetum.core.database.Records
@@ -10,7 +11,6 @@ import com.murzify.meetum.core.database.model.FullRecord
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
-import java.util.UUID
 
 class RecordDaoImpl(
     private val recordsQueries: RecordsQueries,
@@ -35,7 +35,7 @@ class RecordDaoImpl(
             recordsQueries.add(record)
             dates.forEach { date ->
                 val recordDate = Record_dates(
-                    UUID.randomUUID().toString(),
+                    Uuid.randomUUID().toString(),
                     record.record_id,
                     date.toEpochMilliseconds()
                 )
@@ -66,7 +66,7 @@ class RecordDaoImpl(
         recordsQueries.delete(record.record_id)
     }
 
-    override suspend fun getFuture(serviceId: UUID, currentTime: Instant): List<FullRecord> = recordsQueries
+    override suspend fun getFuture(serviceId: Uuid, currentTime: Instant): List<FullRecord> = recordsQueries
         .getFuture(
             currentTime.toEpochMilliseconds(),
             serviceId.toString(),
@@ -74,11 +74,11 @@ class RecordDaoImpl(
         )
         .executeAsList()
 
-    override suspend fun deleteLinkedWithService(serviceId: UUID) {
+    override suspend fun deleteLinkedWithService(serviceId: Uuid) {
         recordsQueries.deleteLinkedWithSerivce(serviceId.toString())
     }
 
-    override suspend fun deleteDate(recordId: UUID, date: Instant) {
+    override suspend fun deleteDate(recordId: Uuid, date: Instant) {
         recordDatesQueries.delete(recordId.toString(), date.toEpochMilliseconds())
     }
 }

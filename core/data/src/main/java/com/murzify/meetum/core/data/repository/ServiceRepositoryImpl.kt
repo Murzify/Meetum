@@ -1,12 +1,12 @@
 package com.murzify.meetum.core.data.repository
 
+import com.benasher44.uuid.Uuid
 import com.murzify.meetum.core.database.dao.ServiceDao
 import com.murzify.meetum.core.database.model.toEntity
 import com.murzify.meetum.core.domain.model.Service
 import com.murzify.meetum.core.domain.repository.ServiceRepository
 import kotlinx.coroutines.flow.map
 import java.util.Currency
-import java.util.UUID
 
 
 class ServiceRepositoryImpl constructor(
@@ -18,7 +18,7 @@ class ServiceRepositoryImpl constructor(
                 it.name,
                 it.price,
                 Currency.getInstance(it.currency),
-                UUID.fromString(it.service_id)
+                Uuid.fromString(it.service_id)
             )
         }
     }

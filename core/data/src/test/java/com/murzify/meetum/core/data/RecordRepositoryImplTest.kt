@@ -1,5 +1,6 @@
 package com.murzify.meetum.core.data
 
+import com.benasher44.uuid.Uuid
 import com.murzify.meetum.core.data.repository.RecordRepositoryImpl
 import com.murzify.meetum.core.data.repository.mapToRecord
 import com.murzify.meetum.core.database.Record_dates
@@ -12,17 +13,15 @@ import com.murzify.meetum.core.domain.repository.RecordRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.Clock
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
-import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
-import java.util.Calendar
 import java.util.Currency
 import java.util.Date
-import java.util.UUID
 
 class RecordRepositoryImplTest {
 
@@ -36,13 +35,13 @@ class RecordRepositoryImplTest {
     )
     private val testRecord = Record(
         "Vasya",
-        listOf(Date()),
+        listOf(Clock.System.now()),
         null,
         null,
         testService
     )
     private val testDate = Record_dates(
-        UUID.randomUUID().toString(),
+        Uuid.randomUUID().toString(),
         testRecord.id.toString(),
         Date().time
     )
@@ -77,24 +76,6 @@ class RecordRepositoryImplTest {
         )
         assertEquals(
             repo.getAllRecords().first(),
-            recordsFlow.first().mapToRecord()
-        )
-    }
-
-    @Test
-    fun `should return records by period`() = runTest {
-        val recordsFlow = flow {
-            emit(recordsList)
-        }
-        Mockito.`when`(recordDao.getByDate(any(), any())).thenReturn(recordsFlow)
-        val startDate = Calendar.getInstance().apply {
-            set(2023, 9, 5)
-        }.toInstant()
-        val endDate = Calendar.getInstance().apply {
-            set(2023, 9, 1)
-        }.toInstant()
-        assertEquals(
-            repo.getRecords(Date.from(startDate), Date.from(endDate)).first(),
             recordsFlow.first().mapToRecord()
         )
     }

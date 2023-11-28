@@ -1,5 +1,6 @@
 package com.murzify.meetum.core.data
 
+import com.benasher44.uuid.Uuid
 import com.murzify.meetum.core.data.repository.ServiceRepositoryImpl
 import com.murzify.meetum.core.database.dao.ServiceDao
 import com.murzify.meetum.core.database.model.toEntity
@@ -15,7 +16,6 @@ import org.mockito.Mockito
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import java.util.Currency
-import java.util.UUID
 
 class ServiceRepositoryImplTest {
 
@@ -49,7 +49,7 @@ class ServiceRepositoryImplTest {
                     it.name,
                     it.price,
                     Currency.getInstance(it.currency),
-                    UUID.fromString(it.service_id)
+                    Uuid.fromString(it.service_id)
                 )
             }
         )

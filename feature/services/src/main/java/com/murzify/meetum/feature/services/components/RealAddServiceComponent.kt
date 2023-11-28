@@ -1,6 +1,7 @@
 package com.murzify.meetum.feature.services.components
 
 import com.arkivanov.decompose.ComponentContext
+import com.benasher44.uuid.Uuid
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.common.componentCoroutineScope
 import com.murzify.meetum.core.common.registerKeeper
@@ -19,7 +20,6 @@ import kotlinx.coroutines.withContext
 import org.koin.core.component.get
 import java.util.Currency
 import java.util.Locale
-import java.util.UUID
 
 fun ComponentFactory.createAddServiceComponent(
     componentContext: ComponentContext,
@@ -123,7 +123,7 @@ class RealAddServiceComponent(
                     name,
                     price.toDouble(),
                     currency,
-                    service?.id ?: UUID.randomUUID()
+                    service?.id ?: Uuid.randomUUID()
                 )
                 if (showDeleteButton) {
                     serviceRepository.editService(service)

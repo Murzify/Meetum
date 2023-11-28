@@ -1,11 +1,11 @@
 package com.murzify.meetum.core.database.dao
 
+import com.benasher44.uuid.Uuid
 import com.murzify.meetum.core.database.Record_dates
 import com.murzify.meetum.core.database.Records
 import com.murzify.meetum.core.database.model.FullRecord
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
-import java.util.UUID
 
 interface RecordDao {
 
@@ -21,10 +21,10 @@ interface RecordDao {
 
     suspend fun delete(record: Records)
 
-    suspend fun getFuture(serviceId: UUID, currentTime: Instant): List<FullRecord>
+    suspend fun getFuture(serviceId: Uuid, currentTime: Instant): List<FullRecord>
 
-    suspend fun deleteLinkedWithService(serviceId: UUID)
+    suspend fun deleteLinkedWithService(serviceId: Uuid)
 
-    suspend fun deleteDate(recordId: UUID, date: Instant)
+    suspend fun deleteDate(recordId: Uuid, date: Instant)
 
 }
