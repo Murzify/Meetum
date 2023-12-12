@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plural name="day">
+        <item quantity="one">
+            день
+        </item>
+        <item quantity="many">
+            дней
+        </item>
+        <item quantity="few">
+            дня
+        </item>
+    </plural>
+    <plural name="week">
+        <item quantity="one">
+            неделю
+        </item>
+        <item quantity="many">
+            недель
+        </item>
+        <item quantity="few">
+            недели
+        </item>
+    </plural>
+    <plural name="month">
+        <item quantity="one">
+            месяц
+        </item>
+        <item quantity="many">
+            месяцев
+        </item>
+        <item quantity="few">
+            месяца
+        </item>
+        <item quantity="other">
+            месяца
+        </item>
+    </plural>
+    <plural name="year">
+        <item quantity="one">
+            год
+        </item>
+        <item quantity="many">
+            лет
+        </item>
+        <item quantity="few">
+            годa
+        </item>
+    </plural>
+    <plural name="times">
+        <item quantity="one">
+            раза
+        </item>
+        <item quantity="many">
+            раз
+        </item>
+        <item quantity="few">
+            раз
+        </item>
+    </plural>
+</resources>

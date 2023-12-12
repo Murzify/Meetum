@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plural name="day">
+        <item quantity="one">
+            day
+        </item>
+        <item quantity="other">
+            days
+        </item>
+    </plural>
+    <plural name="week">
+        <item quantity="one">
+            week
+        </item>
+        <item quantity="other">
+            weeks
+        </item>
+    </plural>
+    <plural name="month">
+        <item quantity="one">
+            month
+        </item>
+        <item quantity="other">
+            months
+        </item>
+    </plural>
+    <plural name="year">
+        <item quantity="one">
+            year
+        </item>
+        <item quantity="other">
+            years
+        </item>
+    </plural>
+
+    <plural name="times">
+        <item quantity="one">
+            time
+        </item>
+        <item quantity="other">
+            times
+        </item>
+    </plural>
+
+</resources>
