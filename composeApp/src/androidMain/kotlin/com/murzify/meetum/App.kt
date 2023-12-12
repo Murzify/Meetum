@@ -17,6 +17,7 @@ class App: Application(), KoinProvider {
 
     override fun onCreate() {
         super.onCreate()
+        initSentry()
         koin = createKoin()
     }
 

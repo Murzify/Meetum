@@ -10,8 +10,6 @@ plugins {
     id(libs.plugins.multiplatform.resources.get().pluginId)
 }
 
-
-
 sqldelight {
     databases {
         create("meetum-database") {
@@ -30,7 +28,7 @@ kotlin {
     }
     
     jvm("desktop")
-    
+
     sourceSets {
 
         val commonMain by getting {
@@ -66,6 +64,9 @@ kotlin {
                 implementation(libs.uuid)
                 implementation(libs.window.size)
                 implementation(libs.coroutines)
+
+                // Sentry
+                implementation(libs.sentry.kmp)
 
             }
         }
@@ -109,6 +110,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
@@ -120,7 +122,7 @@ android {
     }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
         }
     }
     compileOptions {
@@ -139,11 +141,13 @@ multiplatformResources {
 compose.desktop {
     application {
         mainClass = "MainKt"
-
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Exe)
             packageName = "com.murzify.meetum"
             packageVersion = "1.0.0"
+            windows {
+                console = true
+            }
         }
     }
 }

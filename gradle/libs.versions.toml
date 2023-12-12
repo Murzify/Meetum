@@ -40,6 +40,8 @@ kotlinx-datetime = "0.5.0"
 uuid = "0.8.2"
 compose-compiler = "1.5.4"
 moko = "0.23.0"
+sentry = "4.0.0"
+sentry-kmp = "0.3.0"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -89,6 +91,9 @@ resources-generator = { group = "dev.icerock.moko", name = "resources-generator"
 moko-resources = { group = "dev.icerock.moko", name = "resources", version.ref = "moko" }
 moko-resources-compose = { group = "dev.icerock.moko", name = "resources-compose", version.ref = "moko" }
 
+# Sentry
+sentry-kmp = { group = "io.sentry", name = "sentry-kotlin-multiplatform", version.ref = "sentry-kmp" }
+
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }
 com-android-library = { id = "com.android.library", version.ref = "agp" }
@@ -99,3 +104,4 @@ sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 multiplatform-resources = { id = "dev.icerock.mobile.multiplatform-resources", version.ref = "moko" }
+sentry = { id = "io.sentry.jvm.gradle", version.ref = "sentry" }

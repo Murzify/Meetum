@@ -8,13 +8,14 @@ import com.murzify.meetum.core.data.repository.dataModule
 import com.murzify.meetum.core.database.databaseModule
 import com.murzify.meetum.core.database.driverModule
 import com.murzify.meetum.core.di.domainModule
+import com.murzify.meetum.initSentry
 import com.murzify.meetum.root.RealRootComponent
 import com.murzify.meetum.root.RootUi
 import org.koin.core.Koin
 
-
 fun main() = application {
     val koin = createKoin()
+    initSentry()
     val componentFactory = koin.get<ComponentFactory>()
     val lifecycle = LifecycleRegistry()
     val componentContext = DefaultComponentContext(lifecycle)
