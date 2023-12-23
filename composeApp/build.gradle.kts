@@ -145,9 +145,11 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Exe)
             packageName = "com.murzify.meetum"
             packageVersion = "1.0.0"
-            windows {
-                console = true
+            buildTypes.release.proguard {
+                configurationFiles.from("rules.pro")
             }
+            modules("java.instrument", "java.prefs", "java.sql", "jdk.unsupported","jdk.crypto.ec","jdk.localedata")
+            windows.console = true
         }
     }
 }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -110,7 +111,8 @@ internal fun AddRecordUi(
         ) {
 
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
             ) {
                 TimeInput(
                     modifier = Modifier,
@@ -134,10 +136,12 @@ internal fun AddRecordUi(
                 )
             }
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 16.dp)
+            ) {
                 TextField(
                     modifier = Modifier
-                        .padding(top = 8.dp)
                         .width(250.dp)
                         .moveFocusDown(focusManager),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
