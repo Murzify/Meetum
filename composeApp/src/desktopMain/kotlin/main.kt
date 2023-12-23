@@ -1,4 +1,8 @@
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.darkColors
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.arkivanov.decompose.DefaultComponentContext
@@ -13,6 +17,7 @@ import com.murzify.meetum.root.RealRootComponent
 import com.murzify.meetum.root.RootUi
 import org.koin.core.Koin
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 fun main() = application {
     val koin = createKoin()
     initSentry()
@@ -24,7 +29,9 @@ fun main() = application {
         componentFactory
     )
     Window(onCloseRequest = ::exitApplication) {
-        MaterialTheme {
+        MaterialTheme(colors = darkColors()) {
+            isSystemInDarkTheme()
+            rootComponent.onCalcWindow(calculateWindowSizeClass())
             RootUi(rootComponent)
         }
     }
