@@ -10,7 +10,7 @@ import java.util.Properties
 actual val driverModule = module {
     single<SqlDriver> {
         JdbcSqliteDriver(
-            JdbcSqliteDriver.IN_MEMORY,
+            "jdbc:sqlite:meetum.db",
             Properties(),
             schema = `meetum-database`.Schema,
             callbacks = arrayOf(
