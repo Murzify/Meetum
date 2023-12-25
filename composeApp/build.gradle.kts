@@ -22,7 +22,7 @@ kotlin {
     androidTarget {
         compilations.all {
             kotlinOptions {
-                jvmTarget = "1.8"
+                jvmTarget = "11"
             }
         }
     }
@@ -142,14 +142,28 @@ compose.desktop {
     application {
         mainClass = "MainKt"
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Exe)
-            packageName = "com.murzify.meetum"
             packageVersion = "1.0.0"
-            buildTypes.release.proguard {
-                configurationFiles.from("rules.pro")
+            copyright = "© 2023 Murzify. All rights reserved."
+            vendor = "Murzify"
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Exe)
+            linux {
+                packageName = "meetum"
+                shortcut = true
+                iconFile = project.file("src/commonMain/resources/drawable/ic_launcher.png")
+            }
+            macOS {
+                packageName = "meetum"
+                iconFile = project.file("src/commonMain/resources/drawable/ic_launcher.icns")
+            }
+            windows {
+                packageName = "Meetum"
+                shortcut = true
+                iconFile = project.file("src/commonMain/resources/drawable/ic_launcher.ico")
             }
             modules("java.instrument", "java.prefs", "java.sql", "jdk.unsupported","jdk.crypto.ec","jdk.localedata")
-            windows.console = true
+        }
+        buildTypes.release.proguard {
+            configurationFiles.from("rules.pro")
         }
     }
 }

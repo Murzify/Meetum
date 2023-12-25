@@ -35,7 +35,7 @@ fun main() = application {
 
     Window(
         title = stringResource(MR.strings.app_name),
-        icon = painterResource("drawable/ic_launcher.webp"),
+        icon = painterResource("drawable/ic_launcher.png"),
         onCloseRequest = ::exitApplication
     ) {
         window.minimumSize = Dimension(800, 600)

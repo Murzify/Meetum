@@ -7,9 +7,9 @@ import com.murzify.meetum.core.domain.usecase.GetServicesUseCase
 import org.koin.dsl.module
 
 val domainModule = module {
-    single { GetRecordsUseCase(get()) }
-    single { AddRecordUseCase(get()) }
-    single { AddServiceUseCase(get()) }
-    single { GetServicesUseCase(get()) }
+    factory { GetRecordsUseCase(get()) }
+    factory { AddRecordUseCase(get()) }
+    factory { AddServiceUseCase(get()) }
+    factory { GetServicesUseCase(get()) }
 }
 
