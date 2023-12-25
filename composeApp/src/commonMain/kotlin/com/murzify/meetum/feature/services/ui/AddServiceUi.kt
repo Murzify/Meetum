@@ -1,38 +1,13 @@
 package com.murzify.meetum.feature.services.ui
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.AlertDialogDefaults
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -43,10 +18,9 @@ import com.murzify.meetum.core.ui.Toolbar
 import com.murzify.meetum.core.ui.moveFocusDown
 import com.murzify.meetum.feature.services.components.AddServiceComponent
 import dev.icerock.moko.resources.compose.stringResource
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import java.util.Currency
+import java.util.*
 
 @Composable
 internal fun AddServiceUi(
@@ -96,7 +70,6 @@ internal fun AddServiceUi(
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {
-
                 TextField(
                     value = model.price,
                     onValueChange = component::onPriceChanged,
@@ -204,9 +177,7 @@ internal fun CurrencyField(
     onCurrencyChanged: (currency: Currency?) -> Unit
 ) {
     val currencies = Currency.getAvailableCurrencies().sortedBy { it.currencyCode }
-    var options by remember {
-        mutableStateOf(currencies)
-    }
+
     var expanded by remember { mutableStateOf(false) }
     var selectedOptionText by remember {
         mutableStateOf(default.currencyCode)
@@ -214,8 +185,10 @@ internal fun CurrencyField(
     var selectedCurrency by remember {
         mutableStateOf(default)
     }
-    val coroutineScope = rememberCoroutineScope()
-
+    val options = currencies.filter { currency ->
+        currency.currencyCode.startsWith(selectedOptionText, ignoreCase = true)
+    }
+    var selected by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -224,42 +197,47 @@ internal fun CurrencyField(
     ) {
 
         TextField(
-            modifier = Modifier.menuAnchor(),
+            modifier = Modifier.menuAnchor()
+                .onFocusChanged {
+                    if (!selected) {
+                        runCatching {
+                            onCurrencyChanged(
+                                Currency.getInstance(selectedOptionText.uppercase())
+                            )
+                        }
+                    }
+                },
             value = selectedOptionText,
             onValueChange = {
                 selectedOptionText = it
-                coroutineScope.launch {
-                    options = currencies.filter { currency ->
-                        currency.currencyCode.startsWith(it.uppercase())
-                    }
-                }
-                expanded = true
+                selected = false
             },
             label = { Text(stringResource(MR.strings.currency)) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            maxLines = 1,
+            maxLines = 1
         )
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = {
-                expanded = false
-                if (selectedOptionText.isEmpty())  {
-                    onCurrencyChanged(null)
+        if (options.isNotEmpty()) {
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = {
+                    expanded = false
+                },
+            ) {
+                options.take(2).forEach { selectionOption ->
+                    DropdownMenuItem(
+                        text = { Text(selectionOption.currencyCode) },
+                        onClick = {
+                            selectedOptionText = selectionOption.currencyCode
+                            selectedCurrency = selectionOption
+                            expanded = false
+                            selected = true
+                            onCurrencyChanged(selectionOption)
+                        },
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                    )
                 }
-            },
-        ) {
-            options.take(2).forEach { selectionOption ->
-                DropdownMenuItem(
-                    text = { Text(selectionOption.currencyCode) },
-                    onClick = {
-                        selectedOptionText = selectionOption.currencyCode
-                        selectedCurrency = selectionOption
-                        expanded = false
-                        onCurrencyChanged(selectionOption)
-                    },
-                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                )
             }
         }
+
     }
 }
