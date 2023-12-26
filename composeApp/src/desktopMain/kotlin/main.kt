@@ -34,7 +34,7 @@ fun main() = application {
     )
 
     Window(
-        title = stringResource(MR.strings.app_name),
+        title = stringResource(MR.strings.app_title),
         icon = painterResource("drawable/ic_launcher.png"),
         onCloseRequest = ::exitApplication
     ) {

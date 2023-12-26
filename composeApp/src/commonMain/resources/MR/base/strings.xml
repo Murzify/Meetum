@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Meetum</string>
+    <string name="app_title">Meetum</string>
 
     <string name="add_new_service">Add service</string>
     <string name="back_button">Back</string>
