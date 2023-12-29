@@ -30,6 +30,7 @@
 
     <!-- Services feature-->
     <string name="services_label">Услуги</string>
+    <string name="service">Услуга</string>
     <string name="add_service">Добавить услугу</string>
     <string name="service_name">Название услуги</string>
     <string name="price">Цена</string>

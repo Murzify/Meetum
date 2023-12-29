@@ -1,10 +1,34 @@
 package com.murzify.meetum.feature.services.ui
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.AlertDialogDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.onFocusChanged
@@ -20,7 +44,7 @@ import com.murzify.meetum.feature.services.components.AddServiceComponent
 import dev.icerock.moko.resources.compose.stringResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import java.util.*
+import java.util.Currency
 
 @Composable
 internal fun AddServiceUi(
@@ -31,7 +55,9 @@ internal fun AddServiceUi(
     Toolbar(
         title = {
             Text(
-                text = stringResource(MR.strings.new_service)
+                text = if (model.service != null) {
+                    stringResource(MR.strings.service)
+                } else stringResource(MR.strings.new_service)
             )
         },
         onBackClicked = component::onBackClick,
@@ -68,8 +94,8 @@ internal fun AddServiceUi(
             )
 
             Row(
-                modifier = Modifier.fillMaxWidth()
             ) {
+
                 TextField(
                     value = model.price,
                     onValueChange = component::onPriceChanged,
@@ -84,7 +110,6 @@ internal fun AddServiceUi(
                         }
                     ),
                     modifier = Modifier
-                        .weight(1f)
                         .padding(end = 8.dp),
                     isError = model.isPriceError
                 )
@@ -112,7 +137,7 @@ private fun FabBar(
     Row(){
         if (showDeleteButton) {
             FloatingActionButton(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(horizontal = 16.dp),
                 onClick = onDeleteClick,
                 containerColor = MaterialTheme.colorScheme.errorContainer,
                 contentColor = MaterialTheme.colorScheme.error
@@ -158,7 +183,7 @@ private fun FabBar(
         }
 
         FloatingActionButton(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(horizontal = 16.dp),
             onClick = onSaveClick
         ) {
             Text(

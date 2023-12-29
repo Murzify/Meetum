@@ -1,6 +1,11 @@
 package com.murzify.meetum.feature.services.components
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.slot.ChildSlot
+import com.arkivanov.decompose.router.slot.SlotNavigation
+import com.arkivanov.decompose.router.slot.activate
+import com.arkivanov.decompose.router.slot.childSlot
+import com.arkivanov.decompose.router.slot.dismiss
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
@@ -31,6 +36,7 @@ class RealServicesComponent(
 ) : ComponentContext by componentContext, ServicesComponent {
 
     private val navigation = StackNavigation<ChildConfig>()
+    private val slotNavigation = SlotNavigation<ChildConfig>()
 
     override val childStack: StateFlow<ChildStack<*, ServicesComponent.Child>> = childStack(
         source = navigation,
@@ -40,6 +46,15 @@ class RealServicesComponent(
         handleBackButton = true,
         childFactory = ::createChild
     ).toStateFlow(lifecycle)
+
+    override val childSlot: StateFlow<ChildSlot<*, ServicesComponent.Child>> = childSlot(
+        source = slotNavigation,
+        serializer = ChildConfig.serializer(),
+        handleBackButton = true,
+        childFactory = ::createChild
+    ).toStateFlow(lifecycle)
+
+    override var isMediumWindow: Boolean = false
 
     private fun createChild(
         config: ChildConfig,
@@ -53,14 +68,22 @@ class RealServicesComponent(
                     if (addService) {
                         navigateBack()
                     } else {
-                        navigation.pop()
+                        if (isMediumWindow) {
+                            slotNavigation.dismiss()
+                        } else {
+                            navigation.pop()
+                        }
                     }
                 }
             )
         )
         ChildConfig.ServicesList -> ServicesComponent.Child.ServicesList(
             componentFactory.createServicesListComponent(componentContext) {
-                navigation.push(ChildConfig.AddService(it))
+                if (isMediumWindow) {
+                    slotNavigation.activate(ChildConfig.AddService(it))
+                } else {
+                    navigation.push(ChildConfig.AddService(it))
+                }
             }
         )
     }

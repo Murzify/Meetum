@@ -73,8 +73,8 @@ fun ServiceCard(
                     modifier = Modifier.weight(1f)
                 )
 
-                val format = localStyleForeignFormat(Locale.getDefault())
-                format.currency = service.currency
+                val format = priceFormat(Locale.getDefault(), service.currency)
+                if (service.price.rem(1.0) == 0.0) format.maximumFractionDigits = 0
                 val price = format.format(service.price)
                 Row(
                     horizontalArrangement = Arrangement.End,
@@ -135,10 +135,10 @@ fun AddServiceCard(modifier: Modifier, onClick: () -> Unit) {
     }
 }
 
-fun localStyleForeignFormat(locale: Locale): NumberFormat {
+fun priceFormat(locale: Locale, currency: Currency): NumberFormat {
     val format = NumberFormat.getCurrencyInstance(locale)
+    format.currency = currency
     if (format is DecimalFormat) {
-        // use local/default decimal symbols with original currency symbol
         val dfs = DecimalFormat().decimalFormatSymbols
         dfs.currency = format.currency
         format.decimalFormatSymbols = dfs

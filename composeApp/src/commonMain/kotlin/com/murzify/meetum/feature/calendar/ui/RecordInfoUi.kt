@@ -33,7 +33,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.murzify.meetum.MR
-import com.murzify.meetum.core.ui.localStyleForeignFormat
+import com.murzify.meetum.core.ui.priceFormat
 import com.murzify.meetum.feature.calendar.components.RecordInfoComponent
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
@@ -156,8 +156,10 @@ internal fun RecordInfoUi(
                                 fontSize = 24.sp
                             )
                         }
-                        val format = localStyleForeignFormat(Locale.getDefault())
-                        format.currency = record.service.currency
+                        val format = priceFormat(
+                            Locale.getDefault(),
+                            record.service.currency
+                        )
                         val price = format.format(record.service.price)
 
                         Text(

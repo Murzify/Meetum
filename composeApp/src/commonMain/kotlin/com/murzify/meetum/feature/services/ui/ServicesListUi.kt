@@ -5,6 +5,7 @@ import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -30,7 +31,7 @@ import dev.icerock.moko.resources.compose.stringResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
-@OptIn(ExperimentalResourceApi::class)
+@OptIn(ExperimentalResourceApi::class, ExperimentalFoundationApi::class)
 @Composable
 internal fun ServicesListUi(
     component: ServicesListComponent
@@ -59,8 +60,8 @@ internal fun ServicesListUi(
                 )
             ) {
                 FloatingActionButton(
-                    modifier = Modifier.padding(end = 8.dp, bottom = 8.dp),
-                    onClick = component::onAddServiceClick
+                    onClick = component::onAddServiceClick,
+                    modifier = Modifier.padding(bottom = 8.dp)
                 ) {
                     Icon(
                         painter = painterResource("drawable/round_add_24.xml"),
@@ -74,16 +75,15 @@ internal fun ServicesListUi(
             EmptyScreenLottie()
         }
         LazyVerticalGrid(
-            columns = GridCells.Adaptive(150.dp),
+            columns = GridCells.Adaptive(170.dp),
             state = gridState,
             modifier = Modifier.fillMaxSize(),
             contentPadding = paddingValues
         ) {
-
             items(services) {
                 ServiceCard(
                     service = it,
-                    onClick = component::onServiceClick
+                    onClick = component::onServiceClick,
                 )
             }
         }

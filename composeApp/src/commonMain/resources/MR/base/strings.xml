@@ -31,6 +31,7 @@
 
     <!-- Services feature-->
     <string name="services_label">Services</string>
+    <string name="service">Service</string>
     <string name="add_service">Add service</string>
     <string name="service_name">Service name</string>
     <string name="price">Price</string>
