@@ -132,7 +132,7 @@ internal fun AddRecordUi(
             if (model.showRepeatInfo) {
                 RepeatText(
                     repeat = model.repeat,
-                    modifier = Modifier
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                 )
             }
 
@@ -366,7 +366,7 @@ private fun RepeatText(repeat: Repeat, modifier: Modifier) {
         DateTimeUnit.YEAR to MR.plurals.year,
     )
     var repeatText = "${stringResource(MR.strings.repeat_every)} ${repeat.periodCount} " +
-            StringDesc.Plural(periodsRes[repeat.period]!!, repeat.periodCount)
+            StringDesc.Plural(periodsRes[repeat.period]!!, repeat.periodCount).local()
     if (repeat.period == DateTimeUnit.WEEK) {
         repeatText += repeat.daysOfWeek.joinToString(
             separator = ", ",
