@@ -179,6 +179,9 @@ internal fun RecordInfoUi(
                         )
                     }
                 }
+                item {
+                    SocialBar(record)
+                }
             }
         }
     }
