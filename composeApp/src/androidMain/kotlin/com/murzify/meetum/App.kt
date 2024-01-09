@@ -6,6 +6,7 @@ import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.data.repository.dataModule
 import com.murzify.meetum.core.database.databaseModule
 import com.murzify.meetum.core.database.driverModule
+import com.murzify.meetum.core.datastore.dataStoreModule
 import com.murzify.meetum.core.di.domainModule
 import com.murzify.meetum.di.KoinProvider
 import org.koin.core.Koin
@@ -23,7 +24,7 @@ class App: Application(), KoinProvider {
 
     private fun createKoin() = Koin().apply {
         loadModules(
-            listOf(databaseModule, dataModule, domainModule, driverModule)
+            listOf(databaseModule, dataModule, domainModule, driverModule, dataStoreModule)
         )
         declare(this@App as Application)
         declare(this@App as Context)

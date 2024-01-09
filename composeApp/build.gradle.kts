@@ -1,5 +1,7 @@
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import java.io.FileInputStream
+import java.util.*
 
 plugins {
     alias(libs.plugins.sqldelight)
@@ -8,6 +10,16 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.serialization)
     id(libs.plugins.multiplatform.resources.get().pluginId)
+    id("com.github.gmazzo.buildconfig")
+}
+
+buildConfig {
+    val keystorePropertiesFile = rootProject.file("keystore.properties")
+    val keystoreProperties = Properties()
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+    buildConfigField("PROJECT_ID", keystoreProperties["projectId"] as String )
+    buildConfigField("APP_ID", keystoreProperties["applicationId"] as String )
+    buildConfigField("API_KEY", keystoreProperties["apiKey"] as String )
 }
 
 sqldelight {
@@ -20,6 +32,7 @@ sqldelight {
 
 kotlin {
     androidTarget {
+        apply(plugin = "com.google.gms.google-services")
         compilations.all {
             kotlinOptions {
                 jvmTarget = "11"
@@ -46,6 +59,7 @@ kotlin {
                 // Kotlin libs
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.kotlinx.serialization)
+                implementation(libs.coroutines)
 
                 // Decompose
                 implementation(libs.decompose)
@@ -63,10 +77,14 @@ kotlin {
 
                 implementation(libs.uuid)
                 implementation(libs.window.size)
-                implementation(libs.coroutines)
 
                 // Sentry
                 implementation(libs.sentry.kmp)
+
+                // Firebase
+                implementation(libs.firebase.auth)
+
+                implementation(libs.datastore.prefs)
 
             }
         }
@@ -88,6 +106,7 @@ kotlin {
                 implementation(libs.sqldelight.android)
                 implementation(libs.lottie.compose)
                 implementation(libs.calendar)
+                implementation(libs.play.services.auth)
             }
         }
     }

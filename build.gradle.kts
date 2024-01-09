@@ -17,6 +17,8 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.sqldelight) apply false
     alias(libs.plugins.sentry)
+    alias(libs.plugins.google.services)
+    id("com.github.gmazzo.buildconfig") version "5.3.1"
 }
 
 sentry {
