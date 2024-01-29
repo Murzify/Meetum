@@ -15,6 +15,7 @@ import com.murzify.meetum.core.database.databaseModule
 import com.murzify.meetum.core.database.driverModule
 import com.murzify.meetum.core.datastore.dataStoreModule
 import com.murzify.meetum.core.di.domainModule
+import com.murzify.meetum.core.network.networkModule
 import com.murzify.meetum.core.ui.MeetumTheme
 import com.murzify.meetum.initSentry
 import com.murzify.meetum.root.RealRootComponent
@@ -23,6 +24,8 @@ import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseOptions
 import dev.gitlive.firebase.initialize
 import dev.icerock.moko.resources.compose.stringResource
+import io.github.aakira.napier.DebugAntilog
+import io.github.aakira.napier.Napier
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.Koin
@@ -33,12 +36,14 @@ fun main() = application {
     val koin = createKoin()
     initSentry()
     firebaseInit(koin)
+    Napier.base(DebugAntilog())
     val componentFactory = koin.get<ComponentFactory>()
     val lifecycle = LifecycleRegistry()
     val componentContext = DefaultComponentContext(lifecycle)
     val rootComponent = RealRootComponent(
         componentContext = componentContext,
-        componentFactory
+        componentFactory,
+        koin.get()
     )
 
     Window(
@@ -68,7 +73,7 @@ private fun firebaseInit(koin: Koin) {
 
 private fun createKoin() = Koin().apply {
     loadModules(
-        listOf(databaseModule, dataModule, domainModule, driverModule, dataStoreModule)
+        listOf(databaseModule, dataModule, domainModule, driverModule, dataStoreModule, networkModule)
     )
     declare(ComponentFactory(this))
     createEagerInstances()

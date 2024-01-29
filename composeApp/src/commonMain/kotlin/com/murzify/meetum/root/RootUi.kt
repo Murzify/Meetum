@@ -5,14 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationRail
-import androidx.compose.material3.NavigationRailItem
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -20,6 +13,7 @@ import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
+import com.murzify.meetum.feature.auth.ui.LoginUi
 import com.murzify.meetum.feature.calendar.ui.CalendarUi
 import com.murzify.meetum.feature.services.ui.ServicesUi
 import com.murzify.meetum.root.RootComponent.Child
@@ -99,6 +93,7 @@ fun RootUi(
                 animation = stackAnimation(fade()),
             ){
                 when (val instance = it.instance) {
+                    is Child.Login -> LoginUi(instance.component, animOrientation, paddingValues)
                     is Child.Calendar -> CalendarUi(instance.component, animOrientation)
                     is Child.Services -> ServicesUi(instance.component, animOrientation)
                 }
@@ -111,6 +106,7 @@ fun RootUi(
 private fun Child.toScreen() = when (this) {
     is Child.Calendar -> Screen.Calendar
     is Child.Services -> Screen.Services
+    is Child.Login -> null
 }
 
 

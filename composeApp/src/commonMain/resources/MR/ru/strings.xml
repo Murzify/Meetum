@@ -41,4 +41,17 @@
     <string name="confirm_delete">Подтвердить</string>
     <string name="cancel_delete">Отмена</string>
     <string name="new_service">Новая услуга</string>
+
+    <!-- Auth feature -->
+    <string name="email">Email</string>
+    <string name="password">Пароль</string>
+    <string name="confirm_password">Подтвердите пароль</string>
+    <string name="sign_up">Регистрация</string>
+    <string name="sign_in">Войти</string>
+    <string name="short_password_error">Пароль должен состоять минимум из 6 символов</string>
+    <string name="different_passwords_error">Пароли не совпадают</string>
+    <string name="user_exists_error">Такой пользователь уже существует</string>
+    <string name="incorrect_email">Неправильный Email</string>
+    <string name="check_email">Проверьте вашу почту</string>
+
 </resources>

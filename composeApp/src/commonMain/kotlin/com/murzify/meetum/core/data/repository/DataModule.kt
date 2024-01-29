@@ -1,5 +1,6 @@
 package com.murzify.meetum.core.data.repository
 
+import com.murzify.meetum.core.domain.repository.FirebaseRepository
 import com.murzify.meetum.core.domain.repository.RecordRepository
 import com.murzify.meetum.core.domain.repository.ServiceRepository
 import org.koin.dsl.module
@@ -10,5 +11,8 @@ val dataModule = module {
     }
     single<RecordRepository> {
         RecordRepositoryImpl(get())
+    }
+    single<FirebaseRepository> {
+        FirebaseRepositoryImpl(get())
     }
 }

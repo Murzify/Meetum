@@ -33,6 +33,7 @@ fun TextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     contentPadding: PaddingValues = PaddingValues(16.dp),
+    visualTransformation: VisualTransformation = VisualTransformation.None,
     label: @Composable (() -> Unit)? = null,
     isError: Boolean = false,
 ) {
@@ -56,6 +57,7 @@ fun TextField(
         interactionSource = interactionSource,
         cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
         maxLines = maxLines,
+        visualTransformation = visualTransformation,
         decorationBox = { innerTextField ->
 
             OutlinedTextFieldDefaults.DecorationBox(
