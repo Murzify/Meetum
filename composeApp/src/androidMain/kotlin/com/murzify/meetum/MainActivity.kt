@@ -21,7 +21,8 @@ class MainActivity : ComponentActivity() {
         val componentContext = defaultComponentContext()
         val rootComponent = RealRootComponent(
             componentContext = componentContext,
-            componentFactory
+            componentFactory,
+            (application as KoinProvider).koin.get()
         )
         setContent {
             MeetumTheme {

@@ -86,6 +86,16 @@ kotlin {
 
                 implementation(libs.datastore.prefs)
 
+                // Ktor
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.okhttp)
+                implementation(libs.ktor.client.negotiation)
+                implementation(libs.ktor.serialization.json)
+                implementation(libs.ktor.logging)
+
+                implementation(libs.napier)
+                implementation(libs.kottie)
+
             }
         }
         val desktopMain by getting {
@@ -151,6 +161,9 @@ android {
     dependencies {
         debugImplementation(libs.ui.tooling)
     }
+}
+dependencies {
+    implementation("io.ktor:ktor-client-logging-jvm:2.3.7")
 }
 
 multiplatformResources {
