@@ -1,7 +1,6 @@
 package com.murzify.meetum.feature.auth.ui
 
 import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -11,10 +10,9 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stac
 import com.murzify.meetum.feature.auth.components.AuthComponent
 
 @Composable
-fun LoginUi(
+fun AuthUi(
     component: AuthComponent,
     animOrientation: Orientation,
-    insets: PaddingValues
 ) {
     val childStack by component.childStack.collectAsState()
 

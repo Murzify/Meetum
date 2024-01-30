@@ -1,6 +1,10 @@
 package com.murzify.meetum.feature.auth.components
 
+import kotlinx.coroutines.flow.StateFlow
+
 interface SignInComponent {
+
+    val model: StateFlow<Model>
 
     fun onEmailChange(email: String)
 
@@ -14,7 +18,13 @@ interface SignInComponent {
 
     data class Model(
         val email: String,
-        val password: String
+        val password: String,
+        val loading: Boolean,
+        val error: Error?
     )
+
+    enum class Error {
+        INVALID_CREDENTIALS
+    }
 
 }

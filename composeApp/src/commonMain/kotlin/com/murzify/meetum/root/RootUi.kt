@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
-import com.murzify.meetum.feature.auth.ui.LoginUi
+import com.murzify.meetum.feature.auth.ui.AuthUi
 import com.murzify.meetum.feature.calendar.ui.CalendarUi
 import com.murzify.meetum.feature.services.ui.ServicesUi
 import com.murzify.meetum.root.RootComponent.Child
@@ -93,7 +93,7 @@ fun RootUi(
                 animation = stackAnimation(fade()),
             ){
                 when (val instance = it.instance) {
-                    is Child.Login -> LoginUi(instance.component, animOrientation, paddingValues)
+                    is Child.Login -> AuthUi(instance.component, animOrientation)
                     is Child.Calendar -> CalendarUi(instance.component, animOrientation)
                     is Child.Services -> ServicesUi(instance.component, animOrientation)
                 }

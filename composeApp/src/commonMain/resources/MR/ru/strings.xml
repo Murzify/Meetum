@@ -53,5 +53,6 @@
     <string name="user_exists_error">Такой пользователь уже существует</string>
     <string name="incorrect_email">Неправильный Email</string>
     <string name="check_email">Проверьте вашу почту</string>
+    <string name="invalid_credentials">Неверный логин или пароль</string>
 
 </resources>

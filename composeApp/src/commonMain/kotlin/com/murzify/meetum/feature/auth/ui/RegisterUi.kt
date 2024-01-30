@@ -42,7 +42,8 @@ fun RegisterUi(component: RegisterComponent) {
                 component::onEmailChange,
                 component::onPasswordChange,
                 component::onConfirmPasswordChange,
-                component::onRegisterClick
+                component::onRegisterClick,
+                component::onSignInClick
             )
         }
     }
@@ -54,13 +55,15 @@ private fun Register(
     onEmailChange: (email: String) -> Unit,
     onPasswordChange: (password: String) -> Unit,
     onConfirmPasswordChange: (confirmPassword: String) -> Unit,
-    onRegisterClick: () -> Unit
+    onRegisterClick: () -> Unit,
+    onSignInClick: () -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.systemBarsPadding().imePadding()
     ) {
+
         TextField(
             modifier = Modifier.width(250.dp),
             onValueChange = onEmailChange,
@@ -117,7 +120,7 @@ private fun Register(
         }
 
         TextButton(
-            onClick = {},
+            onClick = onSignInClick,
             modifier = Modifier.size(width = 150.dp, height = 50.dp)
         ) {
             Text(stringResource(MR.strings.sign_in))

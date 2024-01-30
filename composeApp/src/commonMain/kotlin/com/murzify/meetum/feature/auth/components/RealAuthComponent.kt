@@ -3,8 +3,8 @@ package com.murzify.meetum.feature.auth.components
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
-import com.arkivanov.decompose.router.stack.push
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.common.toStateFlow
 import com.murzify.meetum.feature.auth.components.AuthComponent.Child
@@ -40,7 +40,7 @@ class RealAuthComponent(
             componentFactory.createRegisterComponent(
                 componentContext,
                 navigateToSignIn = {
-                    navigation.push(ChildConfig.SignIn)
+                    navigation.bringToFront(ChildConfig.SignIn)
                 },
                 navigateToCalendar = navigateToCalendar
             )
@@ -49,8 +49,9 @@ class RealAuthComponent(
             componentFactory.createSignInComponent(
                 componentContext,
                 navigateToRegister = {
-                    navigation.push(ChildConfig.Register)
-                }
+                    navigation.bringToFront(ChildConfig.Register)
+                },
+                navigateToCalendar
             )
         )
     }
