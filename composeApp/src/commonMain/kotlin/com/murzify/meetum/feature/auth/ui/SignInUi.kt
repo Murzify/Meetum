@@ -1,6 +1,7 @@
 package com.murzify.meetum.feature.auth.ui
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
@@ -52,8 +53,19 @@ fun SignInUi(component: SignInComponent) {
                 }
             )
 
+            Text(
+                stringResource(MR.strings.forgot_password),
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .clickable(
+                        onClick = component::onForgotPasswordClick
+                    )
+            )
+
             val errorText = when (model.error) {
                 Error.INVALID_CREDENTIALS -> stringResource(MR.strings.invalid_credentials)
+                Error.MISSING_EMAIL -> stringResource(MR.strings.enter_email)
+                Error.INVALID_EMAIL -> stringResource(MR.strings.incorrect_email)
                 null -> ""
             }
 

@@ -9,6 +9,10 @@ sealed class ErrorEntity : Throwable() {
 
     class InvalidIdToken: ErrorEntity()
 
+    class MissingEmail: ErrorEntity()
+
+    class InvalidEmail: ErrorEntity()
+
     data class Unknown(override val message: String): ErrorEntity()
 
     companion object {
@@ -17,6 +21,8 @@ sealed class ErrorEntity : Throwable() {
                 "EMAIL_EXISTS" -> EmailExists()
                 "INVALID_LOGIN_CREDENTIALS" -> InvalidLogin()
                 "INVALID_ID_TOKEN" -> InvalidIdToken()
+                "INVALID_EMAIL" -> InvalidEmail()
+                "MISSING_EMAIL" -> MissingEmail()
                 else -> {
                     Sentry.captureMessage(message)
                     Unknown(message)

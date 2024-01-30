@@ -54,5 +54,7 @@
     <string name="incorrect_email">Неправильный Email</string>
     <string name="check_email">Проверьте вашу почту</string>
     <string name="invalid_credentials">Неверный логин или пароль</string>
+    <string name="forgot_password">Забыли пароль?</string>
+    <string name="enter_email">Введите почту</string>
 
 </resources>

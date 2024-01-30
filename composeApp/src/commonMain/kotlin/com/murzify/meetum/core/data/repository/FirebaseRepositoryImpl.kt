@@ -29,6 +29,10 @@ class FirebaseRepositoryImpl(private val auth: FirebaseAuth) : FirebaseRepositor
         return resp.body<LookupResponse>().users.first()
     }
 
+    override suspend fun resetPassword(email: String) {
+        auth.resetPassword(email).throwIfNotOk()
+    }
+
     private suspend fun HttpResponse.throwIfNotOk() {
         if (status != HttpStatusCode.OK) {
             throw ErrorEntity[body<FirebaseError>().error.message]

@@ -4,6 +4,8 @@ import com.arkivanov.decompose.ComponentContext
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.common.componentCoroutineScope
+import com.murzify.meetum.core.domain.model.ErrorEntity
+import com.murzify.meetum.core.domain.repository.FirebaseRepository
 import com.murzify.meetum.feature.auth.components.SignInComponent.Error
 import com.murzify.meetum.feature.auth.components.SignInComponent.Model
 import com.murzify.meetum.meetumDispatchers
@@ -14,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.core.component.get
 
 fun ComponentFactory.createSignInComponent(
     componentContext: ComponentContext,
@@ -21,12 +24,14 @@ fun ComponentFactory.createSignInComponent(
     navigateToCalendar: () -> Unit
 ): SignInComponent = RealSignInComponent(
     componentContext,
+    get(),
     navigateToRegister,
     navigateToCalendar
 )
 
 class RealSignInComponent(
     componentContext: ComponentContext,
+    private val firebaseRepo: FirebaseRepository,
     private val navigateToRegister: () -> Unit,
     private val navigateToCalendar: () -> Unit
 ): ComponentContext by componentContext, SignInComponent {
@@ -73,6 +78,14 @@ class RealSignInComponent(
     }
 
     override fun onForgotPasswordClick() {
-        TODO("Not yet implemented")
+        scope.launch {
+            try {
+                firebaseRepo.resetPassword(model.value.email)
+            } catch (e: ErrorEntity.MissingEmail) {
+                model.update { it.copy(error = Error.MISSING_EMAIL) }
+            } catch (e: ErrorEntity.InvalidEmail) {
+                model.update { it.copy(error = Error.INVALID_EMAIL) }
+            }
+        }
     }
 }

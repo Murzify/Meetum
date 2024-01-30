@@ -9,4 +9,6 @@ interface FirebaseRepository {
     suspend fun sendEmailVerification(idToken: String)
 
     suspend fun getUserData(idToken: String): FirebaseUser
+
+    suspend fun resetPassword(email: String)
 }

@@ -24,7 +24,9 @@ interface SignInComponent {
     )
 
     enum class Error {
-        INVALID_CREDENTIALS
+        INVALID_CREDENTIALS,
+        MISSING_EMAIL,
+        INVALID_EMAIL
     }
 
 }

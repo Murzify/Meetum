@@ -4,6 +4,7 @@ import Meetum.composeApp.BuildConfig
 import com.murzify.meetum.core.network.model.EmailPasswordAuth
 import com.murzify.meetum.core.network.model.EmailVerification
 import com.murzify.meetum.core.network.model.LookupRequest
+import com.murzify.meetum.core.network.model.ResetPassword
 import io.github.aakira.napier.Napier
 import io.ktor.client.*
 import io.ktor.client.plugins.*
@@ -60,6 +61,14 @@ class FirebaseAuth() {
                 path("accounts:lookup")
             }
             setBody(LookupRequest(idToken))
+        }
+
+    suspend fun resetPassword(email: String) = httpClient
+        .post {
+            url {
+                path("accounts:sendOobCode")
+            }
+            setBody(ResetPassword(email = email, requestType = "PASSWORD_RESET"))
         }
 }
 
