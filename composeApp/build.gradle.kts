@@ -13,10 +13,11 @@ plugins {
     id("com.github.gmazzo.buildconfig")
 }
 
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties = Properties()
+keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+
 buildConfig {
-    val keystorePropertiesFile = rootProject.file("keystore.properties")
-    val keystoreProperties = Properties()
-    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
     buildConfigField("PROJECT_ID", keystoreProperties["projectId"] as String )
     buildConfigField("APP_ID", keystoreProperties["applicationId"] as String )
     buildConfigField("API_KEY", keystoreProperties["apiKey"] as String )
@@ -105,6 +106,7 @@ kotlin {
                 implementation(compose.desktop.currentOs)
                 implementation(libs.coroutines.swing)
                 implementation(libs.sqldelight.jvm)
+                implementation(libs.ktor.logging.jvm)
             }
         }
         val androidMain by getting {
@@ -137,6 +139,14 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
+    signingConfigs {
+        create("release") {
+            storeFile = file(keystoreProperties["store"] as String)
+            storePassword = keystoreProperties["keyStorePassword"] as String
+            keyPassword = keystoreProperties["keyStorePassword"] as String
+            keyAlias = keystoreProperties["alias"] as String
+        }
+    }
     buildFeatures {
         compose = true
         buildConfig = true
@@ -152,6 +162,8 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
+            proguardFiles("rules-android.pro")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
@@ -161,9 +173,6 @@ android {
     dependencies {
         debugImplementation(libs.ui.tooling)
     }
-}
-dependencies {
-    implementation("io.ktor:ktor-client-logging-jvm:2.3.7")
 }
 
 multiplatformResources {

@@ -49,6 +49,7 @@ fun RegisterUi(component: RegisterComponent) {
     }
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 private fun Register(
     model: Model,
@@ -63,6 +64,7 @@ private fun Register(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.systemBarsPadding().imePadding()
     ) {
+        MeetumBanner()
 
         TextField(
             modifier = Modifier.width(250.dp),

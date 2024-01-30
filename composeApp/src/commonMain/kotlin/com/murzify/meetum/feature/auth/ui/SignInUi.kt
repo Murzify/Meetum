@@ -12,6 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -21,7 +22,9 @@ import com.murzify.meetum.core.ui.TextField
 import com.murzify.meetum.feature.auth.components.SignInComponent
 import com.murzify.meetum.feature.auth.components.SignInComponent.Error
 import dev.icerock.moko.resources.compose.stringResource
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun SignInUi(component: SignInComponent) {
     val model by component.model.collectAsState()
@@ -31,8 +34,10 @@ fun SignInUi(component: SignInComponent) {
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.systemBarsPadding().imePadding()
+            modifier = Modifier.systemBarsPadding().imePadding().clipToBounds()
         ) {
+            MeetumBanner()
+
             TextField(
                 modifier = Modifier.width(250.dp),
                 onValueChange = component::onEmailChange,
