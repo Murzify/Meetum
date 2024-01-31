@@ -1,11 +1,29 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-@Suppress("DSL_SCOPE_VIOLATION")
-plugins {
-    alias(libs.plugins.com.android.application) apply false
-    alias(libs.plugins.org.jetbrains.kotlin.android) apply false
-    alias(libs.plugins.com.android.library) apply false
-    alias(libs.plugins.org.jetbrains.kotlin.jvm) apply false
-    alias(libs.plugins.hilt) apply false
-    alias(libs.plugins.ksp) apply false
+buildscript {
+    repositories {
+        mavenCentral()
+        google()
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath(libs.resources.generator)
+    }
 }
-true // Needed to make the Suppress annotation work for the plugins block
+
+plugins {
+    alias(libs.plugins.com.android.library) apply false
+    alias(libs.plugins.com.android.application) apply false
+    alias(libs.plugins.serialization)
+    alias(libs.plugins.jetbrainsCompose) apply false
+    alias(libs.plugins.kotlinMultiplatform) apply false
+    alias(libs.plugins.sqldelight) apply false
+    alias(libs.plugins.sentry)
+    alias(libs.plugins.google.services)
+    id("com.github.gmazzo.buildconfig") version "5.3.1"
+}
+
+sentry {
+    includeSourceContext = true
+    org = "murzify"
+    projectName = "meetum"
+    authToken = System.getenv("SENTRY_AUTH_TOKEN")
+}

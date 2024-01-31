@@ -1,0 +1,14 @@
+CREATE TABLE record_dates (
+    date_id TEXT NOT NULL,
+    record_id TEXT NOT NULL,
+    date INTEGER NOT NULL,
+    PRIMARY KEY(date_id),
+    FOREIGN KEY(record_id) REFERENCES records(record_id) ON UPDATE NO ACTION ON DELETE CASCADE
+);
+
+add:
+INSERT INTO record_dates
+VALUES ?;
+
+delete:
+DELETE FROM record_dates WHERE :recordId == record_id AND :date == date;

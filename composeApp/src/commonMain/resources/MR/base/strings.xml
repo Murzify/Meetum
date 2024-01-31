@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_title">Meetum</string>
+
+    <string name="add_new_service">Add service</string>
+    <string name="back_button">Back</string>
+
+    <!-- Calendar feature-->
+    <string name="add_record">Add a record</string>
+    <string name="calendar_label">Calendar</string>
+    <string name="client_name_label">Name (optional)</string>
+    <string name="description_label">Description (optional)</string>
+    <string name="phone_label">Phone (optional)</string>
+    <string name="choose_service">Choose a service</string>
+    <string name="add_new_service">Add service</string>
+    <string name="delete_record">Delete record</string>
+    <string name="save_record">Save</string>
+    <string name="import_contact">Import contact</string>
+    <string name="edit">Edit</string>
+    <string name="service_label">Service</string>
+    <string name="repeat_every">Repeat every</string>
+    <string name="repetitive_events">Repetitive events</string>
+    <string name="end_of_repetition">End of repetition</string>
+    <string name="ending">Ending: %s</string>
+    <string name="after_times">after</string>
+    <string name="delete_series_alert">This appointment is part of a series of events. Do you want to delete just this appointment, or the entire series?</string>
+    <string name="cancel">Cancel</string>
+    <string name="this_appointment">This appointment</string>
+    <string name="entire_series">Entire series</string>
+
+
+    <!-- Services feature-->
+    <string name="services_label">Services</string>
+    <string name="service">Service</string>
+    <string name="add_service">Add service</string>
+    <string name="service_name">Service name</string>
+    <string name="price">Price</string>
+    <string name="currency">Currency</string>
+    <string name="save">Save</string>
+    <string name="delete_service">Delete service</string>
+    <string name="you_have_records">You have records assigned, all related records will be deleted. Are you sure?</string>
+    <string name="confirm_delete">Confirm</string>
+    <string name="cancel_delete">Cancel</string>
+    <string name="new_service">New service</string>
+
+    <!-- Auth feature -->
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="sign_up">Sign up</string>
+    <string name="sign_in">Sign in</string>
+    <string name="short_password_error">Password should be at least 6 characters</string>
+    <string name="different_passwords_error">Passwords do not match</string>
+    <string name="user_exists_error">User already exists</string>
+    <string name="incorrect_email">Incorrect Email</string>
+    <string name="check_email">Check your mail</string>
+    <string name="invalid_credentials">Incorrect login or password</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="enter_email">Enter email</string>
+
+</resources>
