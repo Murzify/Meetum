@@ -86,7 +86,7 @@ class RealRootComponent(
         config: ChildConfig,
         componentContext: ComponentContext
     ): RootComponent.Child = when (config) {
-        is ChildConfig.Auth -> RootComponent.Child.Login(
+        is ChildConfig.Auth -> RootComponent.Child.Auth(
             componentFactory.createLoginComponent(
                 componentContext,
                 navigateToCalendar = {

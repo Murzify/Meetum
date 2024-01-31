@@ -93,7 +93,7 @@ fun RootUi(
                 animation = stackAnimation(fade()),
             ){
                 when (val instance = it.instance) {
-                    is Child.Login -> AuthUi(instance.component, animOrientation)
+                    is Child.Auth -> AuthUi(instance.component, animOrientation)
                     is Child.Calendar -> CalendarUi(instance.component, animOrientation)
                     is Child.Services -> ServicesUi(instance.component, animOrientation)
                 }
@@ -106,7 +106,7 @@ fun RootUi(
 private fun Child.toScreen() = when (this) {
     is Child.Calendar -> Screen.Calendar
     is Child.Services -> Screen.Services
-    is Child.Login -> null
+    is Child.Auth -> null
 }
 
 

@@ -20,7 +20,7 @@ interface RootComponent {
     fun onCalcWindow(windowSizeClass: WindowSizeClass)
 
     sealed interface Child {
-        data class Login(val component: AuthComponent): Child
+        data class Auth(val component: AuthComponent): Child
 
         data class Calendar(val component: CalendarComponent): Child
 
