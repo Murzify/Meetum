@@ -10,28 +10,26 @@ import com.murzify.meetum.feature.auth.components.RegisterComponent.Model
 import com.murzify.meetum.meetumDispatchers
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.koin.core.component.get
 
 fun ComponentFactory.createRegisterComponent(
     componentContext: ComponentContext,
     navigateToSignIn: () -> Unit,
-    navigateToCalendar: () -> Unit,
+    navigateToCheckEmail: () -> Unit
 ): RegisterComponent = RealRegisterComponent(
     componentContext,
     navigateToSignIn,
-    navigateToCalendar,
+    navigateToCheckEmail,
     get()
 )
 
 class RealRegisterComponent(
     componentContext: ComponentContext,
     private val navigateToSignIn: () -> Unit,
-    private val navigateToCalendar: () -> Unit,
+    private val navigateToCheckEmail: () -> Unit,
     private val firebaseRepo: FirebaseRepository
 ) : ComponentContext by componentContext, RegisterComponent {
     override val model: MutableStateFlow<Model> = MutableStateFlow(
@@ -40,17 +38,12 @@ class RealRegisterComponent(
             password = "",
             confirmPassword = "",
             error = null,
-            emailConfirmation = false,
             loading = false
         )
     )
 
     private val scope = componentCoroutineScope()
     private val auth = Firebase.auth
-
-    init {
-        model.update { it.copy(emailConfirmation = auth.currentUser?.isEmailVerified == false) }
-    }
 
     override fun onEmailChange(email: String) {
         model.update { it.copy(email = email) }
@@ -87,22 +80,8 @@ class RealRegisterComponent(
                 val password = model.value.password
                 firebaseRepo.createUser(email, password)
                 auth.signInWithEmailAndPassword(email, password)
-
-                val idToken = auth.currentUser?.getIdToken(true)
-                if (idToken != null) {
-                    firebaseRepo.sendEmailVerification(idToken)
-                } else return@launch
+                navigateToCheckEmail()
                 model.update { it.copy(loading = false) }
-                model.update { it.copy(emailConfirmation = true) }
-                
-                launch {
-                    while (!firebaseRepo.getUserData(idToken).emailVerified) {
-                        delay(1000)
-                    }
-                    withContext(meetumDispatchers.main) {
-                        navigateToCalendar()
-                    }
-                }
             } catch (e: ErrorEntity.EmailExists) {
                 model.update { it.copy(loading = false) }
                 setError(Error.EMAIL_EXISTS)

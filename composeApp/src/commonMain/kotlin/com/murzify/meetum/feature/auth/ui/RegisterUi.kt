@@ -1,7 +1,5 @@
 package com.murzify.meetum.feature.auth.ui
 
-import KottieAnimation
-import KottieCompositionSpec
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -16,8 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import animateKottieCompositionAsState
 import com.murzify.meetum.MR
 import com.murzify.meetum.core.ui.LoadingButton
 import com.murzify.meetum.core.ui.TextField
@@ -25,27 +21,20 @@ import com.murzify.meetum.feature.auth.components.RegisterComponent
 import com.murzify.meetum.feature.auth.components.RegisterComponent.Model
 import dev.icerock.moko.resources.compose.stringResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.resource
-import rememberKottieComposition
 
 @Composable
 fun RegisterUi(component: RegisterComponent) {
     val model by component.model.collectAsState()
 
     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-
-        if (model.emailConfirmation) {
-            EmailConfirmation()
-        } else {
-            Register(
-                model,
-                component::onEmailChange,
-                component::onPasswordChange,
-                component::onConfirmPasswordChange,
-                component::onRegisterClick,
-                component::onSignInClick
-            )
-        }
+        Register(
+            model,
+            component::onEmailChange,
+            component::onPasswordChange,
+            component::onConfirmPasswordChange,
+            component::onRegisterClick,
+            component::onSignInClick
+        )
     }
 }
 
@@ -130,33 +119,3 @@ private fun Register(
     }
 }
 
-@OptIn(ExperimentalResourceApi::class)
-@Composable
-private fun EmailConfirmation() {
-    val composition = rememberKottieComposition(
-        spec = KottieCompositionSpec.File(resource("lottie/email_verif.json"))
-    )
-    val animationState by animateKottieCompositionAsState(
-        composition = composition,
-        speed = 1f,
-        iterations = 1
-    )
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        KottieAnimation(
-            composition = composition,
-            progress = { animationState.progress },
-            modifier = Modifier.size(200.dp)
-        )
-
-        Text(
-            text = stringResource(MR.strings.check_email),
-            fontSize = 24.sp,
-            modifier = Modifier.padding(top = 16.dp)
-        )
-    }
-
-
-}

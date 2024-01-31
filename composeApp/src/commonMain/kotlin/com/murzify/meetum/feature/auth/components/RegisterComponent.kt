@@ -23,7 +23,6 @@ interface RegisterComponent {
         val password: String,
         val confirmPassword: String,
         val error: Error?,
-        val emailConfirmation: Boolean,
         val loading: Boolean
     )
 

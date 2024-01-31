@@ -21,19 +21,22 @@ import org.koin.core.component.get
 fun ComponentFactory.createSignInComponent(
     componentContext: ComponentContext,
     navigateToRegister: () -> Unit,
-    navigateToCalendar: () -> Unit
+    navigateToCalendar: () -> Unit,
+    navigateToCheckEmail: () -> Unit
 ): SignInComponent = RealSignInComponent(
     componentContext,
     get(),
     navigateToRegister,
-    navigateToCalendar
+    navigateToCalendar,
+    navigateToCheckEmail
 )
 
 class RealSignInComponent(
     componentContext: ComponentContext,
     private val firebaseRepo: FirebaseRepository,
     private val navigateToRegister: () -> Unit,
-    private val navigateToCalendar: () -> Unit
+    private val navigateToCalendar: () -> Unit,
+    private val navigateToCheckEmail: () -> Unit
 ): ComponentContext by componentContext, SignInComponent {
 
     override val model = MutableStateFlow(Model(
@@ -60,9 +63,17 @@ class RealSignInComponent(
             scope.launch {
                 try {
                     auth.signInWithEmailAndPassword(it.email, it.password)
-                    withContext(meetumDispatchers.main) {
-                        navigateToCalendar()
+                    val idToken = auth.currentUser?.getIdToken(false) ?: return@launch
+                    if (firebaseRepo.getUserData(idToken).emailVerified) {
+                        withContext(meetumDispatchers.main) {
+                            navigateToCalendar()
+                        }
+                    } else {
+                        withContext(meetumDispatchers.main) {
+                            navigateToCheckEmail()
+                        }
                     }
+
                 } catch (_: FirebaseAuthInvalidCredentialsException) {
                     model.update { it.copy(error = Error.INVALID_CREDENTIALS) }
                 } catch (_: FirebaseAuthInvalidUserException) {

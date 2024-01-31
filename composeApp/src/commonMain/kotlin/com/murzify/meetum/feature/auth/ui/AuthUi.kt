@@ -23,6 +23,7 @@ fun AuthUi(
         when (val instance = child.instance) {
             is AuthComponent.Child.Register -> RegisterUi(instance.component)
             is AuthComponent.Child.SignIn -> SignInUi(instance.component)
+            is AuthComponent.Child.CheckEmail -> CheckEmailUi(instance.component)
         }
     }
 

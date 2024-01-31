@@ -11,6 +11,8 @@ interface AuthComponent {
         class Register(val component: RegisterComponent): Child
 
         class SignIn(val component: SignInComponent): Child
+
+        class CheckEmail(val component: CheckEmailComponent): Child
     }
 
 }

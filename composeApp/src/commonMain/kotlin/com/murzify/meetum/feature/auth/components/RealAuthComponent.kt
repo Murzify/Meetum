@@ -1,10 +1,7 @@
 package com.murzify.meetum.feature.auth.components
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.stack.ChildStack
-import com.arkivanov.decompose.router.stack.StackNavigation
-import com.arkivanov.decompose.router.stack.bringToFront
-import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.*
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.common.toStateFlow
 import com.murzify.meetum.feature.auth.components.AuthComponent.Child
@@ -36,22 +33,37 @@ class RealAuthComponent(
         config: ChildConfig,
         componentContext: ComponentContext
     ): Child = when (config) {
-        is ChildConfig.Register -> Child.Register(
+        ChildConfig.Register -> Child.Register(
             componentFactory.createRegisterComponent(
                 componentContext,
                 navigateToSignIn = {
                     navigation.bringToFront(ChildConfig.SignIn)
                 },
-                navigateToCalendar = navigateToCalendar
+                navigateToCheckEmail = {
+                    navigation.replaceAll(ChildConfig.CheckEmail)
+                }
             )
         )
-        is ChildConfig.SignIn -> Child.SignIn(
+        ChildConfig.SignIn -> Child.SignIn(
             componentFactory.createSignInComponent(
                 componentContext,
                 navigateToRegister = {
                     navigation.bringToFront(ChildConfig.Register)
                 },
-                navigateToCalendar
+                navigateToCalendar,
+                navigateToCheckEmail = {
+                    navigation.replaceAll(ChildConfig.CheckEmail)
+                }
+            )
+        )
+
+        ChildConfig.CheckEmail -> Child.CheckEmail(
+            componentFactory.createCheckEmailComponent(
+                componentContext,
+                navigateToCalendar = navigateToCalendar,
+                navigateToRegister = {
+                    navigation.bringToFront(ChildConfig.Register)
+                }
             )
         )
     }
@@ -64,5 +76,8 @@ class RealAuthComponent(
 
         @Serializable
         data object SignIn : ChildConfig
+
+        @Serializable
+        data object CheckEmail : ChildConfig
     }
 }
