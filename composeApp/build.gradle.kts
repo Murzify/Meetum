@@ -21,6 +21,7 @@ buildConfig {
     buildConfigField("PROJECT_ID", keystoreProperties["projectId"] as String )
     buildConfigField("APP_ID", keystoreProperties["applicationId"] as String )
     buildConfigField("API_KEY", keystoreProperties["apiKey"] as String )
+    buildConfigField("DB_URL", keystoreProperties["databaseUrl"] as String )
 }
 
 sqldelight {
@@ -84,6 +85,7 @@ kotlin {
 
                 // Firebase
                 implementation(libs.firebase.auth)
+                implementation(libs.firebase.database)
 
                 implementation(libs.datastore.prefs)
 

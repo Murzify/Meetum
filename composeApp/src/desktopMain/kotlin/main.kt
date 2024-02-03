@@ -66,7 +66,8 @@ private fun firebaseInit(koin: Koin) {
     val options = FirebaseOptions(
         applicationId =  BuildConfig.APP_ID,
         apiKey =  BuildConfig.API_KEY,
-        projectId = BuildConfig.PROJECT_ID
+        projectId = BuildConfig.PROJECT_ID,
+        databaseUrl = BuildConfig.DB_URL
     )
     Firebase.initialize(Application(), options)
 }

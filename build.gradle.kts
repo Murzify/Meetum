@@ -18,7 +18,7 @@ plugins {
     alias(libs.plugins.sqldelight) apply false
     alias(libs.plugins.sentry)
     alias(libs.plugins.google.services)
-    id("com.github.gmazzo.buildconfig") version "5.3.1"
+    alias(libs.plugins.buildconfig) apply false
 }
 
 sentry {

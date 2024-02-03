@@ -4,6 +4,8 @@ import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.*
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.common.componentCoroutineScope
 import com.murzify.meetum.core.common.toStateFlow
@@ -13,12 +15,12 @@ import com.murzify.meetum.feature.calendar.components.createCalendarComponent
 import com.murzify.meetum.feature.services.components.createServicesComponent
 import com.murzify.meetum.meetumDispatchers
 import com.murzify.meetum.root.navigation.Screen
-import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import dev.gitlive.firebase.Firebase as KmpFirebase
 
 class RealRootComponent(
     componentContext: ComponentContext,
@@ -42,7 +44,7 @@ class RealRootComponent(
 
     override val splitScreen: Boolean get() = !shouldShowBottomBar.value
 
-    private val auth = Firebase.auth
+    private val auth = KmpFirebase.auth
 
     private val coroutineScope = componentCoroutineScope()
     private lateinit var windowSizeClass: WindowSizeClass
@@ -56,6 +58,8 @@ class RealRootComponent(
                 shouldShowNavRail.value = false
                 shouldShowBottomBar.value = false
                 navigation.replaceAll(ChildConfig.Auth)
+            } else {
+                Firebase.database.setPersistenceEnabled(false)
             }
         }
     }
