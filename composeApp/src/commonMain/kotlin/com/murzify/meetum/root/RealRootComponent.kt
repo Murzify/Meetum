@@ -3,9 +3,13 @@ package com.murzify.meetum.root
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.stack.*
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
+import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.bringToFront
+import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.push
+import com.arkivanov.decompose.router.stack.replaceAll
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.common.componentCoroutineScope
 import com.murzify.meetum.core.common.toStateFlow
@@ -58,8 +62,6 @@ class RealRootComponent(
                 shouldShowNavRail.value = false
                 shouldShowBottomBar.value = false
                 navigation.replaceAll(ChildConfig.Auth)
-            } else {
-                Firebase.database.setPersistenceEnabled(false)
             }
         }
     }

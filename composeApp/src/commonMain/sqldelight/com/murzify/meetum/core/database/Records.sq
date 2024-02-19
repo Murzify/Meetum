@@ -34,7 +34,7 @@ WHERE records.service_id == :serviceId AND EXISTS
     );
 
 add:
-INSERT INTO records
+INSERT OR IGNORE INTO records
 VALUES ?;
 
 update:

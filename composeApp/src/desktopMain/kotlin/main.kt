@@ -22,6 +22,7 @@ import com.murzify.meetum.root.RealRootComponent
 import com.murzify.meetum.root.RootUi
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseOptions
+import dev.gitlive.firebase.database.database
 import dev.gitlive.firebase.initialize
 import dev.icerock.moko.resources.compose.stringResource
 import io.github.aakira.napier.DebugAntilog
@@ -70,6 +71,7 @@ private fun firebaseInit(koin: Koin) {
         databaseUrl = BuildConfig.DB_URL
     )
     Firebase.initialize(Application(), options)
+    Firebase.database.setPersistenceEnabled(false)
 }
 
 private fun createKoin() = Koin().apply {

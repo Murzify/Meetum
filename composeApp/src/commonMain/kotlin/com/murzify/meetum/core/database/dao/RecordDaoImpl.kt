@@ -30,16 +30,11 @@ class RecordDaoImpl(
         .asFlow()
         .mapToList(meetumDispatchers.io)
 
-    override suspend fun add(record: Records, dates: List<Instant>) {
+    override suspend fun add(record: Records, dates: List<Record_dates>) {
         recordDatesQueries.transaction {
             recordsQueries.add(record)
             dates.forEach { date ->
-                val recordDate = Record_dates(
-                    Uuid.randomUUID().toString(),
-                    record.record_id,
-                    date.toEpochMilliseconds()
-                )
-                recordDatesQueries.add(recordDate)
+                recordDatesQueries.add(date)
             }
         }
     }
@@ -48,6 +43,14 @@ class RecordDaoImpl(
         recordDatesQueries.transaction {
             recordDates.forEach {
                 recordDatesQueries.add(it)
+            }
+        }
+    }
+
+    override suspend fun updateDate(vararg recordDates: Record_dates) {
+        recordDatesQueries.transaction {
+            recordDates.forEach {
+                recordDatesQueries.update(it.date, it.date_id)
             }
         }
     }
@@ -81,4 +84,16 @@ class RecordDaoImpl(
     override suspend fun deleteDate(recordId: Uuid, date: Instant) {
         recordDatesQueries.delete(recordId.toString(), date.toEpochMilliseconds())
     }
+
+    override suspend fun deleteDate(dateId: String) {
+        recordDatesQueries.deleteById(dateId)
+    }
+
+    override suspend fun syncRecord(record: Records) {
+        recordsQueries.add(record)
+    }
+
+
+
+
 }

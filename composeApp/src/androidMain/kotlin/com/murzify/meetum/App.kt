@@ -2,6 +2,8 @@ package com.murzify.meetum
 
 import android.app.Application
 import android.content.Context
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.data.repository.dataModule
 import com.murzify.meetum.core.database.databaseModule
@@ -23,6 +25,7 @@ class App: Application(), KoinProvider {
         super.onCreate()
         initSentry()
         Napier.base(DebugAntilog())
+        Firebase.database.setPersistenceEnabled(false)
         koin = createKoin()
     }
 
