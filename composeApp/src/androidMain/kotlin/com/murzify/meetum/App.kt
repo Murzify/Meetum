@@ -5,7 +5,7 @@ import android.content.Context
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.murzify.meetum.core.common.ComponentFactory
-import com.murzify.meetum.core.data.repository.dataModule
+import com.murzify.meetum.core.data.dataModule
 import com.murzify.meetum.core.database.databaseModule
 import com.murzify.meetum.core.database.driverModule
 import com.murzify.meetum.core.datastore.dataStoreModule

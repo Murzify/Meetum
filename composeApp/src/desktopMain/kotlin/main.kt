@@ -10,7 +10,7 @@ import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.google.firebase.FirebasePlatform
 import com.murzify.meetum.MR
 import com.murzify.meetum.core.common.ComponentFactory
-import com.murzify.meetum.core.data.repository.dataModule
+import com.murzify.meetum.core.data.dataModule
 import com.murzify.meetum.core.database.databaseModule
 import com.murzify.meetum.core.database.driverModule
 import com.murzify.meetum.core.datastore.dataStoreModule

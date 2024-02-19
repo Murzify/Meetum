@@ -1,7 +1,9 @@
 package com.murzify.meetum.core.data.repository
 
 import com.benasher44.uuid.Uuid
+import com.murzify.meetum.core.data.mapToRecord
 import com.murzify.meetum.core.data.model.FirebaseBooking
+import com.murzify.meetum.core.data.userEvents
 import com.murzify.meetum.core.database.Record_dates
 import com.murzify.meetum.core.database.Records
 import com.murzify.meetum.core.database.dao.RecordDao
@@ -84,17 +86,6 @@ class RecordRepositoryImpl(
                 ChildEvent.Type.MOVED -> {}
                 ChildEvent.Type.REMOVED -> recordDao.delete(records)
             }
-        }
-    }
-
-    private suspend inline fun <reified T> userEvents(
-        uid: String,
-        path: String,
-        crossinline block: suspend (key: String?, value: T, type: ChildEvent.Type) -> Unit
-    ) {
-        val ref = Firebase.database.reference("users/$uid/$path")
-        ref.childEvents().collect {
-            block(it.snapshot.key, it.snapshot.value<T>(), it.type)
         }
     }
 

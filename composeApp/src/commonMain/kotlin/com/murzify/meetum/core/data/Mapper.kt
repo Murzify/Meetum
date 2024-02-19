@@ -1,4 +1,4 @@
-package com.murzify.meetum.core.data.repository
+package com.murzify.meetum.core.data
 
 import com.benasher44.uuid.Uuid
 import com.murzify.meetum.core.database.model.FullRecord
