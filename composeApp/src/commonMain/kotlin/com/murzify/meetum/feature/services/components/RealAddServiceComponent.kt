@@ -118,6 +118,9 @@ class RealAddServiceComponent(
             }.apply {
                 if (isNameError) {
                     return@apply
+                } else if (price.isEmpty()) {
+                    model.update { it.copy(isPriceError = true) }
+                    return@apply
                 }
                 val service = Service(
                     name,

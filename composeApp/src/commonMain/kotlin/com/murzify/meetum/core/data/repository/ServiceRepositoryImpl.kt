@@ -34,22 +34,9 @@ class ServiceRepositoryImpl(
         scope.launch {
             auth.authStateChanged.collect { user ->
                 job.children.forEach { it.cancelAndJoin() }
-                user?.uid?.let {
+                user?.uid?.let { uid ->
                     syncScope.launch {
-                        userEvents<FirebaseService>(user.uid, "services") { key, value, type ->
-                            val servicesEntity = Services(
-                                key!!,
-                                value.name,
-                                value.price,
-                                value.currency
-                            )
-                            when (type) {
-                                ChildEvent.Type.ADDED -> serviceDao.add(servicesEntity)
-                                ChildEvent.Type.CHANGED -> serviceDao.edit(servicesEntity)
-                                ChildEvent.Type.MOVED -> {}
-                                ChildEvent.Type.REMOVED -> serviceDao.delete(servicesEntity)
-                            }
-                        }
+                        syncWithFirebase(uid)
                     }
                 }
             }
@@ -100,6 +87,23 @@ class ServiceRepositoryImpl(
             )
         )
         serviceDao.edit(service = service.toEntity())
+    }
+
+    private suspend fun syncWithFirebase(userId: String) {
+        userEvents<FirebaseService>(userId, "services") { key, value, type ->
+            val servicesEntity = Services(
+                key!!,
+                value.name,
+                value.price,
+                value.currency
+            )
+            when (type) {
+                ChildEvent.Type.ADDED -> serviceDao.add(servicesEntity)
+                ChildEvent.Type.CHANGED -> serviceDao.edit(servicesEntity)
+                ChildEvent.Type.MOVED -> {}
+                ChildEvent.Type.REMOVED -> serviceDao.delete(servicesEntity)
+            }
+        }
     }
 
 }
