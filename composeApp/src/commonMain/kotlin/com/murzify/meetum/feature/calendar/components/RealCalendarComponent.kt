@@ -10,8 +10,8 @@ import com.arkivanov.decompose.router.stack.replaceAll
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.common.toStateFlow
 import com.murzify.meetum.core.domain.model.Record
+import com.murzify.meetum.core.domain.model.RecordTime
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
 fun ComponentFactory.createCalendarComponent(
@@ -60,7 +60,7 @@ class RealCalendarComponent(
         is ChildConfig.AddRecord -> CalendarComponent.Child.AddRecord(
             componentFactory.createAddRecordComponent(
                 componentContext,
-                config.date,
+                config.recordTime,
                 config.record,
                 navigateBack = navigation::pop,
                 navigateToCalendar = { navigation.replaceAll(ChildConfig.RecordsManager) },
@@ -72,12 +72,12 @@ class RealCalendarComponent(
             RealRecordInfoComponent(
                 componentContext,
                 config.record,
-                date = config.date,
+                recordTime = config.recordTime,
                 navigateBack = navigation::pop,
                 navigateToEdit = {
                     navigation.push(
                         ChildConfig.AddRecord(
-                            config.date,
+                            config.recordTime,
                             config.record
                         )
                     )
@@ -106,14 +106,14 @@ class RealCalendarComponent(
 
         @Serializable
         data class AddRecord(
-            val date: Instant,
+            val recordTime: RecordTime,
             val record: Record? = null
         ): ChildConfig
 
         @Serializable
         data class RecordInfo(
             val record: Record,
-            val date: Instant
+            val recordTime: RecordTime,
         ): ChildConfig
 
         @Serializable

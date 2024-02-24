@@ -7,6 +7,7 @@ import com.murzify.meetum.core.common.componentCoroutineScope
 import com.murzify.meetum.core.common.registerKeeper
 import com.murzify.meetum.core.common.restore
 import com.murzify.meetum.core.domain.model.Record
+import com.murzify.meetum.core.domain.model.RecordTime
 import com.murzify.meetum.core.domain.model.Repeat
 import com.murzify.meetum.core.domain.model.RepeatRecord
 import com.murzify.meetum.core.domain.model.Service
@@ -20,7 +21,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
@@ -30,7 +30,7 @@ import org.koin.core.component.get
 
 fun ComponentFactory.createAddRecordComponent(
     componentContext: ComponentContext,
-    date: Instant,
+    recordTime: RecordTime,
     record: Record?,
     navigateBack: () -> Unit,
     navigateToCalendar: () -> Unit,
@@ -42,7 +42,7 @@ fun ComponentFactory.createAddRecordComponent(
     navigateToCalendar,
     navigateToRepeat,
     navigateToAddService,
-    date,
+    recordTime,
     record,
     get(),
     get(),
@@ -55,8 +55,8 @@ class RealAddRecordComponent(
     private val navigateToCalendar: () -> Unit,
     private val navigateToRepeat: () -> Unit,
     override val onAddServiceClick: () -> Unit,
-    date: Instant,
-    record: Record? = null,
+    private val recordTime: RecordTime,
+    record: Record? = null, // if the record is not null, then record in edit mode
     private val addRecordUseCase: AddRecordUseCase,
     private val getServicesUseCase: GetServicesUseCase,
     private val recordRepo: RecordRepository
@@ -64,7 +64,7 @@ class RealAddRecordComponent(
 
     override val model = MutableStateFlow(
         restore(Model.serializer()) ?: Model(
-            date = date,
+            date = recordTime.time,
             name = record?.clientName ?: "",
             description = record?.description ?: "",
             phone =record?.phone ?: "",
@@ -133,9 +133,20 @@ class RealAddRecordComponent(
             return
         }
         model.value.apply {
+            val dates = if (record == null) {
+                mutableListOf(
+                    recordTime.copy(time = date)
+                )
+            } else {
+                val updateIndex = record.dates.indexOfFirst { it.id == recordTime.id }
+                val newRecordTime = record.dates[updateIndex].copy(time = date)
+                record.dates.toMutableList().apply {
+                    this[updateIndex] = newRecordTime
+                }
+            }
             val saveRecord = Record(
                 clientName = name.takeIf { it.isNotEmpty() },
-                time = listOf(date),
+                dates = dates,
                 description = description.takeIf { it.isNotEmpty() },
                 phone = phone.takeIf { it.isNotEmpty() },
                 service = service!!,
@@ -162,7 +173,7 @@ class RealAddRecordComponent(
     override fun onDeleteClicked() {
         coroutineScope.launch(meetumDispatchers.io) {
             val record = model.value.record!!
-            if (record.time.size > 1) {
+            if (record.dates.size > 1) {
                 model.update { it.copy(showSeriesAlert = true) }
                 return@launch
             }
@@ -177,7 +188,7 @@ class RealAddRecordComponent(
         coroutineScope.launch(meetumDispatchers.io) {
             val record = model.value.record!!
             when (deleteType) {
-                DeleteType.Date -> recordRepo.deleteDate(record.id, model.value.date)
+                DeleteType.Date -> recordRepo.deleteDate(recordTime, record.id)
                 DeleteType.Series -> recordRepo.deleteRecord(record)
             }
             model.update { it.copy(showSeriesAlert = false) }

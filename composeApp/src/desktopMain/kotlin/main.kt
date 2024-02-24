@@ -10,7 +10,7 @@ import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.google.firebase.FirebasePlatform
 import com.murzify.meetum.MR
 import com.murzify.meetum.core.common.ComponentFactory
-import com.murzify.meetum.core.data.repository.dataModule
+import com.murzify.meetum.core.data.dataModule
 import com.murzify.meetum.core.database.databaseModule
 import com.murzify.meetum.core.database.driverModule
 import com.murzify.meetum.core.datastore.dataStoreModule
@@ -22,6 +22,7 @@ import com.murzify.meetum.root.RealRootComponent
 import com.murzify.meetum.root.RootUi
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseOptions
+import dev.gitlive.firebase.database.database
 import dev.gitlive.firebase.initialize
 import dev.icerock.moko.resources.compose.stringResource
 import io.github.aakira.napier.DebugAntilog
@@ -66,9 +67,11 @@ private fun firebaseInit(koin: Koin) {
     val options = FirebaseOptions(
         applicationId =  BuildConfig.APP_ID,
         apiKey =  BuildConfig.API_KEY,
-        projectId = BuildConfig.PROJECT_ID
+        projectId = BuildConfig.PROJECT_ID,
+        databaseUrl = BuildConfig.DB_URL
     )
     Firebase.initialize(Application(), options)
+    Firebase.database.setPersistenceEnabled(false)
 }
 
 private fun createKoin() = Koin().apply {

@@ -10,7 +10,7 @@ getAll:
 SELECT * FROM services;
 
 add:
-INSERT INTO services
+INSERT OR IGNORE INTO services
 VALUES ?;
 
 edit:

@@ -13,4 +13,4 @@ fun createDataStore(
     produceFile = { File(producePath()) }
 )
 
-internal val dataStoreFileName = "meetum.preferences_pb"
+internal const val dataStoreFileName = "meetum.preferences_pb"
