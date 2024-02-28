@@ -154,7 +154,7 @@ actual fun RecordsManagerUi(
                 items(
                     model.currentRecords,
                     key = {
-                        it.hashCode().toString() + it.time[0]
+                        it.hashCode().toString() + it.dates.first().time
                     }
                 ) { record ->
                     var show by remember {
@@ -165,7 +165,7 @@ actual fun RecordsManagerUi(
                             if (it == DismissValue.DismissedToStart ||
                                 it == DismissValue.DismissedToEnd) {
                                 show = false
-                                component.onDismissToStart(record)
+                                component.onDismissToStart(record, record.dates.first())
                                 true
                             } else false
                         }
@@ -179,7 +179,9 @@ actual fun RecordsManagerUi(
                             dismissContent = {
                                 RecordCard(
                                     record,
-                                    onClick = component::onRecordClick
+                                    onClick = {
+                                        component.onRecordClick(record, record.dates.first())
+                                    }
                                 )
                             },
                             directions = mutableSetOf(DismissDirection.StartToEnd).apply {
@@ -260,8 +262,8 @@ private fun RowScope.Calendar(
                 showBadge = allRecords.any { record ->
                     record.clientName
                     val recordDates =
-                        record.time.map { date ->
-                            date.toLocalDateTime(tz).date
+                        record.dates.map { date ->
+                            date.time.toLocalDateTime(tz).date
                         }
                     recordDates.contains(it.date.toKotlinLocalDate())
                 }
@@ -450,7 +452,7 @@ private fun RecordCard(
             Text(text = record.service.name, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
         val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
-        val date = Date.from(record.time[0].toJavaInstant())
+        val date = Date.from(record.dates[0].time.toJavaInstant())
         Text(
             text = sdf.format(date),
             modifier = Modifier.padding(start = 2.dp, end = 16.dp)

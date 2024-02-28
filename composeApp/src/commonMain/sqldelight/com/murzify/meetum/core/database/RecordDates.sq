@@ -7,8 +7,19 @@ CREATE TABLE record_dates (
 );
 
 add:
-INSERT INTO record_dates
+INSERT OR IGNORE INTO record_dates
 VALUES ?;
 
 delete:
 DELETE FROM record_dates WHERE :recordId == record_id AND :date == date;
+
+deleteByRecord:
+DELETE FROM record_dates WHERE :recordId == record_id;
+
+deleteById:
+DELETE FROM record_dates WHERE :dateId == date_id;
+
+update:
+UPDATE record_dates
+    SET date = :newDate
+WHERE :dateId == date_id;

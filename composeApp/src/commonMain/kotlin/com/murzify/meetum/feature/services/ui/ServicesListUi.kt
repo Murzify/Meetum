@@ -61,7 +61,7 @@ internal fun ServicesListUi(
             ) {
                 FloatingActionButton(
                     onClick = component::onAddServiceClick,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    modifier = Modifier.padding(bottom = 8.dp, end = 8.dp)
                 ) {
                     Icon(
                         painter = painterResource("drawable/round_add_24.xml"),

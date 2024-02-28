@@ -13,9 +13,11 @@ interface RecordDao {
 
     suspend fun getByDate(startDate: Instant, endDate: Instant): Flow<List<FullRecord>>
 
-    suspend fun add(record: Records, dates: List<Instant>)
+    suspend fun add(record: Records, dates: List<Record_dates>)
 
     suspend fun addDate(vararg recordDates: Record_dates)
+
+    suspend fun updateDate(vararg recordDates: Record_dates)
 
     suspend fun update(record: Records)
 
@@ -26,5 +28,9 @@ interface RecordDao {
     suspend fun deleteLinkedWithService(serviceId: Uuid)
 
     suspend fun deleteDate(recordId: Uuid, date: Instant)
+
+    suspend fun deleteDate(dateId: String)
+
+    suspend fun syncRecord(record: Records)
 
 }

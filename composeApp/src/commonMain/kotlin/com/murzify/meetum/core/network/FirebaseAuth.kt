@@ -5,41 +5,35 @@ import com.murzify.meetum.core.network.model.EmailPasswordAuth
 import com.murzify.meetum.core.network.model.EmailVerification
 import com.murzify.meetum.core.network.model.LookupRequest
 import com.murzify.meetum.core.network.model.ResetPassword
-import io.github.aakira.napier.Napier
-import io.ktor.client.*
-import io.ktor.client.plugins.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.plugins.logging.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
+import io.ktor.http.path
+import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
-class FirebaseAuth() {
-    private val httpClient = HttpClient {
-        install(Logging) {
-            logger = object : Logger {
-                override fun log(message: String) {
-                    Napier.v(message, null, "Ktor")
-                }
+fun firebaseHttpClient() = HttpClient {
+    install(ContentNegotiation) {
+        json(
+            Json {
+                ignoreUnknownKeys = true
             }
-            level = LogLevel.ALL
-        }
-        install(ContentNegotiation) {
-            json(
-                Json {
-                    ignoreUnknownKeys = true
-                }
-            )
-        }
-        defaultRequest {
-            contentType(ContentType.Application.Json)
-            url {
-                url("https://identitytoolkit.googleapis.com/v1/")
-                parameters.append("key", BuildConfig.API_KEY)
-            }
+        )
+    }
+    defaultRequest {
+        contentType(ContentType.Application.Json)
+        url {
+            url("https://identitytoolkit.googleapis.com/v1/")
+            parameters.append("key", BuildConfig.API_KEY)
         }
     }
+}
+
+class FirebaseAuth(private val httpClient: HttpClient) {
 
     suspend fun  createUser(email: String, password: String) = httpClient
         .post {
