@@ -3,7 +3,7 @@
   <img src="https://github.com/Murzify/Meetum/blob/master/art/banner.png?raw=true" width=250/>
 </p>
 <p align="center">
-  <img align="center" alt="GitHub License" src="https://img.shields.io/github/license/murzify/Meetum">
+  <img align="center" alt="GitHub License" src="https://img.shields.io/github/license/Murzify/Meetum">
 </p>
 
 
