@@ -1,0 +1,9 @@
+import kotlin.Boolean;
+
+ALTER TABLE records ADD COLUMN synced INTEGER AS Boolean DEFAULT 0 NOT NULL;
+
+ALTER TABLE records ADD COLUMN deletion INTEGER AS Boolean DEFAULT 0 NOT NULL;
+
+ALTER TABLE record_dates ADD COLUMN synced INTEGER AS Boolean DEFAULT 0 NOT NULL;
+
+ALTER TABLE record_dates ADD COLUMN deletion INTEGER AS Boolean DEFAULT 0 NOT NULL;

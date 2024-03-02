@@ -154,7 +154,7 @@ actual fun RecordsManagerUi(
                 items(
                     model.currentRecords,
                     key = {
-                        it.hashCode().toString() + it.dates.first().time
+                        it.hashCode().toString() + it.dates.firstOrNull()?.time
                     }
                 ) { record ->
                     var show by remember {

@@ -1,21 +1,65 @@
+import kotlin.Boolean;
+
 CREATE TABLE records (
     record_id TEXT NOT NULL,
     client_name TEXT,
     description TEXT,
     phone TEXT,
     service_id TEXT NOT NULL,
+    deletion INTEGER AS Boolean DEFAULT 0 NOT NULL,
+    synced INTEGER AS Boolean DEFAULT 0 NOT NULL,
     PRIMARY KEY(record_id)
 );
 
 getAllRecords:
-SELECT * FROM records
+SELECT
+    records.record_id,
+    client_name,
+    description,
+    phone,
+    services.service_id,
+    name,
+    price,
+    currency,
+    record_dates.date_id,
+    date
+FROM records
 INNER JOIN services ON records.service_id = services.service_id
-INNER JOIN record_dates ON records.record_id = record_dates.record_id;
+INNER JOIN record_dates ON records.record_id = record_dates.record_id AND record_dates.deletion = 0
+WHERE records.deletion == 0;
 
-getByDate:
-SELECT * FROM records
+getUnsynced:
+SELECT
+    records.record_id,
+    client_name,
+    description,
+    phone,
+    services.service_id,
+    name,
+    price,
+    currency,
+    record_dates.date_id,
+    date
+FROM records
 INNER JOIN services ON records.service_id = services.service_id
 INNER JOIN record_dates ON records.record_id = record_dates.record_id
+WHERE records.synced = 0 OR record_dates.synced = 0;
+
+getByDate:
+SELECT
+    records.record_id,
+    client_name,
+    description,
+    phone,
+    services.service_id,
+    name,
+    price,
+    currency,
+    record_dates.date_id,
+    date
+FROM records
+INNER JOIN services ON records.service_id = services.service_id
+INNER JOIN record_dates ON records.record_id = record_dates.record_id AND record_dates.deletion = 0
 WHERE EXISTS (
     SELECT 1 FROM record_dates
     WHERE record_dates.record_id = records.record_id
@@ -23,15 +67,29 @@ WHERE EXISTS (
 );
 
 getFuture:
-SELECT * FROM records
+SELECT
+    records.record_id,
+    client_name,
+    description,
+    phone,
+    services.service_id,
+    name,
+    price,
+    currency,
+    record_dates.date_id,
+    date
+FROM records
 INNER JOIN services ON records.service_id = services.service_id
 INNER JOIN record_dates ON records.record_id = record_dates.record_id
-    AND record_dates.date > :currentTime
+    AND record_dates.date > :currentTime AND record_dates.deletion = 0
 WHERE records.service_id == :serviceId AND EXISTS
     (SELECT 1 FROM record_dates
         WHERE record_dates.record_id == records.record_id
         AND record_dates.date > :currentTime
     );
+
+getForDeletion:
+SELECT record_id FROM records WHERE deletion == 1;
 
 add:
 INSERT OR IGNORE INTO records
@@ -48,5 +106,15 @@ WHERE ? = records.record_id;
 delete:
 DELETE FROM records WHERE :id = record_id;
 
+markForDeleteion:
+UPDATE records
+    SET deletion = 1
+WHERE :id == record_id;
+
 deleteLinkedWithSerivce:
 DELETE FROM records WHERE service_id == :serviceId;
+
+markForDeletionByService:
+UPDATE records
+    SET deletion = 1
+WHERE service_id == :serviceId;

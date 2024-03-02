@@ -55,14 +55,18 @@ class RealRootComponent(
     private var emailVerified: Boolean = true
     init {
         coroutineScope.launch {
-            auth.currentUser?.reload()
-            val idToken = auth.currentUser?.getIdToken(false)
-            emailVerified = idToken?.let { firebaseRepo.getUserData(it).emailVerified } == true
-            if (!emailVerified) {
-                shouldShowNavRail.value = false
-                shouldShowBottomBar.value = false
-                navigation.replaceAll(ChildConfig.Auth)
+            runCatching {
+                val idToken = auth.currentUser?.getIdToken(true)
+                emailVerified = idToken?.let {
+                    firebaseRepo.getUserData(it).emailVerified
+                } == true
+                if (!emailVerified) {
+                    shouldShowNavRail.value = false
+                    shouldShowBottomBar.value = false
+                    navigation.replaceAll(ChildConfig.Auth)
+                }
             }
+
         }
     }
 

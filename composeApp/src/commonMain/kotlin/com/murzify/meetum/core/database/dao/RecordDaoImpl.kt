@@ -16,6 +16,17 @@ class RecordDaoImpl(
     private val recordsQueries: RecordsQueries,
     private val recordDatesQueries: RecordDatesQueries
 ) : RecordDao {
+
+    override val recordsForDeletion = recordsQueries
+        .getForDeletion()
+        .asFlow()
+        .mapToList(meetumDispatchers.io)
+
+    override val datesForDeletion = recordDatesQueries
+        .getForDeletion()
+        .asFlow()
+        .mapToList(meetumDispatchers.io)
+
     override suspend fun getAll(): Flow<List<FullRecord>> = recordsQueries
         .getAllRecords(mapper = ::FullRecord)
         .asFlow()
@@ -27,6 +38,11 @@ class RecordDaoImpl(
             endDate.toEpochMilliseconds(),
             mapper = ::FullRecord
         )
+        .asFlow()
+        .mapToList(meetumDispatchers.io)
+
+    override suspend fun getUnsynced(): Flow<List<FullRecord>> = recordsQueries
+        .getUnsynced(mapper = ::FullRecord)
         .asFlow()
         .mapToList(meetumDispatchers.io)
 
@@ -55,6 +71,15 @@ class RecordDaoImpl(
         }
     }
 
+    override suspend fun syncDates(recordId: String, vararg recordDates: Record_dates) {
+        recordDatesQueries.transaction {
+            recordDatesQueries.deleteMarked(recordId)
+            recordDates.forEach {
+                recordDatesQueries.update(it.date, it.date_id)
+            }
+        }
+    }
+
     override suspend fun update(record: Records) {
         recordsQueries.update(
             record.client_name,
@@ -69,6 +94,10 @@ class RecordDaoImpl(
         recordsQueries.delete(record.record_id)
     }
 
+    override suspend fun markForDeletion(record: Records) {
+        recordsQueries.markForDeleteion(record.record_id)
+    }
+
     override suspend fun getFuture(serviceId: Uuid, currentTime: Instant): List<FullRecord> = recordsQueries
         .getFuture(
             currentTime.toEpochMilliseconds(),
@@ -78,7 +107,7 @@ class RecordDaoImpl(
         .executeAsList()
 
     override suspend fun deleteLinkedWithService(serviceId: Uuid) {
-        recordsQueries.deleteLinkedWithSerivce(serviceId.toString())
+        recordsQueries.markForDeletionByService(serviceId.toString())
     }
 
     override suspend fun deleteDate(recordId: Uuid, date: Instant) {
@@ -87,6 +116,10 @@ class RecordDaoImpl(
 
     override suspend fun deleteDate(dateId: String) {
         recordDatesQueries.deleteById(dateId)
+    }
+
+    override suspend fun markDateForDeletion(dateId: String) {
+        recordDatesQueries.markForDeletion(dateId)
     }
 
     override suspend fun syncRecord(record: Records) {

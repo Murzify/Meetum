@@ -8,6 +8,7 @@ import com.murzify.meetum.core.database.Record_dates
 import com.murzify.meetum.core.database.Records
 import com.murzify.meetum.core.database.dao.RecordDao
 import com.murzify.meetum.core.database.model.toEntity
+import com.murzify.meetum.core.database.model.toFirebase
 import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.core.domain.model.RecordTime
 import com.murzify.meetum.core.domain.repository.RecordRepository
@@ -16,7 +17,6 @@ import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.database.ChildEvent
 import dev.gitlive.firebase.database.database
-import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -47,6 +47,40 @@ class RecordRepositoryImpl(
                 }
             }
         }
+        scope.launch {
+            recordDao.getUnsynced().collect { fullRecordList ->
+                val records = fullRecordList.mapToRecord()
+                val uid = auth.currentUser?.uid!!
+                records.forEach { record ->
+                    val bookingRef =
+                        Firebase.database.reference("users/$uid/booking/${record.id}")
+                    bookingRef.setValue(
+                        record.toFirebase()
+                    )
+                }
+            }
+        }
+        scope.launch {
+            recordDao.recordsForDeletion.collect {
+                val uid = auth.currentUser?.uid!!
+                it.forEach { recordId ->
+                    val bookingRef =
+                        Firebase.database.reference("users/$uid/booking/$recordId")
+                    bookingRef.removeValue()
+                }
+            }
+        }
+        scope.launch {
+            recordDao.datesForDeletion.collect {
+                val uid = auth.currentUser?.uid!!
+                it.forEach { recordDate ->
+                    val bookingRef =
+                        Firebase.database.reference("users/$uid/booking/${recordDate.record_id}/time/${recordDate.date_id}")
+                    bookingRef.removeValue()
+                }
+            }
+        }
+
     }
 
     override suspend fun getAllRecords() = recordDao.getAll().map { recordList ->
@@ -67,26 +101,10 @@ class RecordRepositoryImpl(
     }
 
     override suspend fun deleteDate(recordTime: RecordTime, recordId: Uuid) {
-        Napier.d("delete", null, "sql")
-        val uid = auth.currentUser?.uid!!
-        Firebase.database.reference("users/$uid/booking/$recordId/time/${recordTime.id}")
-            .removeValue()
-        recordDao.deleteDate(recordTime.id.toString())
+        recordDao.markDateForDeletion(recordTime.id.toString())
     }
 
     override suspend fun addRecord(record: Record) {
-        val uid = auth.currentUser?.uid!!
-        val bookingRef =
-            Firebase.database.reference("users/$uid/booking/${record.id}")
-        bookingRef.setValue(
-            FirebaseBooking(
-                record.clientName,
-                record.description,
-                record.phone,
-                record.service.id.toString(),
-                record.dates.associate { it.id.toString() to it.time.toEpochMilliseconds() }
-            )
-        )
         recordDao.add(
             record.toEntity(),
             record.dates.map { it.toEntity(record.id) }
@@ -94,30 +112,19 @@ class RecordRepositoryImpl(
     }
 
     override suspend fun updateRecord(record: Record) {
-        val uid = auth.currentUser?.uid!!
-        val bookingRef =
-            Firebase.database.reference("users/$uid/booking/${record.id}")
-        bookingRef.setValue(
-            FirebaseBooking(
-                record.clientName,
-                record.description,
-                record.phone,
-                record.service.id.toString(),
-                record.dates.associate { it.id.toString() to it.time.toEpochMilliseconds() }
-            )
-        )
         recordDao.update(record.toEntity())
         val dates = record.dates.map { it.toEntity(record.id)}.toTypedArray()
         recordDao.updateDate(*dates)
     }
 
     override suspend fun deleteRecord(record: Record) {
-        val uid = auth.currentUser?.uid!!
-        val bookingRef =
-            Firebase.database.reference("users/$uid/booking/${record.id}")
-        bookingRef.removeValue()
-        recordDao.delete(record.toEntity())
+        recordDao.markForDeletion(record.toEntity())
     }
+
+    private suspend fun syncDates(uid: String) {
+        
+    }
+
 
     private suspend fun syncBookings(uid: String) {
         userEvents<FirebaseBooking>(uid, "booking") { uuid, booking, type ->
@@ -126,7 +133,9 @@ class RecordRepositoryImpl(
                 booking.clientName,
                 booking.description,
                 booking.phone,
-                booking.serviceId
+                booking.serviceId,
+                deletion = false,
+                synced = true
             )
             when (type) {
                 ChildEvent.Type.ADDED -> {
@@ -135,7 +144,9 @@ class RecordRepositoryImpl(
                         Record_dates(
                             it.key,
                             uuid,
-                            it.value
+                            it.value,
+                            deletion = false,
+                            synced = true
                         )
                     }.toTypedArray()
                     recordDao.addDate(
@@ -143,15 +154,17 @@ class RecordRepositoryImpl(
                     )
                 }
                 ChildEvent.Type.CHANGED -> {
-                    recordDao.update(records)
                     val dates = booking.time.map {
                         Record_dates(
                             it.key,
                             uuid,
-                            it.value
+                            it.value,
+                            deletion = false,
+                            synced = true
                         )
                     }.toTypedArray()
-                    recordDao.updateDate(*dates)
+                    recordDao.syncDates(records.record_id, *dates)
+                    recordDao.update(records)
                 }
                 ChildEvent.Type.MOVED -> {}
                 ChildEvent.Type.REMOVED -> recordDao.delete(records)
