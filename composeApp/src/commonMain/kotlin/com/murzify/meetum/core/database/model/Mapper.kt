@@ -13,15 +13,24 @@ fun Record.toEntity() = Records(
     clientName,
     description,
     phone,
-    service.id.toString()
+    service.id.toString(),
+    deletion = false,
+    synced = false
 )
 
-fun Service.toEntity() = Services(
-    id.toString(), name, price, currency.currencyCode
+fun Service.toEntity(synced: Boolean) = Services(
+    id.toString(),
+    name,
+    price,
+    currency.currencyCode,
+    deletion = false,
+    synced = synced
 )
 
 fun RecordTime.toEntity(recordId: Uuid) = Record_dates(
     id.toString(),
     recordId.toString(),
-    time.toEpochMilliseconds()
+    time.toEpochMilliseconds(),
+    deletion = false,
+    synced = false
 )

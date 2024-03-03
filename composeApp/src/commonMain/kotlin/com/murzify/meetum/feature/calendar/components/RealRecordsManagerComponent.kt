@@ -93,7 +93,7 @@ class RealRecordsManagerComponent (
                         recordTime.time.toLocalDateTime(tz).date == date
                     }
                     it.copy(dates = dates)
-                }
+                }.filter { it.dates.isNotEmpty() }
                 model.update { it.copy(currentRecords = filteredRecords) }
             }
         }
