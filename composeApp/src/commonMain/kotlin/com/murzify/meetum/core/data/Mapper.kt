@@ -1,6 +1,9 @@
 package com.murzify.meetum.core.data
 
 import com.benasher44.uuid.Uuid
+import com.murzify.meetum.core.data.model.FirebaseBooking
+import com.murzify.meetum.core.data.model.FirebaseService
+import com.murzify.meetum.core.database.Services
 import com.murzify.meetum.core.database.model.FullRecord
 import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.core.domain.model.RecordTime
@@ -29,3 +32,17 @@ fun List<FullRecord>.mapToRecord() = groupBy { it.recordId }
             id = Uuid.fromString(id),
         )
     }
+
+fun Services.toFirebase() = FirebaseService(
+    name,
+    price,
+    currency,
+)
+
+fun Record.toFirebase() = FirebaseBooking(
+    clientName,
+    description,
+    phone,
+    service.id.toString(),
+    dates.associate { it.id.toString() to it.time.toEpochMilliseconds() }
+)

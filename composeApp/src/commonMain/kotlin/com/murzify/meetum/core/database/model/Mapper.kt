@@ -1,7 +1,6 @@
 package com.murzify.meetum.core.database.model
 
 import com.benasher44.uuid.Uuid
-import com.murzify.meetum.core.data.model.FirebaseBooking
 import com.murzify.meetum.core.database.Record_dates
 import com.murzify.meetum.core.database.Records
 import com.murzify.meetum.core.database.Services
@@ -19,8 +18,13 @@ fun Record.toEntity() = Records(
     synced = false
 )
 
-fun Service.toEntity() = Services(
-    id.toString(), name, price, currency.currencyCode
+fun Service.toEntity(synced: Boolean) = Services(
+    id.toString(),
+    name,
+    price,
+    currency.currencyCode,
+    deletion = false,
+    synced = synced
 )
 
 fun RecordTime.toEntity(recordId: Uuid) = Record_dates(
@@ -29,12 +33,4 @@ fun RecordTime.toEntity(recordId: Uuid) = Record_dates(
     time.toEpochMilliseconds(),
     deletion = false,
     synced = false
-)
-
-fun Record.toFirebase() = FirebaseBooking(
-    clientName,
-    description,
-    phone,
-    service.id.toString(),
-    dates.associate { it.id.toString() to it.time.toEpochMilliseconds() }
 )

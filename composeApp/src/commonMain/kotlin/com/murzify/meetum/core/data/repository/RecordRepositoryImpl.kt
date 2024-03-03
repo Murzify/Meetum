@@ -1,22 +1,20 @@
 package com.murzify.meetum.core.data.repository
 
 import com.benasher44.uuid.Uuid
+import com.murzify.meetum.core.data.FirebaseSync
 import com.murzify.meetum.core.data.mapToRecord
 import com.murzify.meetum.core.data.model.FirebaseBooking
+import com.murzify.meetum.core.data.toFirebase
 import com.murzify.meetum.core.data.userEvents
 import com.murzify.meetum.core.database.Record_dates
 import com.murzify.meetum.core.database.Records
 import com.murzify.meetum.core.database.dao.RecordDao
 import com.murzify.meetum.core.database.model.toEntity
-import com.murzify.meetum.core.database.model.toFirebase
 import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.core.domain.model.RecordTime
 import com.murzify.meetum.core.domain.repository.RecordRepository
 import com.murzify.meetum.meetumDispatchers
-import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.database.ChildEvent
-import dev.gitlive.firebase.database.database
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -29,55 +27,44 @@ import java.util.UUID
 
 class RecordRepositoryImpl(
     private val recordDao: RecordDao,
-): RecordRepository {
+): RecordRepository, FirebaseSync() {
 
     private val scope = CoroutineScope(meetumDispatchers.io)
-    private val auth = Firebase.auth
 
     init {
         val job = Job()
         val syncScope = CoroutineScope(meetumDispatchers.io + job)
         scope.launch {
-            auth.authStateChanged.collect { user ->
+            auth.getUid { uid ->
                 job.children.forEach { it.cancelAndJoin() }
-                user?.uid?.let { uid ->
-                    syncScope.launch {
-                        syncBookings(uid)
-                    }
+                syncScope.launch {
+                    syncBookings(uid)
                 }
             }
         }
+
         scope.launch {
-            recordDao.getUnsynced().collect { fullRecordList ->
-                val records = fullRecordList.mapToRecord()
-                val uid = auth.currentUser?.uid!!
-                records.forEach { record ->
-                    val bookingRef =
-                        Firebase.database.reference("users/$uid/booking/${record.id}")
-                    bookingRef.setValue(
+            recordDao.unsyncedRecords.map {
+                it.mapToRecord()
+            }.sync { record, uid ->
+                db.reference("users/$uid/booking/${record.id}")
+                    .setValue(
                         record.toFirebase()
                     )
-                }
             }
         }
+
         scope.launch {
-            recordDao.recordsForDeletion.collect {
-                val uid = auth.currentUser?.uid!!
-                it.forEach { recordId ->
-                    val bookingRef =
-                        Firebase.database.reference("users/$uid/booking/$recordId")
-                    bookingRef.removeValue()
-                }
+            recordDao.recordsForDeletion.sync { recordId, uid ->
+                db.reference("users/$uid/booking/$recordId").removeValue()
             }
         }
+
         scope.launch {
-            recordDao.datesForDeletion.collect {
-                val uid = auth.currentUser?.uid!!
-                it.forEach { recordDate ->
-                    val bookingRef =
-                        Firebase.database.reference("users/$uid/booking/${recordDate.record_id}/time/${recordDate.date_id}")
-                    bookingRef.removeValue()
-                }
+            recordDao.datesForDeletion.sync { recordDate, uid ->
+                db.reference(
+                    "users/$uid/booking/${recordDate.record_id}/time/${recordDate.date_id}"
+                ).removeValue()
             }
         }
 
@@ -121,11 +108,6 @@ class RecordRepositoryImpl(
         recordDao.markForDeletion(record.toEntity())
     }
 
-    private suspend fun syncDates(uid: String) {
-        
-    }
-
-
     private suspend fun syncBookings(uid: String) {
         userEvents<FirebaseBooking>(uid, "booking") { uuid, booking, type ->
             val records = Records(
@@ -162,8 +144,8 @@ class RecordRepositoryImpl(
                             deletion = false,
                             synced = true
                         )
-                    }.toTypedArray()
-                    recordDao.syncDates(records.record_id, *dates)
+                    }
+                    recordDao.syncDates(records.record_id, dates)
                     recordDao.update(records)
                 }
                 ChildEvent.Type.MOVED -> {}

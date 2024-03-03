@@ -27,6 +27,11 @@ class RecordDaoImpl(
         .asFlow()
         .mapToList(meetumDispatchers.io)
 
+    override val unsyncedRecords = recordsQueries
+        .getUnsynced(mapper = ::FullRecord)
+        .asFlow()
+        .mapToList(meetumDispatchers.io)
+
     override suspend fun getAll(): Flow<List<FullRecord>> = recordsQueries
         .getAllRecords(mapper = ::FullRecord)
         .asFlow()
@@ -38,11 +43,6 @@ class RecordDaoImpl(
             endDate.toEpochMilliseconds(),
             mapper = ::FullRecord
         )
-        .asFlow()
-        .mapToList(meetumDispatchers.io)
-
-    override suspend fun getUnsynced(): Flow<List<FullRecord>> = recordsQueries
-        .getUnsynced(mapper = ::FullRecord)
         .asFlow()
         .mapToList(meetumDispatchers.io)
 
@@ -71,11 +71,17 @@ class RecordDaoImpl(
         }
     }
 
-    override suspend fun syncDates(recordId: String, vararg recordDates: Record_dates) {
+    override suspend fun syncDates(recordId: String, recordDates: List<Record_dates>) {
         recordDatesQueries.transaction {
-            recordDatesQueries.deleteMarked(recordId)
             recordDates.forEach {
                 recordDatesQueries.update(it.date, it.date_id)
+            }
+            val currentIds = recordDatesQueries.getIdsByRecord(recordId).executeAsList()
+            currentIds.forEach { dateId ->
+                val deleted = !recordDates.any { it.date_id == dateId }
+                if (deleted) {
+                    recordDatesQueries.deleteById(dateId)
+                }
             }
         }
     }

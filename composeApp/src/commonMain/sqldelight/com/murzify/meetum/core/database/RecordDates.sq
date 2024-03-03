@@ -13,9 +13,6 @@ CREATE TABLE record_dates (
 getForDeletion:
 SELECT date_id, record_id FROM record_dates WHERE deletion == 1;
 
-deleteMarked:
-DELETE FROM record_dates WHERE :recordId == record_id AND deletion == 1;
-
 add:
 INSERT OR IGNORE INTO record_dates
 VALUES ?;
@@ -23,8 +20,8 @@ VALUES ?;
 delete:
 DELETE FROM record_dates WHERE :recordId == record_id AND :date == date;
 
-deleteByRecord:
-DELETE FROM record_dates WHERE :recordId == record_id;
+getIdsByRecord:
+SELECT date_id FROM record_dates WHERE :recordId == record_id;
 
 deleteById:
 DELETE FROM record_dates WHERE :dateId == date_id;

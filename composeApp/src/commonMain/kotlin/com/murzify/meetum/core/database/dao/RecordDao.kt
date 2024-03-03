@@ -14,11 +14,11 @@ interface RecordDao {
 
     val datesForDeletion: Flow<List<GetForDeletion>>
 
+    val unsyncedRecords: Flow<List<FullRecord>>
+
     suspend fun getAll(): Flow<List<FullRecord>>
 
     suspend fun getByDate(startDate: Instant, endDate: Instant): Flow<List<FullRecord>>
-
-    suspend fun getUnsynced(): Flow<List<FullRecord>>
 
     suspend fun add(record: Records, dates: List<Record_dates>)
 
@@ -26,7 +26,7 @@ interface RecordDao {
 
     suspend fun updateDate(vararg recordDates: Record_dates)
 
-    suspend fun syncDates(recordId: String, vararg recordDates: Record_dates)
+    suspend fun syncDates(recordId: String, recordDates: List<Record_dates>)
 
     suspend fun update(record: Records)
 

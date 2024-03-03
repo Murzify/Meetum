@@ -1,13 +1,23 @@
+import kotlin.Boolean;
+
 CREATE TABLE services (
     service_id TEXT NOT NULL,
     name TEXT NOT NULL,
     price REAL NOT NULL,
     currency TEXT NOT NULL,
+    deletion INTEGER AS Boolean DEFAULT 0 NOT NULL,
+    synced INTEGER AS Boolean DEFAULT 0 NOT NULL,
     PRIMARY KEY(service_id)
 );
 
 getAll:
-SELECT * FROM services;
+SELECT * FROM services WHERE deletion == 0;
+
+getUnsynced:
+SELECT * FROM services WHERE synced == 0;
+
+getForDeletion:
+SELECT service_id FROM services WHERE deletion == 1;
 
 add:
 INSERT OR IGNORE INTO services
@@ -23,3 +33,6 @@ WHERE service_id = ?;
 delete:
 DELETE FROM services
 WHERE service_id = ?;
+
+markForDeletion:
+UPDATE services SET deletion = 1 WHERE :serviceId == service_id;
