@@ -10,6 +10,7 @@ import com.murzify.meetum.core.domain.model.RecordTime
 import com.murzify.meetum.core.domain.repository.RecordRepository
 import com.murzify.meetum.core.domain.usecase.GetRecordsUseCase
 import com.murzify.meetum.core.domain.usecase.GetServicesUseCase
+import com.murzify.meetum.feature.calendar.components.RecordsManagerComponent.CurrentRecord
 import com.murzify.meetum.feature.calendar.components.RecordsManagerComponent.Model
 import com.murzify.meetum.meetumDispatchers
 import kotlinx.coroutines.Job
@@ -88,12 +89,17 @@ class RealRecordsManagerComponent (
         loadRecordsJob = coroutineScope.launch(meetumDispatchers.io) {
             getRecordsUseCase(date.toInstant()).collect { currentRecords ->
                 val tz = TimeZone.currentSystemDefault()
-                val filteredRecords = currentRecords.map {
-                    val dates = it.dates.filter { recordTime ->
+                val filteredRecords = currentRecords.mapNotNull { record ->
+                    record.dates.firstOrNull { recordTime ->
                         recordTime.time.toLocalDateTime(tz).date == date
+                    }?.let {
+                        return@mapNotNull CurrentRecord(
+                            record,
+                            it
+                        )
                     }
-                    it.copy(dates = dates)
-                }.filter { it.dates.isNotEmpty() }
+                    return@mapNotNull null
+                }
                 model.update { it.copy(currentRecords = filteredRecords) }
             }
         }
@@ -114,14 +120,14 @@ class RealRecordsManagerComponent (
         navigateToRecordInfo(record, recordTime)
     }
 
-    override fun onDismissToStart(record: Record, recordTime: RecordTime) {
+    override fun onDismissToStart(currentRecord: CurrentRecord) {
         coroutineScope.launch(meetumDispatchers.io) {
             model.update {
                 val records = it.currentRecords.toMutableList()
-                records.remove(record)
+                records.remove(currentRecord)
                 it.copy(currentRecords = records)
             }
-            recordRepository.deleteDate(recordTime, record.id)
+            recordRepository.deleteDate(currentRecord.time, currentRecord.record.id)
         }
     }
 

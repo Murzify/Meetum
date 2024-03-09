@@ -53,6 +53,7 @@ kotlin {
                 implementation(compose.foundation)
                 @OptIn(ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
+                implementation(libs.calendar)
 
                 // Material design
                 implementation(compose.material)
@@ -119,7 +120,6 @@ kotlin {
                 implementation(libs.activity.compose)
                 implementation(libs.sqldelight.android)
                 implementation(libs.lottie.compose)
-                implementation(libs.calendar)
                 implementation(libs.play.services.auth)
             }
         }

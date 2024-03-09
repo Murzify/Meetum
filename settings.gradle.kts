@@ -2,6 +2,7 @@ rootProject.name = "Meetum"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 pluginManagement {
     repositories {
+        mavenLocal()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
         google()
         mavenCentral()
@@ -10,6 +11,7 @@ pluginManagement {
 }
 dependencyResolutionManagement {
     repositories {
+        mavenLocal()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
         google()
         mavenCentral()

@@ -69,6 +69,7 @@ import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import com.murzify.meetum.MR
 import com.murzify.meetum.core.domain.model.Record
+import com.murzify.meetum.core.domain.model.RecordTime
 import com.murzify.meetum.feature.calendar.components.RecordsManagerComponent
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.datetime.Clock
@@ -154,9 +155,9 @@ actual fun RecordsManagerUi(
                 items(
                     model.currentRecords,
                     key = {
-                        it.hashCode().toString() + it.dates.firstOrNull()?.time
+                        it.hashCode().toString() + it.time.id
                     }
-                ) { record ->
+                ) { currentRecord ->
                     var show by remember {
                         mutableStateOf(true)
                     }
@@ -165,7 +166,7 @@ actual fun RecordsManagerUi(
                             if (it == DismissValue.DismissedToStart ||
                                 it == DismissValue.DismissedToEnd) {
                                 show = false
-                                component.onDismissToStart(record, record.dates.first())
+                                component.onDismissToStart(currentRecord)
                                 true
                             } else false
                         }
@@ -178,9 +179,13 @@ actual fun RecordsManagerUi(
                             },
                             dismissContent = {
                                 RecordCard(
-                                    record,
+                                    currentRecord.record,
+                                    currentRecord.time,
                                     onClick = {
-                                        component.onRecordClick(record, record.dates.first())
+                                        component.onRecordClick(
+                                            currentRecord.record,
+                                            currentRecord.time
+                                        )
                                     }
                                 )
                             },
@@ -422,6 +427,7 @@ private fun DaysOfWeekTitle(daysOfWeek: List<DayOfWeek>) {
 @Composable
 private fun RecordCard(
     record: Record,
+    recordTime: RecordTime,
     onClick: (record: Record) -> Unit = {}
 ) {
     Row(
@@ -452,7 +458,7 @@ private fun RecordCard(
             Text(text = record.service.name, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
         val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
-        val date = Date.from(record.dates[0].time.toJavaInstant())
+        val date = Date.from(recordTime.time.toJavaInstant())
         Text(
             text = sdf.format(date),
             modifier = Modifier.padding(start = 2.dp, end = 16.dp)

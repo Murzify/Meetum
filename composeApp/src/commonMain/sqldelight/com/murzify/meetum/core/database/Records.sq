@@ -64,7 +64,7 @@ WHERE EXISTS (
     SELECT 1 FROM record_dates
     WHERE record_dates.record_id = records.record_id
     AND record_dates.date BETWEEN :startDate AND :endDate
-);
+) AND records.deletion = 0;
 
 getFuture:
 SELECT
