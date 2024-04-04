@@ -14,7 +14,7 @@ fun Record.toEntity() = Records(
     description,
     phone,
     service.id.toString(),
-    deletion = false,
+    deleted = false,
     synced = false
 )
 
@@ -31,6 +31,6 @@ fun RecordTime.toEntity(recordId: Uuid) = Record_dates(
     id.toString(),
     recordId.toString(),
     time.toEpochMilliseconds(),
-    deletion = false,
+    deleted = false,
     synced = false
 )
