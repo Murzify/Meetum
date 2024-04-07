@@ -16,14 +16,20 @@ interface RecordsManagerComponent {
 
     fun onRecordClick(record: Record, recordTime: RecordTime)
 
-    fun onDismissToStart(record: Record, recordTime: RecordTime)
+    fun onDismissToStart(currentRecord: CurrentRecord)
 
     @Serializable
     data class Model(
-        val currentRecords: List<Record>,
+        val currentRecords: List<CurrentRecord>,
         val services: List<Service>,
         val allRecords: List<Record>,
         val selectedDate: LocalDate
+    )
+
+    @Serializable
+    data class CurrentRecord(
+        val record: Record,
+        val time: RecordTime
     )
 
 }

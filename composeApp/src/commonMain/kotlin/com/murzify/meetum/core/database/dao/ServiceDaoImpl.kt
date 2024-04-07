@@ -10,14 +10,28 @@ import kotlinx.coroutines.flow.Flow
 class ServiceDaoImpl(
     private val servicesQueries: ServicesQueries
 ) : ServiceDao {
+
+    override val servicesForDeletion: Flow<List<String>> = servicesQueries
+        .getForDeletion()
+        .asFlow()
+        .mapToList(meetumDispatchers.io)
+
+    override val unsyncedServices: Flow<List<Services>> = servicesQueries
+        .getUnsynced()
+        .asFlow()
+        .mapToList(meetumDispatchers.io)
+
     override fun getAll(): Flow<List<Services>> = servicesQueries
         .getAll()
         .asFlow()
         .mapToList(meetumDispatchers.io)
 
-
     override fun add(service: Services) {
         servicesQueries.add(service)
+    }
+
+    override fun addOrReplace(service: Services) {
+        servicesQueries.addOrReplace(service)
     }
 
     override fun edit(service: Services) {
@@ -25,11 +39,17 @@ class ServiceDaoImpl(
             service.name,
             service.price,
             service.currency,
-            service.service_id
+            service.deleted,
+            service.synced,
+            service.service_id,
         )
     }
 
     override fun delete(service: Services) {
         servicesQueries.delete(service.service_id)
+    }
+
+    override fun markForDeletion(serviceId: String) {
+        servicesQueries.markForDeletion(serviceId)
     }
 }

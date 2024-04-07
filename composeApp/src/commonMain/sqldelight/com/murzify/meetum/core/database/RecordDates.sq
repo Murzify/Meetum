@@ -1,25 +1,43 @@
+import kotlin.Boolean;
+
 CREATE TABLE record_dates (
     date_id TEXT NOT NULL,
     record_id TEXT NOT NULL,
     date INTEGER NOT NULL,
+    deleted INTEGER AS Boolean DEFAULT 0 NOT NULL,
+    synced INTEGER AS Boolean DEFAULT 0 NOT NULL,
     PRIMARY KEY(date_id),
     FOREIGN KEY(record_id) REFERENCES records(record_id) ON UPDATE NO ACTION ON DELETE CASCADE
 );
+
+getDeleted:
+SELECT date_id, record_id FROM record_dates WHERE deleted == 1;
 
 add:
 INSERT OR IGNORE INTO record_dates
 VALUES ?;
 
+addOrReplace:
+INSERT OR REPLACE INTO record_dates
+VALUES ?;
+
 delete:
 DELETE FROM record_dates WHERE :recordId == record_id AND :date == date;
 
-deleteByRecord:
-DELETE FROM record_dates WHERE :recordId == record_id;
+getIdsByRecord:
+SELECT date_id FROM record_dates WHERE :recordId == record_id;
 
 deleteById:
 DELETE FROM record_dates WHERE :dateId == date_id;
 
+markAsDeleted:
+UPDATE record_dates
+    SET deleted = 1,
+        synced = 0
+WHERE :dateId == date_id;
+
 update:
 UPDATE record_dates
-    SET date = :newDate
-WHERE :dateId == date_id;
+    SET date = :newDate,
+        deleted = :deleted
+WHERE :dateId = date_id;

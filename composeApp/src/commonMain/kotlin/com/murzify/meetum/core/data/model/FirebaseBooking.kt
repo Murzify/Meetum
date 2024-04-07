@@ -11,6 +11,13 @@ data class FirebaseBooking(
     val phone: String?,
     @SerialName("service_id")
     val serviceId: String,
-    val time: Map<String, Long> = emptyMap()
+    val time: Map<String, FirebaseBookingTime> = emptyMap(),
+    val deleted: Boolean = false
+)
+
+@Serializable
+data class FirebaseBookingTime(
+    val time: Long,
+    val deleted: Boolean = false
 )
 

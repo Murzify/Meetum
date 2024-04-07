@@ -53,6 +53,7 @@ kotlin {
                 implementation(compose.foundation)
                 @OptIn(ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
+                implementation(libs.calendar)
 
                 // Material design
                 implementation(compose.material)
@@ -91,7 +92,7 @@ kotlin {
 
                 // Ktor
                 implementation(libs.ktor.client.core)
-                implementation(libs.ktor.client.okhttp)
+                implementation(libs.ktor.client.cio)
                 implementation(libs.ktor.client.negotiation)
                 implementation(libs.ktor.serialization.json)
                 implementation(libs.ktor.logging)
@@ -119,7 +120,6 @@ kotlin {
                 implementation(libs.activity.compose)
                 implementation(libs.sqldelight.android)
                 implementation(libs.lottie.compose)
-                implementation(libs.calendar)
                 implementation(libs.play.services.auth)
             }
         }

@@ -7,4 +7,5 @@ data class FirebaseService(
     val name: String,
     val price: Double,
     val currency: String,
+    val deleted: Boolean
 )
