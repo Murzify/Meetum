@@ -23,7 +23,7 @@ fun Service.toEntity(synced: Boolean) = Services(
     name,
     price,
     currency.currencyCode,
-    deletion = false,
+    deleted = false,
     synced = synced
 )
 

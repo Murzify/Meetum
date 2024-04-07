@@ -5,29 +5,36 @@ CREATE TABLE services (
     name TEXT NOT NULL,
     price REAL NOT NULL,
     currency TEXT NOT NULL,
-    deletion INTEGER AS Boolean DEFAULT 0 NOT NULL,
+    deleted INTEGER AS Boolean DEFAULT 0 NOT NULL,
     synced INTEGER AS Boolean DEFAULT 0 NOT NULL,
     PRIMARY KEY(service_id)
 );
 
 getAll:
-SELECT * FROM services WHERE deletion == 0;
+SELECT * FROM services WHERE deleted == 0;
 
 getUnsynced:
 SELECT * FROM services WHERE synced == 0;
 
 getForDeletion:
-SELECT service_id FROM services WHERE deletion == 1;
+SELECT service_id FROM services WHERE deleted == 1;
 
 add:
 INSERT OR IGNORE INTO services
 VALUES ?;
 
+addOrReplace:
+INSERT OR REPLACE INTO services
+VALUES ?;
+
+
 edit:
 UPDATE services
 SET name = ?,
     price = ?,
-    currency = ?
+    currency = ?,
+    deleted = ?,
+    synced = ?
 WHERE service_id = ?;
 
 delete:
@@ -35,4 +42,4 @@ DELETE FROM services
 WHERE service_id = ?;
 
 markForDeletion:
-UPDATE services SET deletion = 1 WHERE :serviceId == service_id;
+UPDATE services SET deleted = 1, synced = 0 WHERE :serviceId == service_id;

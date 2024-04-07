@@ -38,6 +38,7 @@ fun Services.toFirebase() = FirebaseService(
     name,
     price,
     currency,
+    deleted
 )
 
 fun Record.toFirebase() = FirebaseBooking(
