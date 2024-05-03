@@ -4,7 +4,6 @@ import com.benasher44.uuid.Uuid
 import com.murzify.meetum.core.data.FirebaseSync
 import com.murzify.meetum.core.data.mapToRecord
 import com.murzify.meetum.core.data.model.FirebaseBooking
-import com.murzify.meetum.core.data.toFirebase
 import com.murzify.meetum.core.data.userEvents
 import com.murzify.meetum.core.database.Record_dates
 import com.murzify.meetum.core.database.Records
@@ -44,27 +43,11 @@ class RecordRepositoryImpl(
         }
 
         scope.launch {
-            recordDao.unsyncedRecords.map {
-                it.mapToRecord()
-            }.sync { record, uid ->
-                db.reference("users/$uid/booking/${record.id}")
+            recordDao.unsyncedRecords.sync { id, booking, uid ->
+                db.reference("users/$uid/booking/${id}")
                     .setValue(
-                        record.toFirebase()
+                        booking
                     )
-            }
-        }
-
-        scope.launch {
-            recordDao.recordsForDeletion.sync { recordId, uid ->
-                db.reference("users/$uid/booking/$recordId").removeValue()
-            }
-        }
-
-        scope.launch {
-            recordDao.datesForDeletion.sync { recordDate, uid ->
-                db.reference(
-                    "users/$uid/booking/${recordDate.record_id}/time/${recordDate.date_id}"
-                ).removeValue()
             }
         }
 
@@ -116,22 +99,22 @@ class RecordRepositoryImpl(
                 booking.description,
                 booking.phone,
                 booking.serviceId,
-                deletion = false,
+                deleted = booking.deleted,
                 synced = true
             )
             when (type) {
                 ChildEvent.Type.ADDED -> {
-                    recordDao.syncRecord(records)
+                    recordDao.addOrReplace(records)
                     val dates = booking.time.map {
                         Record_dates(
                             it.key,
                             uuid,
-                            it.value,
-                            deletion = false,
+                            it.value.time,
+                            deleted = it.value.deleted,
                             synced = true
                         )
                     }.toTypedArray()
-                    recordDao.addDate(
+                    recordDao.addOrReplaceDate(
                         *dates
                     )
                 }
@@ -140,8 +123,8 @@ class RecordRepositoryImpl(
                         Record_dates(
                             it.key,
                             uuid,
-                            it.value,
-                            deletion = false,
+                            it.value.time,
+                            deleted = it.value.deleted,
                             synced = true
                         )
                     }
@@ -149,7 +132,7 @@ class RecordRepositoryImpl(
                     recordDao.update(records)
                 }
                 ChildEvent.Type.MOVED -> {}
-                ChildEvent.Type.REMOVED -> recordDao.delete(records)
+                ChildEvent.Type.REMOVED -> {}
             }
         }
     }

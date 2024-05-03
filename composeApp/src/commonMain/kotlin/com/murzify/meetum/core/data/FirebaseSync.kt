@@ -9,10 +9,10 @@ import kotlinx.coroutines.flow.Flow
 
 open class FirebaseSync {
 
-    protected val auth = Firebase.auth
+    val auth = Firebase.auth
     protected val db: FirebaseDatabase = Firebase.database
 
-    suspend fun FirebaseAuth.getUid(block: suspend (uid: String) -> Unit) {
+    suspend inline fun FirebaseAuth.getUid(crossinline block: suspend (uid: String) -> Unit) {
         authStateChanged.collect { user ->
             user?.uid?.let { uid ->
                 block(uid)
@@ -20,11 +20,25 @@ open class FirebaseSync {
         }
     }
 
-    suspend fun <T> Flow<List<T>>.sync(forEach: suspend (T, uid: String) -> Unit) {
+    suspend inline fun <T> Flow<List<T>>.sync(
+        crossinline forEach: suspend (T, uid: String) -> Unit
+    ) {
         auth.getUid { uid ->
             collect{ list ->
                 list.forEach {
                     forEach(it, uid)
+                }
+            }
+        }
+    }
+
+    suspend inline fun <K, V> Flow<Map<K, V>>.sync(
+        crossinline forEach: suspend (K, V, uid: String) -> Unit
+    ) {
+        auth.getUid { uid ->
+            collect{ list ->
+                list.forEach {
+                    forEach(it.key, it.value, uid)
                 }
             }
         }

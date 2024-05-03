@@ -26,9 +26,12 @@ class ServiceDaoImpl(
         .asFlow()
         .mapToList(meetumDispatchers.io)
 
-
     override fun add(service: Services) {
         servicesQueries.add(service)
+    }
+
+    override fun addOrReplace(service: Services) {
+        servicesQueries.addOrReplace(service)
     }
 
     override fun edit(service: Services) {
@@ -36,7 +39,9 @@ class ServiceDaoImpl(
             service.name,
             service.price,
             service.currency,
-            service.service_id
+            service.deleted,
+            service.synced,
+            service.service_id,
         )
     }
 

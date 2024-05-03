@@ -6,7 +6,7 @@ CREATE TABLE records (
     description TEXT,
     phone TEXT,
     service_id TEXT NOT NULL,
-    deletion INTEGER AS Boolean DEFAULT 0 NOT NULL,
+    deleted INTEGER AS Boolean DEFAULT 0 NOT NULL,
     synced INTEGER AS Boolean DEFAULT 0 NOT NULL,
     PRIMARY KEY(record_id)
 );
@@ -25,8 +25,8 @@ SELECT
     date
 FROM records
 INNER JOIN services ON records.service_id = services.service_id
-INNER JOIN record_dates ON records.record_id = record_dates.record_id AND record_dates.deletion = 0
-WHERE records.deletion == 0;
+INNER JOIN record_dates ON records.record_id = record_dates.record_id AND record_dates.deleted = 0
+WHERE records.deleted == 0;
 
 getUnsynced:
 SELECT
@@ -35,15 +35,18 @@ SELECT
     description,
     phone,
     services.service_id,
-    name,
-    price,
-    currency,
+    records.deleted,
     record_dates.date_id,
-    date
+    date,
+    record_dates.deleted
 FROM records
 INNER JOIN services ON records.service_id = services.service_id
 INNER JOIN record_dates ON records.record_id = record_dates.record_id
-WHERE records.synced = 0 OR record_dates.synced = 0;
+WHERE records.synced = 0 OR records.record_id IN (
+                                SELECT DISTINCT record_dates.record_id
+                                FROM record_dates
+                                WHERE synced = 0
+                            );
 
 getByDate:
 SELECT
@@ -59,12 +62,12 @@ SELECT
     date
 FROM records
 INNER JOIN services ON records.service_id = services.service_id
-INNER JOIN record_dates ON records.record_id = record_dates.record_id AND record_dates.deletion = 0
+INNER JOIN record_dates ON records.record_id = record_dates.record_id AND record_dates.deleted = 0
 WHERE EXISTS (
     SELECT 1 FROM record_dates
     WHERE record_dates.record_id = records.record_id
     AND record_dates.date BETWEEN :startDate AND :endDate
-) AND records.deletion = 0;
+) AND records.deleted = 0;
 
 getFuture:
 SELECT
@@ -81,7 +84,7 @@ SELECT
 FROM records
 INNER JOIN services ON records.service_id = services.service_id
 INNER JOIN record_dates ON records.record_id = record_dates.record_id
-    AND record_dates.date > :currentTime AND record_dates.deletion = 0
+    AND record_dates.date > :currentTime AND record_dates.deleted = 0
 WHERE records.service_id == :serviceId AND EXISTS
     (SELECT 1 FROM record_dates
         WHERE record_dates.record_id == records.record_id
@@ -89,10 +92,14 @@ WHERE records.service_id == :serviceId AND EXISTS
     );
 
 getForDeletion:
-SELECT record_id FROM records WHERE deletion == 1;
+SELECT record_id FROM records WHERE deleted == 1 AND synced == 0;
 
 add:
 INSERT OR IGNORE INTO records
+VALUES ?;
+
+addOrReplace:
+INSERT OR REPLACE INTO records
 VALUES ?;
 
 update:
@@ -100,7 +107,8 @@ UPDATE records
     SET client_name = ?,
         description = ?,
         phone = ?,
-        service_id = ?
+        service_id = ?,
+        deleted = ?
 WHERE ? = records.record_id;
 
 delete:
@@ -108,13 +116,14 @@ DELETE FROM records WHERE :id = record_id;
 
 markForDeleteion:
 UPDATE records
-    SET deletion = 1
+    SET deleted = 1,
+        synced = 0
 WHERE :id == record_id;
 
 deleteLinkedWithSerivce:
 DELETE FROM records WHERE service_id == :serviceId;
 
-markForDeletionByService:
+markAsDeletedByService:
 UPDATE records
-    SET deletion = 1
+    SET deleted = 1
 WHERE service_id == :serviceId;

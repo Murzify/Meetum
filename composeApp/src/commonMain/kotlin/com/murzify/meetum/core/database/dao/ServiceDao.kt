@@ -13,6 +13,8 @@ interface ServiceDao {
 
     fun add(service: Services)
 
+    fun addOrReplace(service: Services)
+
     fun edit(service: Services)
 
     fun delete(service: Services)

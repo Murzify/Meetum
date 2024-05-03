@@ -11,9 +11,7 @@ import com.murzify.meetum.core.database.model.toEntity
 import com.murzify.meetum.core.domain.model.Service
 import com.murzify.meetum.core.domain.repository.ServiceRepository
 import com.murzify.meetum.meetumDispatchers
-import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.database.ChildEvent
-import dev.gitlive.firebase.database.database
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -49,13 +47,6 @@ class ServiceRepositoryImpl(
                 )
             }
         }
-
-        scope.launch {
-            serviceDao.servicesForDeletion.sync { serviceId, uid ->
-                val bookingRef = db.reference("user/$uid/services/$serviceId")
-                bookingRef.removeValue()
-            }
-        }
     }
 
     override suspend fun getAllServices() = serviceDao.getAll().map { serviceList ->
@@ -70,37 +61,14 @@ class ServiceRepositoryImpl(
     }
 
     override suspend fun addService(service: Service) {
-        val uid = auth.currentUser?.uid!!
-        val bookingRef =
-            Firebase.database.reference("users/$uid/services/${service.id}")
-        bookingRef.setValue(
-            FirebaseService(
-                service.name,
-                service.price,
-                service.currency.currencyCode
-            )
-        )
         serviceDao.add(service.toEntity(false))
     }
 
     override suspend fun deleteService(service: Service) {
-        val uid = auth.currentUser?.uid!!
-        Firebase.database.reference("users/$uid/services/${service.id}")
-            .removeValue()
         serviceDao.markForDeletion(service.id.toString())
     }
 
     override suspend fun editService(service: Service) {
-        val uid = auth.currentUser?.uid!!
-        val bookingRef =
-            Firebase.database.reference("users/$uid/services/${service.id}")
-        bookingRef.setValue(
-            FirebaseService(
-                service.name,
-                service.price,
-                service.currency.currencyCode
-            )
-        )
         serviceDao.edit(service = service.toEntity(false))
     }
 
@@ -111,14 +79,14 @@ class ServiceRepositoryImpl(
                 value.name,
                 value.price,
                 value.currency,
-                deletion = false,
+                deleted = value.deleted,
                 synced = true
             )
             when (type) {
-                ChildEvent.Type.ADDED -> serviceDao.add(servicesEntity)
+                ChildEvent.Type.ADDED -> serviceDao.addOrReplace(servicesEntity)
                 ChildEvent.Type.CHANGED -> serviceDao.edit(servicesEntity)
                 ChildEvent.Type.MOVED -> {}
-                ChildEvent.Type.REMOVED -> serviceDao.delete(servicesEntity)
+                ChildEvent.Type.REMOVED -> {}
             }
         }
     }
