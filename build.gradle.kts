@@ -20,6 +20,8 @@ plugins {
     alias(libs.plugins.sentry)
     alias(libs.plugins.google.services)
     alias(libs.plugins.buildconfig) apply false
+    alias(libs.plugins.jetbrains.kotlin.android) apply false
+    alias(libs.plugins.jetbrains.kotlin.jvm) apply false
 }
 
 sentry {
