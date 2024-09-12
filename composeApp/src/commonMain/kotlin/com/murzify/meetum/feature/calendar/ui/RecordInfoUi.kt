@@ -1,34 +1,14 @@
 package com.murzify.meetum.feature.calendar.ui
 
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
-
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,16 +17,14 @@ import com.murzify.meetum.core.ui.priceFormat
 import com.murzify.meetum.feature.calendar.components.RecordInfoComponent
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
-import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.*
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toJavaInstant
-import kotlinx.datetime.toLocalDateTime
+import meetum.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import java.text.DateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 
 @Composable
@@ -68,24 +46,26 @@ internal fun RecordInfoUi(
                     RecordDateTime(localDateTime = model.date.toLocalDateTime(TimeZone.currentSystemDefault()))
                 },
                 navigationIcon = {
-                    IconButton(modifier = Modifier
-                        .padding(8.dp),
+                    IconButton(
+                        modifier = Modifier
+                            .padding(8.dp),
                         onClick = component::onBackClick
                     ) {
                         Icon(
-                            painter = painterResource("drawable/round_arrow_back_24.xml"),
+                            painter = painterResource(Res.drawable.round_arrow_back_24),
                             contentDescription = stringResource(MR.strings.back_button)
                         )
                     }
                 },
                 actions = {
-                    IconButton(modifier = Modifier
-                        .padding(8.dp),
+                    IconButton(
+                        modifier = Modifier
+                            .padding(8.dp),
                         onClick = component::onEditClick
                     ) {
                         Icon(
                             painter = painterResource(
-                                "drawable/round_edit_24.xml"
+                                Res.drawable.round_edit_24
                             ),
                             contentDescription = stringResource(
                                 MR.strings.edit
@@ -111,7 +91,7 @@ internal fun RecordInfoUi(
                 record.clientName?.let {
                     item {
                         InfoField(
-                            iconPath = "drawable/round_person_24.xml",
+                            res = Res.drawable.round_person_24,
                             contentDescriptionId = MR.strings.client_name_label,
                             text = it
                         )
@@ -121,7 +101,7 @@ internal fun RecordInfoUi(
                     item {
                         var phoneClick by mutableStateOf(false)
                         InfoField(
-                            iconPath = "drawable/round_phone_24.xml",
+                            res = Res.drawable.round_phone_24,
                             contentDescriptionId = MR.strings.phone_label,
                             text = phone,
                             onLongPress = { phoneClick = true }
@@ -141,7 +121,7 @@ internal fun RecordInfoUi(
                     ) {
                         Icon(
                             modifier = Modifier.padding(start = 8.dp),
-                            painter = painterResource("drawable/round_handshake_24.xml"),
+                            painter = painterResource(Res.drawable.round_handshake_24),
                             contentDescription = stringResource(MR.strings.service_label),
                         )
                         Spacer(Modifier.width(16.dp))
@@ -168,12 +148,12 @@ internal fun RecordInfoUi(
                             fontSize = 24.sp
                         )
                     }
-                    Divider()
+                    HorizontalDivider()
                 }
                 record.description?.let {
                     item {
                         InfoField(
-                            iconPath = "drawable/round_description_24.xml",
+                            res = Res.drawable.round_description_24,
                             contentDescriptionId = MR.strings.description_label,
                             text = it
                         )
@@ -190,7 +170,7 @@ internal fun RecordInfoUi(
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 private fun InfoField(
-    iconPath: String,
+    res: DrawableResource,
     contentDescriptionId: StringResource,
     text: String,
     onLongPress: () -> Unit = {}
@@ -209,7 +189,7 @@ private fun InfoField(
     ) {
         Icon(
             modifier = Modifier.padding(start = 8.dp),
-            painter = painterResource(iconPath),
+            painter = painterResource(res),
             contentDescription = stringResource(contentDescriptionId)
         )
         Spacer(Modifier.width(16.dp))
@@ -218,7 +198,7 @@ private fun InfoField(
             fontSize = 24.sp
         )
     }
-    Divider()
+    HorizontalDivider()
 }
 
 @Composable

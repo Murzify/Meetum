@@ -2,20 +2,15 @@ package com.murzify.meetum.core.ui
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FabPosition
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.murzify.meetum.MR
 import dev.icerock.moko.resources.compose.stringResource
+import meetum.composeapp.generated.resources.Res
+import meetum.composeapp.generated.resources.round_arrow_back_24
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
@@ -41,7 +36,7 @@ fun Toolbar(
                         onClick = onBackClicked
                     ) {
                         Icon(
-                            painter = painterResource("drawable/round_arrow_back_24.xml"),
+                            painter = painterResource(Res.drawable.round_arrow_back_24),
                             contentDescription = stringResource(MR.strings.back_button)
                         )
                     }

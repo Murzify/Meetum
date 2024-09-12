@@ -1,35 +1,14 @@
 package com.murzify.meetum.feature.calendar.ui
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.AlertDialogDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TimeInput
-import androidx.compose.material3.TimePickerState
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -45,29 +24,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.murzify.meetum.MR
 import com.murzify.meetum.core.domain.model.Repeat
-import com.murzify.meetum.core.ui.AddServiceCard
-import com.murzify.meetum.core.ui.ServiceCard
-import com.murzify.meetum.core.ui.TextField
-import com.murzify.meetum.core.ui.Toolbar
-import com.murzify.meetum.core.ui.local
-import com.murzify.meetum.core.ui.moveFocusDown
+import com.murzify.meetum.core.ui.*
 import com.murzify.meetum.feature.calendar.components.AddRecordComponent
 import com.murzify.meetum.feature.calendar.components.AddRecordComponent.DeleteType
 import dev.icerock.moko.resources.compose.stringResource
 import dev.icerock.moko.resources.desc.Plural
 import dev.icerock.moko.resources.desc.StringDesc
-import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.*
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toJavaInstant
-import kotlinx.datetime.toLocalDateTime
+import meetum.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import java.text.DateFormat
 import java.time.format.TextStyle
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
@@ -123,7 +93,7 @@ internal fun AddRecordUi(
                     onClick = component::onRepeatClicked
                 ) {
                     Icon(
-                        painter = painterResource("drawable/round_repeat_24.xml"),
+                        painter = painterResource(Res.drawable.round_repeat_24),
                         contentDescription = stringResource(MR.strings.import_contact)
                     )
                 }
@@ -152,7 +122,7 @@ internal fun AddRecordUi(
                     onValueChange = component::onNameChanged,
                     leadingIcon = {
                         Icon(
-                            painter = painterResource("drawable/round_person_24.xml"),
+                            painter = painterResource(Res.drawable.round_person_24),
                             contentDescription = stringResource(MR.strings.client_name_label)
                         )
                     },
@@ -180,7 +150,7 @@ internal fun AddRecordUi(
                 onValueChange = component::onDescriptionChanged,
                 leadingIcon = {
                     Icon(
-                        painter = painterResource("drawable/round_description_24.xml"),
+                        painter = painterResource(Res.drawable.round_description_24),
                         contentDescription = stringResource(MR.strings.description_label)
                     )
                 },
@@ -205,7 +175,7 @@ internal fun AddRecordUi(
                 onValueChange = component::onPhoneChanged,
                 leadingIcon = {
                     Icon(
-                        painter = painterResource("drawable/round_phone_24.xml"),
+                        painter = painterResource(Res.drawable.round_phone_24),
                         contentDescription = stringResource(MR.strings.phone_label)
                     )
                 },
@@ -271,7 +241,7 @@ private fun FloatActionBar(
                 contentColor = MaterialTheme.colorScheme.error
             ) {
                 Icon(
-                    painter = painterResource("drawable/round_delete_outline_24.xml"),
+                    painter = painterResource(Res.drawable.round_delete_outline_24),
                     contentDescription = stringResource(MR.strings.delete_record)
                 )
             }
@@ -297,7 +267,7 @@ private fun DeleteAlert(
     onDeleteSelected: (DeleteType) -> Unit,
 
 ) {
-    AlertDialog(onDismissRequest = onDeleteCanceled) {
+    BasicAlertDialog(onDismissRequest = onDeleteCanceled) {
         Surface(
             modifier = Modifier
                 .wrapContentWidth()

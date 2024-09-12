@@ -1,4 +1,3 @@
-import Meetum.composeApp.BuildConfig
 import android.app.Application
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
@@ -18,6 +17,7 @@ import com.murzify.meetum.core.di.domainModule
 import com.murzify.meetum.core.network.networkModule
 import com.murzify.meetum.core.ui.MeetumTheme
 import com.murzify.meetum.initSentry
+import com.murzify.meetum.kmp.BuildConfig
 import com.murzify.meetum.root.RealRootComponent
 import com.murzify.meetum.root.RootUi
 import dev.gitlive.firebase.Firebase
@@ -27,6 +27,8 @@ import dev.gitlive.firebase.initialize
 import dev.icerock.moko.resources.compose.stringResource
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
+import meetum.composeapp.generated.resources.Res
+import meetum.composeapp.generated.resources.ic_launcher
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.Koin
@@ -49,7 +51,7 @@ fun main() = application {
 
     Window(
         title = stringResource(MR.strings.app_title),
-        icon = painterResource("drawable/ic_launcher.png"),
+        icon = painterResource(Res.drawable.ic_launcher),
         onCloseRequest = ::exitApplication
     ) {
         window.minimumSize = Dimension(800, 600)
@@ -65,7 +67,7 @@ private fun firebaseInit(koin: Koin) {
     val firebasePlatform = koin.get<FirebasePlatform>()
     FirebasePlatform.initializeFirebasePlatform(firebasePlatform)
     val options = FirebaseOptions(
-        applicationId =  BuildConfig.APP_ID,
+        applicationId = BuildConfig.APP_ID,
         apiKey =  BuildConfig.API_KEY,
         projectId = BuildConfig.PROJECT_ID,
         databaseUrl = BuildConfig.DB_URL

@@ -10,11 +10,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
@@ -23,6 +19,8 @@ import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.compose.stringResource
 import dev.icerock.moko.resources.desc.Plural
 import dev.icerock.moko.resources.desc.StringDesc
+import meetum.composeapp.generated.resources.Res
+import meetum.composeapp.generated.resources.round_import_contacts_24
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
@@ -33,8 +31,8 @@ actual fun ImportContactButton(
     onClick: (name: String, phone: String) -> Unit,
 ) {
     StringDesc.Plural(MR.plurals.day, 18).localized()
-    var name = ""
-    var phone = ""
+    var name: String
+    var phone: String
 
     val importContact = remember { mutableStateOf(false) }
     val contentResolver = LocalContext.current.contentResolver
@@ -89,7 +87,7 @@ actual fun ImportContactButton(
             importContact.value = true
         },
     ) {
-        Icon(painter = painterResource("drawable/round_import_contacts_24.xml"),
+        Icon(painter = painterResource(Res.drawable.round_import_contacts_24),
             contentDescription = stringResource(MR.strings.import_contact)
         )
     }
@@ -97,7 +95,7 @@ actual fun ImportContactButton(
 
 @Composable
 private fun RequestContactsPermission(onGranted: @Composable () -> Unit) {
-    var isGranted = remember { mutableStateOf(false) }
+    val isGranted = remember { mutableStateOf(false) }
     if (isGranted.value) {
         onGranted()
     }

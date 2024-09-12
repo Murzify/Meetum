@@ -2,20 +2,9 @@ package com.murzify.meetum.core.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,12 +15,13 @@ import androidx.compose.ui.unit.sp
 import com.murzify.meetum.MR
 import com.murzify.meetum.core.domain.model.Service
 import dev.icerock.moko.resources.compose.stringResource
+import meetum.composeapp.generated.resources.Res
+import meetum.composeapp.generated.resources.round_add_24
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import java.text.DecimalFormat
 import java.text.NumberFormat
-import java.util.Currency
-import java.util.Locale
+import java.util.*
 
 val serviceExample = Service(
     "Massage",
@@ -118,7 +108,7 @@ fun AddServiceCard(modifier: Modifier, onClick: () -> Unit) {
                 )
                 {
                     Icon(
-                        painter = painterResource("drawable/round_add_24.xml"),
+                        painter = painterResource(Res.drawable.round_add_24),
                         contentDescription = stringResource(MR.strings.add_new_service),
                         modifier = Modifier.padding(8.dp)
                     )

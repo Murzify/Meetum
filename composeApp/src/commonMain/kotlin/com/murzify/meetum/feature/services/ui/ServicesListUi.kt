@@ -15,11 +15,7 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
@@ -28,6 +24,8 @@ import com.murzify.meetum.core.ui.EmptyScreenLottie
 import com.murzify.meetum.core.ui.ServiceCard
 import com.murzify.meetum.feature.services.components.ServicesListComponent
 import dev.icerock.moko.resources.compose.stringResource
+import meetum.composeapp.generated.resources.Res
+import meetum.composeapp.generated.resources.round_add_24
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
@@ -64,7 +62,7 @@ internal fun ServicesListUi(
                     modifier = Modifier.padding(bottom = 8.dp, end = 8.dp)
                 ) {
                     Icon(
-                        painter = painterResource("drawable/round_add_24.xml"),
+                        painter = painterResource(Res.drawable.round_add_24),
                         contentDescription = stringResource(MR.strings.add_service)
                     )
                 }

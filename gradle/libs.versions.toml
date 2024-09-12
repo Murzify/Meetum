@@ -1,46 +1,47 @@
 [versions]
-android-minSdk = "26"
+android-minSdk = "27"
 android-compileSdk = "34"
 android-targetSdk = "34"
-compose-compiler = "1.5.4"
+compose-compiler = "1.5.15"
 agp = "8.2.2"
-compose-plugin = "1.5.11"
-activity-compose = "1.8.2"
-compose = "1.5.4"
-kotlin = "1.9.21"
-calendar = "2.5.0"
-coroutines = "1.8.0-RC"
-lottie = "6.1.0"
-decompose = "2.2.0-alpha03"
-koin = "3.5.0"
+compose-plugin = "1.7.0-beta02"
+activity-compose = "1.9.2"
+compose = "1.7.1"
+kotlin = "2.0.20"
+calendar = "2.6.0-SNAPSHOT"
+coroutines = "1.9.0-RC.2"
+lottie = "6.4.0"
+decompose = "3.1.0"
+koin = "3.5.6"
 window-size = "0.3.1"
-kotlinx-serialization = "1.6.0"
-gms = "4.4.0"
-firebase-kmp = "1.11.1"
-gms-auth = "20.7.0"
-sqldelight = "2.0.0"
-kotlinx-datetime = "0.5.0"
-uuid = "0.8.2"
+kotlinx-serialization = "1.7.1"
+gms = "4.4.2"
+firebase-kmp = "2.1.0"
+gms-auth = "21.2.0"
+sqldelight = "2.0.2"
+kotlinx-datetime = "0.6.0"
+uuid = "0.8.4"
 moko = "0.23.0"
-sentry = "4.0.0"
-sentry-kmp = "0.3.0"
-buildconfig = "5.3.1"
-datastore = "1.0.0"
-ktor = "2.3.7"
+sentry = "4.11.0"
+sentry-kmp = "0.8.0"
+buildconfig = "5.4.0"
+datastore = "1.1.1"
+ktor = "2.3.12"
 napier = "2.7.1"
-kottie = "1.3.1"
+kottie = "1.9.6"
+firebaseDatabase = "21.0.0"
 
 [libraries]
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
 ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose" }
 ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "compose" }
-calendar = { module = "com.kizitonwose.calendar:compose", version.ref = "calendar" }
+calendar = { module = "com.kizitonwose.calendar:compose-multiplatform", version.ref = "calendar" }
 coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
 lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie" }
 decompose = { group = "com.arkivanov.decompose", name = "decompose", version.ref = "decompose" }
-decompose-extensions = { group = "com.arkivanov.decompose", name = "extensions-compose-jetbrains", version.ref = "decompose" }
+decompose-extensions = { group = "com.arkivanov.decompose", name = "extensions-compose", version.ref = "decompose" }
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 window-size = { group = "dev.chrisbanes.material3", name = "material3-window-size-class-multiplatform", version.ref = "window-size" }
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
@@ -76,6 +77,7 @@ ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-logging-jvm = { module = "io.ktor:ktor-client-logging-jvm", version.ref = "ktor" }
 
 napier = { group = "io.github.aakira", name = "napier", version.ref = "napier" }
+google-firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }
@@ -88,3 +90,6 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 multiplatform-resources = { id = "dev.icerock.mobile.multiplatform-resources", version.ref = "moko" }
 sentry = { id = "io.sentry.jvm.gradle", version.ref = "sentry" }
 buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }
+jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

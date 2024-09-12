@@ -1,7 +1,7 @@
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import java.io.FileInputStream
-import java.util.Properties
+import java.util.*
 
 plugins {
     alias(libs.plugins.sqldelight)
@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.serialization)
+    alias(libs.plugins.compose.compiler)
     id(libs.plugins.multiplatform.resources.get().pluginId)
     id("com.github.gmazzo.buildconfig")
 }
@@ -18,6 +19,7 @@ val keystoreProperties = Properties()
 keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 
 buildConfig {
+    packageName("com.murzify.meetum.kmp")
     buildConfigField("PROJECT_ID", keystoreProperties["projectId"] as String )
     buildConfigField("APP_ID", keystoreProperties["applicationId"] as String )
     buildConfigField("API_KEY", keystoreProperties["apiKey"] as String )
@@ -35,13 +37,8 @@ sqldelight {
 kotlin {
     androidTarget {
         apply(plugin = "com.google.gms.google-services")
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "17"
-            }
-        }
     }
-    
+
     jvm("desktop")
 
     sourceSets {
@@ -153,9 +150,6 @@ android {
         compose = true
         buildConfig = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -175,6 +169,9 @@ android {
     dependencies {
         debugImplementation(libs.ui.tooling)
     }
+}
+dependencies {
+    implementation(libs.google.firebase.database)
 }
 
 multiplatformResources {
@@ -208,5 +205,14 @@ compose.desktop {
         buildTypes.release.proguard {
             configurationFiles.from("rules.pro")
         }
+    }
+}
+
+afterEvaluate {
+    tasks.named("generateMRcommonMain") {
+        mustRunAfter(
+            "prepareComposeResourcesTaskForCommonMain",
+            "copyNonXmlValueResourcesForCommonMain",
+            "convertXmlValueResourcesForCommonMain")
     }
 }

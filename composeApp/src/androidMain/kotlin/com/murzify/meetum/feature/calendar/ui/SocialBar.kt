@@ -14,6 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.murzify.meetum.core.domain.model.Record
+import meetum.composeapp.generated.resources.Res
+import meetum.composeapp.generated.resources.sms
+import meetum.composeapp.generated.resources.telegram
+import meetum.composeapp.generated.resources.whatsapp
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
@@ -26,7 +30,7 @@ actual fun SocialBar(record: Record) {
     Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
         if (record.phone != null && isPackageInstalled("com.whatsapp", packageManager)) {
             Image(
-                painter = painterResource("drawable/whatsapp.xml"),
+                painter = painterResource(Res.drawable.whatsapp),
                 contentDescription = null,
                 modifier = Modifier.clickable {
                     context.openWA(record.phone)
@@ -36,7 +40,7 @@ actual fun SocialBar(record: Record) {
 
         if (record.phone != null && isPackageInstalled("org.telegram.messenger", packageManager)) {
             Image(
-                painter = painterResource("drawable/telegram.xml"),
+                painter = painterResource(Res.drawable.telegram),
                 contentDescription = null,
                 modifier = Modifier.clickable {
                     context.openTg(record.phone)
@@ -46,7 +50,7 @@ actual fun SocialBar(record: Record) {
 
         if (record.phone != null) {
             Image(
-                painter = painterResource("drawable/sms.xml"),
+                painter = painterResource(Res.drawable.sms),
                 contentDescription = null,
                 modifier = Modifier.clickable {
                     context.sendSms(record.phone)

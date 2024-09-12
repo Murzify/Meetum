@@ -25,16 +25,12 @@ fun ComponentContext.componentCoroutineScope(): CoroutineScope {
     return scope
 }
 
-@Suppress("DEPRECATION")
 fun <T : Any> Value<T>.toStateFlow(lifecycle: Lifecycle): StateFlow<T> {
     val state = MutableStateFlow(this.value)
 
     if (lifecycle.state != Lifecycle.State.DESTROYED) {
         val observer = { value: T -> state.value = value }
         subscribe(observer)
-        lifecycle.doOnDestroy {
-            unsubscribe(observer)
-        }
     }
 
     return state

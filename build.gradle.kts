@@ -20,6 +20,7 @@ plugins {
     alias(libs.plugins.sentry)
     alias(libs.plugins.google.services)
     alias(libs.plugins.buildconfig) apply false
+    alias(libs.plugins.compose.compiler) apply false
 }
 
 sentry {

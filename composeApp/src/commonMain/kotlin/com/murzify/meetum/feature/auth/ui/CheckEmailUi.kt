@@ -1,28 +1,32 @@
 package com.murzify.meetum.feature.auth.ui
 
 import KottieAnimation
-import KottieCompositionSpec
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import animateKottieCompositionAsState
 import com.murzify.meetum.MR
 import com.murzify.meetum.feature.auth.components.CheckEmailComponent
 import dev.icerock.moko.resources.compose.stringResource
+import kottieComposition.KottieCompositionSpec
+import kottieComposition.animateKottieCompositionAsState
+import kottieComposition.rememberKottieComposition
+import meetum.composeapp.generated.resources.Res
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.resource
-import rememberKottieComposition
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun CheckEmailUi(component: CheckEmailComponent) {
+    var animation by remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit){
+        animation = Res.readBytes("lottie/email_verif.json").decodeToString()
+    }
     val composition = rememberKottieComposition(
-        spec = KottieCompositionSpec.File(resource("lottie/email_verif.json"))
+        spec = KottieCompositionSpec.File(animation)
     )
     val animationState by animateKottieCompositionAsState(
         composition = composition,

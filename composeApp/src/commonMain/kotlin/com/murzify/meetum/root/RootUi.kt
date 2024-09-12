@@ -10,9 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
+import com.arkivanov.decompose.extensions.compose.stack.Children
+import com.arkivanov.decompose.extensions.compose.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.murzify.meetum.feature.auth.ui.AuthUi
 import com.murzify.meetum.feature.calendar.ui.CalendarUi
 import com.murzify.meetum.feature.services.ui.ServicesUi
@@ -43,7 +43,7 @@ fun RootUi(
                             onClick = { component.onTabSelected(screen) },
                             icon = {
                                 Icon(
-                                    painter = painterResource(screen.iconPath),
+                                    painter = painterResource(screen.iconRes),
                                     contentDescription = stringResource(
                                         screen.stringId
                                     )
@@ -71,7 +71,7 @@ fun RootUi(
                             onClick = { component.onTabSelected(screen) },
                             icon = {
                                 Icon(
-                                    painter = painterResource(screen.iconPath),
+                                    painter = painterResource(screen.iconRes),
                                     contentDescription = stringResource(
                                         screen.stringId
                                     )
