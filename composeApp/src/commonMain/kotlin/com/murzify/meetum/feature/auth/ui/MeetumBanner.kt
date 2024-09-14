@@ -11,12 +11,12 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import com.murzify.meetum.MR
-import dev.icerock.moko.resources.compose.stringResource
 import meetum.composeapp.generated.resources.Res
+import meetum.composeapp.generated.resources.app_title
 import meetum.composeapp.generated.resources.meetum_banner
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -30,7 +30,7 @@ fun ColumnScope.MeetumBanner() {
         ) {
             Icon(
                 painter = painterResource(Res.drawable.meetum_banner),
-                stringResource(MR.strings.app_title),
+                stringResource(Res.string.app_title),
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(bottom = 32.dp)
             )

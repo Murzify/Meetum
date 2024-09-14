@@ -2,7 +2,6 @@
 android-minSdk = "27"
 android-compileSdk = "34"
 android-targetSdk = "34"
-compose-compiler = "1.5.15"
 agp = "8.2.2"
 compose-plugin = "1.7.0-beta02"
 activity-compose = "1.9.2"
@@ -21,7 +20,6 @@ gms-auth = "21.2.0"
 sqldelight = "2.0.2"
 kotlinx-datetime = "0.6.0"
 uuid = "0.8.4"
-moko = "0.23.0"
 sentry = "4.11.0"
 sentry-kmp = "0.8.0"
 buildconfig = "5.4.0"
@@ -60,11 +58,6 @@ sqldelight-android = { group = "app.cash.sqldelight", name = "android-driver", v
 sqldelight-jvm = { group = "app.cash.sqldelight", name = "sqlite-driver", version.ref = "sqldelight" }
 sqldelight-coroutines = { group = "app.cash.sqldelight", name = "coroutines-extensions", version.ref = "sqldelight" }
 
-# moko resources
-resources-generator = { group = "dev.icerock.moko", name = "resources-generator", version.ref = "moko" }
-moko-resources = { group = "dev.icerock.moko", name = "resources", version.ref = "moko" }
-moko-resources-compose = { group = "dev.icerock.moko", name = "resources-compose", version.ref = "moko" }
-
 # Sentry
 sentry-kmp = { group = "io.sentry", name = "sentry-kotlin-multiplatform", version.ref = "sentry-kmp" }
 
@@ -87,9 +80,7 @@ google-services = { id = "com.google.gms.google-services", version.ref = "gms" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-multiplatform-resources = { id = "dev.icerock.mobile.multiplatform-resources", version.ref = "moko" }
 sentry = { id = "io.sentry.jvm.gradle", version.ref = "sentry" }
 buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }
-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

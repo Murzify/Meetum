@@ -4,12 +4,13 @@ import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
-import com.murzify.meetum.MR
-import dev.icerock.moko.resources.compose.asFont
+import meetum.composeapp.generated.resources.Res
+import meetum.composeapp.generated.resources.nunito_regular
+import org.jetbrains.compose.resources.Font
 
 
-val meetumFont @Composable get() = MR.fonts.nunito_regular.nunito_regular.asFont()
-val meetumFontFamily @Composable get() = FontFamily(meetumFont!!)
+val meetumFont @Composable get() = Font(Res.font.nunito_regular)
+val meetumFontFamily @Composable get() = FontFamily(meetumFont)
 
 val textStyle @Composable get() = TextStyle(
     fontFamily = meetumFontFamily

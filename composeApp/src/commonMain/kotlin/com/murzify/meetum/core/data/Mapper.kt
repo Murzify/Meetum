@@ -10,7 +10,7 @@ import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.core.domain.model.RecordTime
 import com.murzify.meetum.core.domain.model.Service
 import kotlinx.datetime.Instant
-import java.util.Currency
+import java.util.*
 
 fun List<FullRecord>.mapToRecord() = groupBy { it.recordId }
     .map { (id, records) ->

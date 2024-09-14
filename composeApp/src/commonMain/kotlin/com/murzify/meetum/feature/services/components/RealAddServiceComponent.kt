@@ -18,8 +18,7 @@ import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.get
-import java.util.Currency
-import java.util.Locale
+import java.util.*
 
 fun ComponentFactory.createAddServiceComponent(
     componentContext: ComponentContext,

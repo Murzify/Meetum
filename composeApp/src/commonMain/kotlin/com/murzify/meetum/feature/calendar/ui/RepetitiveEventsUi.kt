@@ -23,16 +23,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.murzify.meetum.MR
 import com.murzify.meetum.core.ui.TextField
 import com.murzify.meetum.core.ui.Toolbar
-import com.murzify.meetum.core.ui.local
 import com.murzify.meetum.feature.calendar.components.RepetitiveEventsComponent
-import dev.icerock.moko.resources.compose.stringResource
-import dev.icerock.moko.resources.desc.Plural
-import dev.icerock.moko.resources.desc.StringDesc
 import kotlinx.datetime.*
 import kotlinx.datetime.TimeZone
+import meetum.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.pluralStringResource
+import org.jetbrains.compose.resources.stringResource
 import java.text.DateFormat
 import java.time.DayOfWeek
 import java.time.format.TextStyle
@@ -47,7 +45,7 @@ internal fun RepetitiveEventsUi(
 
     Toolbar(
         title = {
-            Text(text = stringResource(MR.strings.repetitive_events))
+            Text(text = stringResource(Res.string.repetitive_events))
         },
         fab = {
             FloatingActionButton(
@@ -55,7 +53,7 @@ internal fun RepetitiveEventsUi(
                 onClick = component::onSaveClicked
             ) {
                 Text(
-                    text = stringResource(MR.strings.save_record),
+                    text = stringResource(Res.string.save_record),
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }
@@ -68,7 +66,7 @@ internal fun RepetitiveEventsUi(
             .scrollable(rememberScrollState(), Orientation.Vertical)
         ) {
             Text(
-                text = stringResource(MR.strings.repeat_every),
+                text = stringResource(Res.string.repeat_every),
                 fontSize = 16.sp,
                 modifier = Modifier.padding(
                     bottom = 8.dp
@@ -103,7 +101,7 @@ internal fun RepetitiveEventsUi(
                 }
                 HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
                 Text(
-                    text = stringResource(MR.strings.end_of_repetition),
+                    text = stringResource(Res.string.end_of_repetition),
                     fontSize = 16.sp,
                     modifier = Modifier.padding(
                         vertical = 8.dp
@@ -256,7 +254,7 @@ private fun EndRadio(
                             contentPadding = PaddingValues(1.dp)
                         )
                         Text(
-                            text = text.second.local(),
+                            text = text.second,
                             modifier = Modifier.padding(6.dp)
                         )
                     }
@@ -331,10 +329,10 @@ private fun PeriodField(
     onPeriodChanged: (period: DateTimeUnit) -> Unit
 ) {
     val periodsRes = mapOf(
-        DateTimeUnit.DAY to MR.plurals.day,
-        DateTimeUnit.WEEK to MR.plurals.week,
-        DateTimeUnit.MONTH to MR.plurals.month,
-        DateTimeUnit.YEAR to MR.plurals.year,
+        DateTimeUnit.DAY to Res.plurals.day,
+        DateTimeUnit.WEEK to Res.plurals.week,
+        DateTimeUnit.MONTH to Res.plurals.month,
+        DateTimeUnit.YEAR to Res.plurals.year,
     )
 
     var expanded by remember { mutableStateOf(false) }
@@ -347,7 +345,7 @@ private fun PeriodField(
 
         OutlinedTextField(
             modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryEditable, true),
-            value = StringDesc.Plural(periodsRes[period]!!, periodAmount).local(),
+            value = pluralStringResource(periodsRes[period]!!, periodAmount),
             onValueChange = {},
             readOnly = true,
             trailingIcon = { TrailingIcon(expanded = expanded) },
@@ -366,7 +364,7 @@ private fun PeriodField(
         ) {
             periodsRes.forEach { (key, value) ->
                 DropdownMenuItem(
-                    text = { Text(StringDesc.Plural(value, periodAmount).local()) },
+                    text = { Text(pluralStringResource(value, periodAmount)) },
                     onClick = {
                         expanded = false
                         onPeriodChanged(key)

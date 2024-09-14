@@ -5,7 +5,7 @@ import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.core.domain.model.RecordTime
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
-import java.util.UUID
+import java.util.*
 
 interface RecordRepository {
 

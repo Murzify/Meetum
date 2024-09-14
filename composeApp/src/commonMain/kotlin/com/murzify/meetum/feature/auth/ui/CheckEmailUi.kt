@@ -8,14 +8,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.murzify.meetum.MR
 import com.murzify.meetum.feature.auth.components.CheckEmailComponent
-import dev.icerock.moko.resources.compose.stringResource
 import kottieComposition.KottieCompositionSpec
 import kottieComposition.animateKottieCompositionAsState
 import kottieComposition.rememberKottieComposition
 import meetum.composeapp.generated.resources.Res
+import meetum.composeapp.generated.resources.check_email
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -46,7 +46,7 @@ fun CheckEmailUi(component: CheckEmailComponent) {
         )
 
         Text(
-            text = stringResource(MR.strings.check_email),
+            text = stringResource(Res.string.check_email),
             fontSize = 24.sp,
             modifier = Modifier.padding(top = 16.dp)
         )

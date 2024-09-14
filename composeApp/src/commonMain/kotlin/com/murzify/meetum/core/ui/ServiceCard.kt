@@ -12,13 +12,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.murzify.meetum.MR
 import com.murzify.meetum.core.domain.model.Service
-import dev.icerock.moko.resources.compose.stringResource
 import meetum.composeapp.generated.resources.Res
+import meetum.composeapp.generated.resources.add_new_service
 import meetum.composeapp.generated.resources.round_add_24
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
@@ -109,13 +109,13 @@ fun AddServiceCard(modifier: Modifier, onClick: () -> Unit) {
                 {
                     Icon(
                         painter = painterResource(Res.drawable.round_add_24),
-                        contentDescription = stringResource(MR.strings.add_new_service),
+                        contentDescription = stringResource(Res.string.add_new_service),
                         modifier = Modifier.padding(8.dp)
                     )
                 }
 
                 Text(
-                    text = stringResource(MR.strings.add_new_service),
+                    text = stringResource(Res.string.add_new_service),
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(top = 8.dp)
                 )

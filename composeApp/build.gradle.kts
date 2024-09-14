@@ -10,7 +10,6 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.serialization)
     alias(libs.plugins.compose.compiler)
-    id(libs.plugins.multiplatform.resources.get().pluginId)
     id("com.github.gmazzo.buildconfig")
 }
 
@@ -70,10 +69,6 @@ kotlin {
 
                 // SQLDelight
                 implementation(libs.sqldelight.coroutines)
-
-                // moko resources
-                implementation(libs.moko.resources)
-                implementation(libs.moko.resources.compose)
 
                 implementation(libs.uuid)
                 implementation(libs.window.size)
@@ -174,10 +169,6 @@ dependencies {
     implementation(libs.google.firebase.database)
 }
 
-multiplatformResources {
-    multiplatformResourcesPackage = "com.murzify.meetum"
-}
-
 compose.desktop {
     application {
         mainClass = "MainKt"
@@ -205,14 +196,5 @@ compose.desktop {
         buildTypes.release.proguard {
             configurationFiles.from("rules.pro")
         }
-    }
-}
-
-afterEvaluate {
-    tasks.named("generateMRcommonMain") {
-        mustRunAfter(
-            "prepareComposeResourcesTaskForCommonMain",
-            "copyNonXmlValueResourcesForCommonMain",
-            "convertXmlValueResourcesForCommonMain")
     }
 }

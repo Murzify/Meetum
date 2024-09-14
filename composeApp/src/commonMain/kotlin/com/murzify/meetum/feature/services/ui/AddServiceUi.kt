@@ -12,16 +12,14 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.murzify.meetum.MR
 import com.murzify.meetum.core.ui.TextField
 import com.murzify.meetum.core.ui.Toolbar
 import com.murzify.meetum.core.ui.moveFocusDown
 import com.murzify.meetum.feature.services.components.AddServiceComponent
-import dev.icerock.moko.resources.compose.stringResource
-import meetum.composeapp.generated.resources.Res
-import meetum.composeapp.generated.resources.round_delete_outline_24
+import meetum.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import java.util.*
 
 @Composable
@@ -34,8 +32,8 @@ internal fun AddServiceUi(
         title = {
             Text(
                 text = if (model.service != null) {
-                    stringResource(MR.strings.service)
-                } else stringResource(MR.strings.new_service)
+                    stringResource(Res.string.service)
+                } else stringResource(Res.string.new_service)
             )
         },
         onBackClicked = component::onBackClick,
@@ -59,7 +57,7 @@ internal fun AddServiceUi(
             TextField(
                 value = model.name,
                 onValueChange = component::onNameChanged,
-                label = { Text(text = stringResource(MR.strings.service_name)) },
+                label = { Text(text = stringResource(Res.string.service_name)) },
                 modifier = Modifier
                     .padding(vertical = 16.dp)
                     .width(200.dp)
@@ -77,7 +75,7 @@ internal fun AddServiceUi(
                 TextField(
                     value = model.price,
                     onValueChange = component::onPriceChanged,
-                    label = { Text(text = stringResource(MR.strings.price)) },
+                    label = { Text(text = stringResource(Res.string.price)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Decimal,
                         imeAction = ImeAction.Done
@@ -122,7 +120,7 @@ private fun FabBar(
             ) {
                 Icon(
                     painter = painterResource(Res.drawable.round_delete_outline_24),
-                    contentDescription = stringResource(MR.strings.delete_service)
+                    contentDescription = stringResource(Res.string.delete_service)
                 )
             }
         }
@@ -138,19 +136,19 @@ private fun FabBar(
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
-                            text = stringResource(MR.strings.you_have_records),
+                            text = stringResource(Res.string.you_have_records),
                         )
                         Spacer(modifier = Modifier.height(24.dp))
                         Row(horizontalArrangement = Arrangement.SpaceBetween) {
                             TextButton(
                                 onClick = onDeleteCanceled,
                             ) {
-                                Text(stringResource(MR.strings.cancel_delete))
+                                Text(stringResource(Res.string.cancel_delete))
                             }
                             TextButton(
                                 onClick = onDeleteConfirmed,
                             ) {
-                                Text(stringResource(MR.strings.confirm_delete))
+                                Text(stringResource(Res.string.confirm_delete))
                             }
                         }
 
@@ -165,7 +163,7 @@ private fun FabBar(
             onClick = onSaveClick
         ) {
             Text(
-                text = stringResource(MR.strings.save),
+                text = stringResource(Res.string.save),
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
         }
@@ -215,7 +213,7 @@ internal fun CurrencyField(
                 selectedOptionText = it
                 selected = false
             },
-            label = { Text(stringResource(MR.strings.currency)) },
+            label = { Text(stringResource(Res.string.currency)) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             maxLines = 1
         )

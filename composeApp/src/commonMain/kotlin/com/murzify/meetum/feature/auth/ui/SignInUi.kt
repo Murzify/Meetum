@@ -16,13 +16,13 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import com.murzify.meetum.MR
 import com.murzify.meetum.core.ui.LoadingButton
 import com.murzify.meetum.core.ui.TextField
 import com.murzify.meetum.feature.auth.components.SignInComponent
 import com.murzify.meetum.feature.auth.components.SignInComponent.Error
-import dev.icerock.moko.resources.compose.stringResource
+import meetum.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -44,7 +44,7 @@ fun SignInUi(component: SignInComponent) {
                 value = model.email,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 label = {
-                    Text(stringResource(MR.strings.email))
+                    Text(stringResource(Res.string.email))
                 }
             )
             TextField(
@@ -54,12 +54,12 @@ fun SignInUi(component: SignInComponent) {
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 visualTransformation = PasswordVisualTransformation(),
                 label = {
-                    Text(stringResource(MR.strings.password))
+                    Text(stringResource(Res.string.password))
                 }
             )
 
             Text(
-                stringResource(MR.strings.forgot_password),
+                stringResource(Res.string.forgot_password),
                 modifier = Modifier
                     .align(Alignment.End)
                     .clickable(
@@ -68,9 +68,9 @@ fun SignInUi(component: SignInComponent) {
             )
 
             val errorText = when (model.error) {
-                Error.INVALID_CREDENTIALS -> stringResource(MR.strings.invalid_credentials)
-                Error.MISSING_EMAIL -> stringResource(MR.strings.enter_email)
-                Error.INVALID_EMAIL -> stringResource(MR.strings.incorrect_email)
+                Error.INVALID_CREDENTIALS -> stringResource(Res.string.invalid_credentials)
+                Error.MISSING_EMAIL -> stringResource(Res.string.enter_email)
+                Error.INVALID_EMAIL -> stringResource(Res.string.incorrect_email)
                 null -> ""
             }
 
@@ -88,14 +88,14 @@ fun SignInUi(component: SignInComponent) {
                 loading = model.loading,
                 modifier = Modifier.size(width = 150.dp, height = 50.dp)
             ) {
-                Text(stringResource(MR.strings.sign_in))
+                Text(stringResource(Res.string.sign_in))
             }
 
             TextButton(
                 onClick = component::onRegisterClick,
                 modifier = Modifier.size(width = 150.dp, height = 50.dp)
             ) {
-                Text(stringResource(MR.strings.sign_up))
+                Text(stringResource(Res.string.sign_up))
             }
         }
     }

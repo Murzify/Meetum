@@ -4,7 +4,7 @@ import com.murzify.meetum.core.domain.model.CurrencySerializer
 import com.murzify.meetum.core.domain.model.Service
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.Serializable
-import java.util.Currency
+import java.util.*
 
 interface AddServiceComponent {
     val model: StateFlow<Model>

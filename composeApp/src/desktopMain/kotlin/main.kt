@@ -7,7 +7,6 @@ import androidx.compose.ui.window.application
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.google.firebase.FirebasePlatform
-import com.murzify.meetum.MR
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.data.dataModule
 import com.murzify.meetum.core.database.databaseModule
@@ -24,13 +23,14 @@ import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseOptions
 import dev.gitlive.firebase.database.database
 import dev.gitlive.firebase.initialize
-import dev.icerock.moko.resources.compose.stringResource
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import meetum.composeapp.generated.resources.Res
+import meetum.composeapp.generated.resources.app_title
 import meetum.composeapp.generated.resources.ic_launcher
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.core.Koin
 import java.awt.Dimension
 
@@ -50,7 +50,7 @@ fun main() = application {
     )
 
     Window(
-        title = stringResource(MR.strings.app_title),
+        title = stringResource(Res.string.app_title),
         icon = painterResource(Res.drawable.ic_launcher),
         onCloseRequest = ::exitApplication
     ) {

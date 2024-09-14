@@ -2,7 +2,6 @@
 <resources>
     <string name="app_title">Meetum</string>
 
-    <string name="add_new_service">Add service</string>
     <string name="back_button">Back</string>
 
     <!-- Calendar feature-->

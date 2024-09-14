@@ -12,8 +12,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
-import java.util.Currency
-import java.util.UUID
+import java.util.*
 
 class FakeRecordsManagerComponent : RecordsManagerComponent {
     override val model: StateFlow<Model> = MutableStateFlow(

@@ -14,13 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import com.murzify.meetum.MR
 import com.murzify.meetum.core.ui.LoadingButton
 import com.murzify.meetum.core.ui.TextField
 import com.murzify.meetum.feature.auth.components.RegisterComponent
 import com.murzify.meetum.feature.auth.components.RegisterComponent.Model
-import dev.icerock.moko.resources.compose.stringResource
+import meetum.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun RegisterUi(component: RegisterComponent) {
@@ -61,7 +61,7 @@ private fun Register(
             value = model.email,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             label = {
-                Text(stringResource(MR.strings.email))
+                Text(stringResource(Res.string.email))
             }
         )
         TextField(
@@ -71,7 +71,7 @@ private fun Register(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             visualTransformation = PasswordVisualTransformation(),
             label = {
-                Text(stringResource(MR.strings.password))
+                Text(stringResource(Res.string.password))
             }
         )
         TextField(
@@ -81,15 +81,15 @@ private fun Register(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             visualTransformation = PasswordVisualTransformation(),
             label = {
-                Text(stringResource(MR.strings.confirm_password))
+                Text(stringResource(Res.string.confirm_password))
             }
         )
 
         val errorText = when (model.error) {
-            RegisterComponent.Error.DIFFERENT_PASSWORDS -> stringResource(MR.strings.different_passwords_error)
-            RegisterComponent.Error.SHORT_PASSWORD -> stringResource(MR.strings.short_password_error)
-            RegisterComponent.Error.INCORRECT_EMAIL -> stringResource(MR.strings.incorrect_email)
-            RegisterComponent.Error.EMAIL_EXISTS -> stringResource(MR.strings.user_exists_error)
+            RegisterComponent.Error.DIFFERENT_PASSWORDS -> stringResource(Res.string.different_passwords_error)
+            RegisterComponent.Error.SHORT_PASSWORD -> stringResource(Res.string.short_password_error)
+            RegisterComponent.Error.INCORRECT_EMAIL -> stringResource(Res.string.incorrect_email)
+            RegisterComponent.Error.EMAIL_EXISTS -> stringResource(Res.string.user_exists_error)
             null -> ""
         }
 
@@ -107,14 +107,14 @@ private fun Register(
             loading = model.loading,
             modifier = Modifier.size(width = 150.dp, height = 50.dp)
         ) {
-            Text(stringResource(MR.strings.sign_up))
+            Text(stringResource(Res.string.sign_up))
         }
 
         TextButton(
             onClick = onSignInClick,
             modifier = Modifier.size(width = 150.dp, height = 50.dp)
         ) {
-            Text(stringResource(MR.strings.sign_in))
+            Text(stringResource(Res.string.sign_in))
         }
     }
 }

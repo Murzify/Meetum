@@ -1,10 +1,6 @@
 package com.murzify.meetum.feature.calendar.components
 
 import androidx.compose.runtime.Composable
-import com.murzify.meetum.MR
-import dev.icerock.moko.resources.compose.stringResource
-import dev.icerock.moko.resources.desc.Plural
-import dev.icerock.moko.resources.desc.StringDesc
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
@@ -17,6 +13,11 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import meetum.composeapp.generated.resources.Res
+import meetum.composeapp.generated.resources.after_times
+import meetum.composeapp.generated.resources.times
+import org.jetbrains.compose.resources.pluralStringResource
+import org.jetbrains.compose.resources.stringResource
 
 interface RepetitiveEventsComponent {
     val model: StateFlow<Model>
@@ -53,8 +54,8 @@ interface RepetitiveEventsComponent {
 
             @Composable
             fun getText(times: Int) = (
-                stringResource(MR.strings.after_times) to StringDesc.Plural(
-                    MR.plurals.times, times
+                stringResource(Res.string.after_times) to pluralStringResource(
+                    Res.plurals.times, times
                 )
             )
         }

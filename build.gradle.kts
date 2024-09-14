@@ -5,9 +5,6 @@ buildscript {
         google()
         gradlePluginPortal()
     }
-    dependencies {
-        classpath(libs.resources.generator)
-    }
 }
 
 plugins {

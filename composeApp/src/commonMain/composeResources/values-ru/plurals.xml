@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <plural name="day">
+    <plurals name="day">
         <item quantity="one">
             день
         </item>
@@ -10,8 +10,8 @@
         <item quantity="few">
             дня
         </item>
-    </plural>
-    <plural name="week">
+    </plurals>
+    <plurals name="week">
         <item quantity="one">
             неделю
         </item>
@@ -21,8 +21,8 @@
         <item quantity="few">
             недели
         </item>
-    </plural>
-    <plural name="month">
+    </plurals>
+    <plurals name="month">
         <item quantity="one">
             месяц
         </item>
@@ -35,8 +35,8 @@
         <item quantity="other">
             месяца
         </item>
-    </plural>
-    <plural name="year">
+    </plurals>
+    <plurals name="year">
         <item quantity="one">
             год
         </item>
@@ -46,8 +46,8 @@
         <item quantity="few">
             годa
         </item>
-    </plural>
-    <plural name="times">
+    </plurals>
+    <plurals name="times">
         <item quantity="one">
             раза
         </item>
@@ -57,5 +57,5 @@
         <item quantity="few">
             раз
         </item>
-    </plural>
+    </plurals>
 </resources>

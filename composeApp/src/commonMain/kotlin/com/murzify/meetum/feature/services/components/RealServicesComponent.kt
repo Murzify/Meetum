@@ -1,16 +1,8 @@
 package com.murzify.meetum.feature.services.components
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.slot.ChildSlot
-import com.arkivanov.decompose.router.slot.SlotNavigation
-import com.arkivanov.decompose.router.slot.activate
-import com.arkivanov.decompose.router.slot.childSlot
-import com.arkivanov.decompose.router.slot.dismiss
-import com.arkivanov.decompose.router.stack.ChildStack
-import com.arkivanov.decompose.router.stack.StackNavigation
-import com.arkivanov.decompose.router.stack.childStack
-import com.arkivanov.decompose.router.stack.pop
-import com.arkivanov.decompose.router.stack.push
+import com.arkivanov.decompose.router.slot.*
+import com.arkivanov.decompose.router.stack.*
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.common.toStateFlow
 import com.murzify.meetum.core.domain.model.Service

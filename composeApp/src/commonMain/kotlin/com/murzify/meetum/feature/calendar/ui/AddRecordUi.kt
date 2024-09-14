@@ -22,19 +22,17 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.murzify.meetum.MR
 import com.murzify.meetum.core.domain.model.Repeat
 import com.murzify.meetum.core.ui.*
 import com.murzify.meetum.feature.calendar.components.AddRecordComponent
 import com.murzify.meetum.feature.calendar.components.AddRecordComponent.DeleteType
-import dev.icerock.moko.resources.compose.stringResource
-import dev.icerock.moko.resources.desc.Plural
-import dev.icerock.moko.resources.desc.StringDesc
 import kotlinx.datetime.*
 import kotlinx.datetime.TimeZone
 import meetum.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.pluralStringResource
+import org.jetbrains.compose.resources.stringResource
 import java.text.DateFormat
 import java.time.format.TextStyle
 import java.util.*
@@ -94,7 +92,7 @@ internal fun AddRecordUi(
                 ) {
                     Icon(
                         painter = painterResource(Res.drawable.round_repeat_24),
-                        contentDescription = stringResource(MR.strings.import_contact)
+                        contentDescription = stringResource(Res.string.import_contact)
                     )
                 }
             }
@@ -123,11 +121,11 @@ internal fun AddRecordUi(
                     leadingIcon = {
                         Icon(
                             painter = painterResource(Res.drawable.round_person_24),
-                            contentDescription = stringResource(MR.strings.client_name_label)
+                            contentDescription = stringResource(Res.string.client_name_label)
                         )
                     },
                     label = {
-                        Text(text = stringResource(MR.strings.client_name_label))
+                        Text(text = stringResource(Res.string.client_name_label))
                     },
                 )
 
@@ -151,11 +149,11 @@ internal fun AddRecordUi(
                 leadingIcon = {
                     Icon(
                         painter = painterResource(Res.drawable.round_description_24),
-                        contentDescription = stringResource(MR.strings.description_label)
+                        contentDescription = stringResource(Res.string.description_label)
                     )
                 },
                 label = {
-                    Text(text = stringResource(MR.strings.description_label))
+                    Text(text = stringResource(Res.string.description_label))
                 }
             )
 
@@ -176,16 +174,16 @@ internal fun AddRecordUi(
                 leadingIcon = {
                     Icon(
                         painter = painterResource(Res.drawable.round_phone_24),
-                        contentDescription = stringResource(MR.strings.phone_label)
+                        contentDescription = stringResource(Res.string.phone_label)
                     )
                 },
                 label = {
-                    Text(text = stringResource(MR.strings.phone_label))
+                    Text(text = stringResource(Res.string.phone_label))
                 }
             )
 
             Text(
-                text = stringResource(MR.strings.choose_service),
+                text = stringResource(Res.string.choose_service),
                 color = if (model.isServiceError) MaterialTheme.colorScheme.error else Color.Unspecified,
                 modifier = Modifier.padding(start = 16.dp, top = 8.dp)
             )
@@ -242,7 +240,7 @@ private fun FloatActionBar(
             ) {
                 Icon(
                     painter = painterResource(Res.drawable.round_delete_outline_24),
-                    contentDescription = stringResource(MR.strings.delete_record)
+                    contentDescription = stringResource(Res.string.delete_record)
                 )
             }
         }
@@ -252,7 +250,7 @@ private fun FloatActionBar(
             onClick = save
         ) {
             Text(
-                text = stringResource(MR.strings.save_record),
+                text = stringResource(Res.string.save_record),
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
         }
@@ -277,24 +275,24 @@ private fun DeleteAlert(
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
-                    text = stringResource(MR.strings.delete_series_alert),
+                    text = stringResource(Res.string.delete_series_alert),
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 Row(horizontalArrangement = Arrangement.SpaceBetween) {
                     TextButton(
                         onClick = onDeleteCanceled,
                     ) {
-                        Text(stringResource(MR.strings.cancel))
+                        Text(stringResource(Res.string.cancel))
                     }
                     TextButton(
                         onClick = { onDeleteSelected(DeleteType.Date) },
                     ) {
-                        Text(stringResource(MR.strings.this_appointment))
+                        Text(stringResource(Res.string.this_appointment))
                     }
                     TextButton(
                         onClick = { onDeleteSelected(DeleteType.Series) },
                     ) {
-                        Text(stringResource(MR.strings.entire_series))
+                        Text(stringResource(Res.string.entire_series))
                     }
                 }
 
@@ -330,13 +328,13 @@ private fun RecordDate(localDateTime: LocalDateTime) {
 @Composable
 private fun RepeatText(repeat: Repeat, modifier: Modifier) {
     val periodsRes = mapOf(
-        DateTimeUnit.DAY to MR.plurals.day,
-        DateTimeUnit.WEEK to MR.plurals.week,
-        DateTimeUnit.MONTH to MR.plurals.month,
-        DateTimeUnit.YEAR to MR.plurals.year,
+        DateTimeUnit.DAY to Res.plurals.day,
+        DateTimeUnit.WEEK to Res.plurals.week,
+        DateTimeUnit.MONTH to Res.plurals.month,
+        DateTimeUnit.YEAR to Res.plurals.year,
     )
-    var repeatText = "${stringResource(MR.strings.repeat_every)} ${repeat.periodCount} " +
-            StringDesc.Plural(periodsRes[repeat.period]!!, repeat.periodCount).local()
+    var repeatText = "${stringResource(Res.string.repeat_every)} ${repeat.periodCount} " +
+            pluralStringResource(periodsRes[repeat.period]!!, repeat.periodCount)
     if (repeat.period == DateTimeUnit.WEEK) {
         repeatText += repeat.daysOfWeek.joinToString(
             separator = ", ",
@@ -348,9 +346,9 @@ private fun RepeatText(repeat: Repeat, modifier: Modifier) {
     }
 
     val ending = if (repeat.repeatTimes != null) {
-        stringResource(MR.strings.ending,
-            stringResource(MR.strings.after_times) + " ${repeat.repeatTimes} " +
-            StringDesc.Plural(MR.plurals.times, repeat.repeatTimes!!).local()
+        stringResource(Res.string.ending,
+            stringResource(Res.string.after_times) + " ${repeat.repeatTimes} " +
+            pluralStringResource(Res.plurals.times, repeat.repeatTimes!!)
         )
     } else {
         val dateFormat = DateFormat.getDateInstance(
@@ -359,7 +357,7 @@ private fun RepeatText(repeat: Repeat, modifier: Modifier) {
         val dateFormatted = dateFormat.format(
             repeat.repeatToDate
         )
-        stringResource(MR.strings.ending, dateFormatted)
+        stringResource(Res.string.ending, dateFormatted)
     }
     Column(modifier = modifier) {
         Text(text = repeatText)

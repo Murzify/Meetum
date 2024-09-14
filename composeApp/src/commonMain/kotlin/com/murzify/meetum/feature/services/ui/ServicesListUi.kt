@@ -19,15 +19,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import com.murzify.meetum.MR
 import com.murzify.meetum.core.ui.EmptyScreenLottie
 import com.murzify.meetum.core.ui.ServiceCard
 import com.murzify.meetum.feature.services.components.ServicesListComponent
-import dev.icerock.moko.resources.compose.stringResource
 import meetum.composeapp.generated.resources.Res
+import meetum.composeapp.generated.resources.add_service
 import meetum.composeapp.generated.resources.round_add_24
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalResourceApi::class, ExperimentalFoundationApi::class)
 @Composable
@@ -63,7 +63,7 @@ internal fun ServicesListUi(
                 ) {
                     Icon(
                         painter = painterResource(Res.drawable.round_add_24),
-                        contentDescription = stringResource(MR.strings.add_service)
+                        contentDescription = stringResource(Res.string.add_service)
                     )
                 }
             }

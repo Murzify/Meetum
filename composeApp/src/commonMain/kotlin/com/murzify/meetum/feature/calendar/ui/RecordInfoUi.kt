@@ -12,17 +12,12 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.murzify.meetum.MR
 import com.murzify.meetum.core.ui.priceFormat
 import com.murzify.meetum.feature.calendar.components.RecordInfoComponent
-import dev.icerock.moko.resources.StringResource
-import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.datetime.*
 import kotlinx.datetime.TimeZone
 import meetum.composeapp.generated.resources.*
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.*
 import java.text.DateFormat
 import java.util.*
 
@@ -53,7 +48,7 @@ internal fun RecordInfoUi(
                     ) {
                         Icon(
                             painter = painterResource(Res.drawable.round_arrow_back_24),
-                            contentDescription = stringResource(MR.strings.back_button)
+                            contentDescription = stringResource(Res.string.back_button)
                         )
                     }
                 },
@@ -68,7 +63,7 @@ internal fun RecordInfoUi(
                                 Res.drawable.round_edit_24
                             ),
                             contentDescription = stringResource(
-                                MR.strings.edit
+                                Res.string.edit
                             )
                         )
                     }
@@ -92,7 +87,7 @@ internal fun RecordInfoUi(
                     item {
                         InfoField(
                             res = Res.drawable.round_person_24,
-                            contentDescriptionId = MR.strings.client_name_label,
+                            contentDescriptionId = Res.string.client_name_label,
                             text = it
                         )
                     }
@@ -102,7 +97,7 @@ internal fun RecordInfoUi(
                         var phoneClick by mutableStateOf(false)
                         InfoField(
                             res = Res.drawable.round_phone_24,
-                            contentDescriptionId = MR.strings.phone_label,
+                            contentDescriptionId = Res.string.phone_label,
                             text = phone,
                             onLongPress = { phoneClick = true }
                         )
@@ -122,7 +117,7 @@ internal fun RecordInfoUi(
                         Icon(
                             modifier = Modifier.padding(start = 8.dp),
                             painter = painterResource(Res.drawable.round_handshake_24),
-                            contentDescription = stringResource(MR.strings.service_label),
+                            contentDescription = stringResource(Res.string.service_label),
                         )
                         Spacer(Modifier.width(16.dp))
                         Column(
@@ -154,7 +149,7 @@ internal fun RecordInfoUi(
                     item {
                         InfoField(
                             res = Res.drawable.round_description_24,
-                            contentDescriptionId = MR.strings.description_label,
+                            contentDescriptionId = Res.string.description_label,
                             text = it
                         )
                     }

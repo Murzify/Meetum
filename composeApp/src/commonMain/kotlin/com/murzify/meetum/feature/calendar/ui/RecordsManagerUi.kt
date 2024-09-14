@@ -30,17 +30,17 @@ import androidx.compose.ui.unit.sp
 import com.kizitonwose.calendar.compose.HorizontalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.core.*
-import com.murzify.meetum.MR
 import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.core.domain.model.RecordTime
 import com.murzify.meetum.feature.calendar.components.RecordsManagerComponent
-import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.datetime.*
 import kotlinx.datetime.TimeZone
 import meetum.composeapp.generated.resources.Res
+import meetum.composeapp.generated.resources.add_record
 import meetum.composeapp.generated.resources.round_add_24
 import meetum.composeapp.generated.resources.round_delete_outline_24
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.ZoneId
@@ -71,7 +71,7 @@ fun RecordsManagerUi(
             ) {
                 Icon(
                     painter = painterResource(Res.drawable.round_add_24),
-                    contentDescription = stringResource(MR.strings.add_record)
+                    contentDescription = stringResource(Res.string.add_record)
                 )
             }
         }

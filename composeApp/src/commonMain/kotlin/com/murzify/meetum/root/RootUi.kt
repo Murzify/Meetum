@@ -18,9 +18,9 @@ import com.murzify.meetum.feature.calendar.ui.CalendarUi
 import com.murzify.meetum.feature.services.ui.ServicesUi
 import com.murzify.meetum.root.RootComponent.Child
 import com.murzify.meetum.root.navigation.Screen
-import dev.icerock.moko.resources.compose.stringResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable

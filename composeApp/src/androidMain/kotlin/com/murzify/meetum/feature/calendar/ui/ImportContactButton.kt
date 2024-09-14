@@ -14,23 +14,20 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
-import com.murzify.meetum.MR
-import dev.icerock.moko.resources.compose.localized
-import dev.icerock.moko.resources.compose.stringResource
-import dev.icerock.moko.resources.desc.Plural
-import dev.icerock.moko.resources.desc.StringDesc
 import meetum.composeapp.generated.resources.Res
+import meetum.composeapp.generated.resources.day
+import meetum.composeapp.generated.resources.import_contact
 import meetum.composeapp.generated.resources.round_import_contacts_24
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.pluralStringResource
+import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 actual fun ImportContactButton(
     modifier: Modifier,
     onClick: (name: String, phone: String) -> Unit,
 ) {
-    StringDesc.Plural(MR.plurals.day, 18).localized()
+    pluralStringResource(Res.plurals.day, 18)
     var name: String
     var phone: String
 
@@ -88,7 +85,7 @@ actual fun ImportContactButton(
         },
     ) {
         Icon(painter = painterResource(Res.drawable.round_import_contacts_24),
-            contentDescription = stringResource(MR.strings.import_contact)
+            contentDescription = stringResource(Res.string.import_contact)
         )
     }
 }
