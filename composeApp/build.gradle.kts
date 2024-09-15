@@ -46,6 +46,9 @@ kotlin {
             dependencies {
                 implementation(projects.core.domain)
                 implementation(projects.core.network)
+                implementation(projects.core.common)
+                implementation(projects.core.data)
+                implementation(projects.core.database)
                 // Compose
                 implementation(compose.runtime)
                 implementation(compose.foundation)

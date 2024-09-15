@@ -1,6 +1,7 @@
 package com.murzify.meetum.core.data.repository
 
 import com.benasher44.uuid.Uuid
+import com.murzify.meetum.core.common.meetumDispatchers
 import com.murzify.meetum.core.data.FirebaseSync
 import com.murzify.meetum.core.data.model.FirebaseService
 import com.murzify.meetum.core.data.toFirebase
@@ -10,7 +11,6 @@ import com.murzify.meetum.core.database.dao.ServiceDao
 import com.murzify.meetum.core.database.model.toEntity
 import com.murzify.meetum.core.domain.model.Service
 import com.murzify.meetum.core.domain.repository.ServiceRepository
-import com.murzify.meetum.meetumDispatchers
 import dev.gitlive.firebase.database.ChildEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job

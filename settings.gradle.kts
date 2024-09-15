@@ -24,3 +24,6 @@ include(
     ":core:network"
 )
 include(":core:domain")
+include(":core:database")
+include(":core:data")
+include(":core:common")

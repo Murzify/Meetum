@@ -1,9 +1,11 @@
 package com.murzify.meetum.core.data.repository
 
 import com.benasher44.uuid.Uuid
+import com.murzify.meetum.core.common.meetumDispatchers
 import com.murzify.meetum.core.data.FirebaseSync
 import com.murzify.meetum.core.data.mapToRecord
 import com.murzify.meetum.core.data.model.FirebaseBooking
+import com.murzify.meetum.core.data.model.FirebaseBookingTime
 import com.murzify.meetum.core.data.userEvents
 import com.murzify.meetum.core.database.Record_dates
 import com.murzify.meetum.core.database.Records
@@ -12,7 +14,6 @@ import com.murzify.meetum.core.database.model.toEntity
 import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.core.domain.model.RecordTime
 import com.murzify.meetum.core.domain.repository.RecordRepository
-import com.murzify.meetum.meetumDispatchers
 import dev.gitlive.firebase.database.ChildEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -43,7 +44,29 @@ class RecordRepositoryImpl(
         }
 
         scope.launch {
-            recordDao.unsyncedRecords.sync { id, booking, uid ->
+            recordDao.unsyncedRecords.map { entityList ->
+                entityList.groupBy { it.record_id }.mapValues { (_, entityList) ->
+                    val first = entityList.first()
+                    val init = FirebaseBooking(
+                        first.client_name,
+                        first.description,
+                        first.phone,
+                        first.service_id,
+                        time = mutableMapOf(),
+                        first.deleted
+                    )
+                    entityList.fold(init) { acc, entity ->
+                        val map = acc.time.toMutableMap()
+                        map[entity.date_id] = FirebaseBookingTime(
+                            entity.date,
+                            entity.deleted_
+                        )
+                        acc.copy(
+                            time = map
+                        )
+                    }
+                }
+            }.sync { id, booking, uid ->
                 db.reference("users/$uid/booking/${id}")
                     .setValue(
                         booking

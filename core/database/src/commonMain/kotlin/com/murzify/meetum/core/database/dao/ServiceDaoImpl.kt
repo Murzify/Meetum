@@ -2,9 +2,9 @@ package com.murzify.meetum.core.database.dao
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
+import com.murzify.meetum.core.common.meetumDispatchers
 import com.murzify.meetum.core.database.Services
 import com.murzify.meetum.core.database.ServicesQueries
-import com.murzify.meetum.meetumDispatchers
 import kotlinx.coroutines.flow.Flow
 
 class ServiceDaoImpl(

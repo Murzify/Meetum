@@ -4,7 +4,6 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.doOnDestroy
-import com.murzify.meetum.meetumDispatchers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
@@ -13,7 +12,6 @@ import kotlinx.coroutines.flow.StateFlow
 
 fun ComponentContext.componentCoroutineScope(): CoroutineScope {
     val scope = CoroutineScope(SupervisorJob() + meetumDispatchers.main)
-
     if (lifecycle.state != Lifecycle.State.DESTROYED) {
         lifecycle.doOnDestroy {
             scope.cancel()

@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS `record_dates`
+(
+    `date_id` TEXT NOT NULL,
+    `record_id` TEXT NOT NULL,
+    `date` INTEGER NOT NULL,
+    PRIMARY KEY(`date_id`),
+    FOREIGN KEY(record_id) REFERENCES records(record_id) ON DELETE CASCADE
+);

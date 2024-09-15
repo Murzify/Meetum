@@ -1,8 +1,8 @@
 package com.murzify.meetum.core.database.dao
 
 import com.benasher44.uuid.Uuid
-import com.murzify.meetum.core.data.model.FirebaseBooking
 import com.murzify.meetum.core.database.GetDeleted
+import com.murzify.meetum.core.database.GetUnsynced
 import com.murzify.meetum.core.database.Record_dates
 import com.murzify.meetum.core.database.Records
 import com.murzify.meetum.core.database.model.FullRecord
@@ -15,7 +15,7 @@ interface RecordDao {
 
     val datesForDeletion: Flow<List<GetDeleted>>
 
-    val unsyncedRecords: Flow<Map<String, FirebaseBooking>>
+    val unsyncedRecords: Flow<List<GetUnsynced>>
 
     suspend fun getAll(): Flow<List<FullRecord>>
 
