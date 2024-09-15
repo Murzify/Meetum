@@ -1,5 +1,3 @@
-package com.murzify.meetum.core.di
-
 import com.murzify.meetum.core.domain.usecase.AddRecordUseCase
 import com.murzify.meetum.core.domain.usecase.AddServiceUseCase
 import com.murzify.meetum.core.domain.usecase.GetRecordsUseCase

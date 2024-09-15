@@ -12,7 +12,6 @@ import com.murzify.meetum.core.data.dataModule
 import com.murzify.meetum.core.database.databaseModule
 import com.murzify.meetum.core.database.driverModule
 import com.murzify.meetum.core.datastore.dataStoreModule
-import com.murzify.meetum.core.di.domainModule
 import com.murzify.meetum.core.network.networkModule
 import com.murzify.meetum.core.ui.MeetumTheme
 import com.murzify.meetum.initSentry
