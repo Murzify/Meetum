@@ -398,7 +398,7 @@ private fun RecordCard(
         ) {
             if (!record.clientName.isNullOrEmpty()) {
                 Text(
-                    text = record.clientName,
+                    text = record.clientName!!,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     fontSize = 18.sp,

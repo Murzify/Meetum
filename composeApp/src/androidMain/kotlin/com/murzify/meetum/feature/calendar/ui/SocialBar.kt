@@ -33,7 +33,7 @@ actual fun SocialBar(record: Record) {
                 painter = painterResource(Res.drawable.whatsapp),
                 contentDescription = null,
                 modifier = Modifier.clickable {
-                    context.openWA(record.phone)
+                    context.openWA(record.phone!!)
                 }
             )
         }
@@ -43,7 +43,7 @@ actual fun SocialBar(record: Record) {
                 painter = painterResource(Res.drawable.telegram),
                 contentDescription = null,
                 modifier = Modifier.clickable {
-                    context.openTg(record.phone)
+                    context.openTg(record.phone!!)
                 }
             )
         }
@@ -53,7 +53,7 @@ actual fun SocialBar(record: Record) {
                 painter = painterResource(Res.drawable.sms),
                 contentDescription = null,
                 modifier = Modifier.clickable {
-                    context.sendSms(record.phone)
+                    context.sendSms(record.phone!!)
                 }
             )
         }

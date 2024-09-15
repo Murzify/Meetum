@@ -44,6 +44,8 @@ kotlin {
 
         val commonMain by getting {
             dependencies {
+                implementation(projects.core.domain)
+                implementation(projects.core.network)
                 // Compose
                 implementation(compose.runtime)
                 implementation(compose.foundation)
