@@ -27,7 +27,7 @@ actual fun SocialBar(record: Record) {
                 painter = painterResource(Res.drawable.telegram),
                 contentDescription = null,
                 modifier = Modifier.clickable {
-                    openPhone(record.phone, "tg://resolve?phone=")
+                    openPhone(record.phone!!, "tg://resolve?phone=")
                 }   
             )
         }
@@ -37,7 +37,7 @@ actual fun SocialBar(record: Record) {
                 painter = painterResource(Res.drawable.whatsapp),
                 contentDescription = null,
                 modifier = Modifier.clickable {
-                    openPhone(record.phone, "whatsapp://send/?phone=")
+                    openPhone(record.phone!!, "whatsapp://send/?phone=")
                 }
             )
         }
