@@ -1,4 +1,3 @@
-import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import java.io.FileInputStream
 import java.util.*
@@ -25,14 +24,6 @@ buildConfig {
     buildConfigField("DB_URL", keystoreProperties["databaseUrl"] as String )
 }
 
-sqldelight {
-    databases {
-        create("meetum-database") {
-            packageName.set("com.murzify.meetum")
-        }
-    }
-}
-
 kotlin {
     androidTarget {
         apply(plugin = "com.google.gms.google-services")
@@ -55,7 +46,6 @@ kotlin {
                 // Compose
                 implementation(compose.runtime)
                 implementation(compose.foundation)
-                @OptIn(ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
                 implementation(libs.calendar)
 
@@ -75,9 +65,6 @@ kotlin {
                 // Koin
                 implementation(libs.koin.core)
 
-                // SQLDelight
-                implementation(libs.sqldelight.coroutines)
-
                 implementation(libs.uuid)
                 implementation(libs.window.size)
 
@@ -86,16 +73,8 @@ kotlin {
 
                 // Firebase
                 implementation(libs.firebase.auth)
-                implementation(libs.firebase.database)
 
                 implementation(libs.datastore.prefs)
-
-                // Ktor
-                implementation(libs.ktor.client.core)
-                implementation(libs.ktor.client.cio)
-                implementation(libs.ktor.client.negotiation)
-                implementation(libs.ktor.serialization.json)
-                implementation(libs.ktor.logging)
 
                 implementation(libs.napier)
                 implementation(libs.kottie)
@@ -107,9 +86,6 @@ kotlin {
             dependencies {
                 implementation(compose.desktop.common)
                 implementation(compose.desktop.currentOs)
-                implementation(libs.coroutines.swing)
-                implementation(libs.sqldelight.jvm)
-                implementation(libs.ktor.logging.jvm)
             }
         }
         val androidMain by getting {
@@ -118,7 +94,6 @@ kotlin {
                 implementation(libs.ui)
                 implementation(libs.ui.tooling.preview)
                 implementation(libs.activity.compose)
-                implementation(libs.sqldelight.android)
                 implementation(libs.lottie.compose)
                 implementation(libs.play.services.auth)
             }
