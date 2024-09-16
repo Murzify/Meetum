@@ -14,10 +14,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
-import meetum.composeapp.generated.resources.Res
-import meetum.composeapp.generated.resources.day
-import meetum.composeapp.generated.resources.import_contact
-import meetum.composeapp.generated.resources.round_import_contacts_24
+import com.murzify.meetum.core.ui.resources.Res
+import com.murzify.meetum.core.ui.resources.day
+import com.murzify.meetum.core.ui.resources.import_contact
+import com.murzify.meetum.core.ui.resources.round_import_contacts_24
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource

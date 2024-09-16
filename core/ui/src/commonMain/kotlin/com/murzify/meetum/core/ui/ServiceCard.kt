@@ -13,9 +13,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.murzify.meetum.core.domain.model.Service
-import meetum.composeapp.generated.resources.Res
-import meetum.composeapp.generated.resources.add_new_service
-import meetum.composeapp.generated.resources.round_add_24
+import com.murzify.meetum.core.ui.resources.Res
+import com.murzify.meetum.core.ui.resources.add_new_service
+import com.murzify.meetum.core.ui.resources.round_add_24
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource

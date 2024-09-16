@@ -1,6 +1,9 @@
 package com.murzify.meetum.feature.calendar.components
 
 import androidx.compose.runtime.Composable
+import com.murzify.meetum.core.ui.resources.Res
+import com.murzify.meetum.core.ui.resources.after_times
+import com.murzify.meetum.core.ui.resources.times
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
@@ -13,9 +16,6 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import meetum.composeapp.generated.resources.Res
-import meetum.composeapp.generated.resources.after_times
-import meetum.composeapp.generated.resources.times
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 

@@ -21,10 +21,11 @@ dependencyResolutionManagement {
 
 include(
     ":composeApp",
-    ":core:network"
+    ":core:network",
+    ":core:domain",
+    ":core:database",
+    ":core:data",
+    ":core:common",
+    ":core:datastore",
+    ":core:ui"
 )
-include(":core:domain")
-include(":core:database")
-include(":core:data")
-include(":core:common")
-include(":core:datastore")

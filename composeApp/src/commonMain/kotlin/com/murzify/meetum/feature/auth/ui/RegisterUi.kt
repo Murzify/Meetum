@@ -16,9 +16,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.murzify.meetum.core.ui.LoadingButton
 import com.murzify.meetum.core.ui.TextField
+import com.murzify.meetum.core.ui.resources.*
 import com.murzify.meetum.feature.auth.components.RegisterComponent
 import com.murzify.meetum.feature.auth.components.RegisterComponent.Model
-import meetum.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 

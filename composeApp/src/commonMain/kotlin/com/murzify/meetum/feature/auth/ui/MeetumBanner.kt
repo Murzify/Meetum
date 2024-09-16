@@ -11,9 +11,9 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import meetum.composeapp.generated.resources.Res
-import meetum.composeapp.generated.resources.app_title
-import meetum.composeapp.generated.resources.meetum_banner
+import com.murzify.meetum.core.ui.resources.Res
+import com.murzify.meetum.core.ui.resources.app_title
+import com.murzify.meetum.core.ui.resources.meetum_banner
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource

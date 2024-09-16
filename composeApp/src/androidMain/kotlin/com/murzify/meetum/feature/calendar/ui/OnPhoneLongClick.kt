@@ -5,9 +5,9 @@ import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
+import com.murzify.meetum.core.ui.resources.Res
+import com.murzify.meetum.core.ui.resources.day
 import com.murzify.meetum.feature.calendar.components.RecordInfoComponent
-import meetum.composeapp.generated.resources.Res
-import meetum.composeapp.generated.resources.day
 import org.jetbrains.compose.resources.pluralStringResource
 
 @SuppressLint("ComposableNaming")

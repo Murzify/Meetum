@@ -13,10 +13,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.murzify.meetum.core.ui.priceFormat
+import com.murzify.meetum.core.ui.resources.*
 import com.murzify.meetum.feature.calendar.components.RecordInfoComponent
 import kotlinx.datetime.*
 import kotlinx.datetime.TimeZone
-import meetum.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.*
 import java.text.DateFormat
 import java.util.*

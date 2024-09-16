@@ -7,9 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import meetum.composeapp.generated.resources.Res
-import meetum.composeapp.generated.resources.back_button
-import meetum.composeapp.generated.resources.round_arrow_back_24
+import com.murzify.meetum.core.ui.resources.Res
+import com.murzify.meetum.core.ui.resources.back_button
+import com.murzify.meetum.core.ui.resources.round_arrow_back_24
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource

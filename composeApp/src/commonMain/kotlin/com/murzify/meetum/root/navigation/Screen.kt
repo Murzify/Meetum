@@ -1,6 +1,6 @@
 package com.murzify.meetum.root.navigation
 
-import meetum.composeapp.generated.resources.*
+import com.murzify.meetum.core.ui.resources.*
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 

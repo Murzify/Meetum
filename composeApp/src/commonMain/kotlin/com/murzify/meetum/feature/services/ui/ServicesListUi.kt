@@ -21,10 +21,10 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.murzify.meetum.core.ui.EmptyScreenLottie
 import com.murzify.meetum.core.ui.ServiceCard
+import com.murzify.meetum.core.ui.resources.Res
+import com.murzify.meetum.core.ui.resources.add_service
+import com.murzify.meetum.core.ui.resources.round_add_24
 import com.murzify.meetum.feature.services.components.ServicesListComponent
-import meetum.composeapp.generated.resources.Res
-import meetum.composeapp.generated.resources.add_service
-import meetum.composeapp.generated.resources.round_add_24
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource

@@ -25,10 +25,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.murzify.meetum.core.ui.TextField
 import com.murzify.meetum.core.ui.Toolbar
+import com.murzify.meetum.core.ui.resources.*
 import com.murzify.meetum.feature.calendar.components.RepetitiveEventsComponent
 import kotlinx.datetime.*
 import kotlinx.datetime.TimeZone
-import meetum.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import java.text.DateFormat

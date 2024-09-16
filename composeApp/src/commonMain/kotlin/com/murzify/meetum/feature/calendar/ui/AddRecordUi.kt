@@ -24,11 +24,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.murzify.meetum.core.domain.model.Repeat
 import com.murzify.meetum.core.ui.*
+import com.murzify.meetum.core.ui.resources.*
 import com.murzify.meetum.feature.calendar.components.AddRecordComponent
 import com.murzify.meetum.feature.calendar.components.AddRecordComponent.DeleteType
 import kotlinx.datetime.*
 import kotlinx.datetime.TimeZone
-import meetum.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
@@ -46,7 +46,6 @@ internal fun AddRecordUi(
     val model by component.model.collectAsState()
     val tz = TimeZone.currentSystemDefault()
     val localDateTime = model.date.toLocalDateTime(tz)
-
     val timePickerState = remember {
         TimePickerState(
             initialHour = localDateTime.hour,
@@ -77,7 +76,6 @@ internal fun AddRecordUi(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center

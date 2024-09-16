@@ -4,8 +4,8 @@ import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
-import meetum.composeapp.generated.resources.Res
-import meetum.composeapp.generated.resources.nunito_regular
+import com.murzify.meetum.core.ui.resources.Res
+import com.murzify.meetum.core.ui.resources.nunito_regular
 import org.jetbrains.compose.resources.Font
 
 

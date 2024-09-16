@@ -8,12 +8,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.murzify.meetum.core.ui.resources.Res
+import com.murzify.meetum.core.ui.resources.check_email
 import com.murzify.meetum.feature.auth.components.CheckEmailComponent
 import kottieComposition.KottieCompositionSpec
 import kottieComposition.animateKottieCompositionAsState
 import kottieComposition.rememberKottieComposition
-import meetum.composeapp.generated.resources.Res
-import meetum.composeapp.generated.resources.check_email
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 

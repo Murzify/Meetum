@@ -9,9 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.murzify.meetum.core.domain.model.Record
-import meetum.composeapp.generated.resources.Res
-import meetum.composeapp.generated.resources.telegram
-import meetum.composeapp.generated.resources.whatsapp
+import com.murzify.meetum.core.ui.resources.Res
+import com.murzify.meetum.core.ui.resources.telegram
+import com.murzify.meetum.core.ui.resources.whatsapp
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import java.awt.Desktop

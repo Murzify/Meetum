@@ -15,8 +15,8 @@ import androidx.compose.ui.unit.dp
 import com.murzify.meetum.core.ui.TextField
 import com.murzify.meetum.core.ui.Toolbar
 import com.murzify.meetum.core.ui.moveFocusDown
+import com.murzify.meetum.core.ui.resources.*
 import com.murzify.meetum.feature.services.components.AddServiceComponent
-import meetum.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource

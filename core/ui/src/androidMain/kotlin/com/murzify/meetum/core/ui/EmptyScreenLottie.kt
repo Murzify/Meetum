@@ -8,7 +8,6 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.kizitonwose.calendar.core.daysOfWeek
-import com.murzify.meetum.R
 
 @Composable
 actual fun EmptyScreenLottie(modifier: Modifier) {

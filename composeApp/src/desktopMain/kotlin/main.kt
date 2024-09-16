@@ -14,6 +14,9 @@ import com.murzify.meetum.core.database.driverModule
 import com.murzify.meetum.core.datastore.dataStoreModule
 import com.murzify.meetum.core.network.networkModule
 import com.murzify.meetum.core.ui.MeetumTheme
+import com.murzify.meetum.core.ui.resources.Res
+import com.murzify.meetum.core.ui.resources.app_title
+import com.murzify.meetum.core.ui.resources.ic_launcher
 import com.murzify.meetum.initSentry
 import com.murzify.meetum.kmp.BuildConfig
 import com.murzify.meetum.root.RealRootComponent
@@ -24,9 +27,6 @@ import dev.gitlive.firebase.database.database
 import dev.gitlive.firebase.initialize
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
-import meetum.composeapp.generated.resources.Res
-import meetum.composeapp.generated.resources.app_title
-import meetum.composeapp.generated.resources.ic_launcher
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
