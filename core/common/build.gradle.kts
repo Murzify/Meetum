@@ -20,6 +20,12 @@ kotlin {
                 implementation(libs.koin.core)
             }
         }
+        val desktopMain by getting {
+            dependsOn(commonMain)
+            dependencies {
+                implementation(libs.coroutines.swing)
+            }
+        }
     }
 }
 

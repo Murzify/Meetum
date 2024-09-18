@@ -77,6 +77,7 @@ kotlin {
 
                 // Firebase
                 implementation(libs.firebase.auth)
+                implementation(libs.firebase.database)
 
                 implementation(libs.datastore.prefs)
 
