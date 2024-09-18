@@ -4,11 +4,11 @@ import com.arkivanov.decompose.ComponentContext
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.common.componentCoroutineScope
+import com.murzify.meetum.core.common.meetumDispatchers
 import com.murzify.meetum.core.domain.model.ErrorEntity
 import com.murzify.meetum.core.domain.repository.FirebaseRepository
 import com.murzify.meetum.feature.auth.components.SignInComponent.Error
 import com.murzify.meetum.feature.auth.components.SignInComponent.Model
-import com.murzify.meetum.meetumDispatchers
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.FirebaseAuthInvalidCredentialsException
 import dev.gitlive.firebase.auth.auth

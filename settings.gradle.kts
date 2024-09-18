@@ -29,3 +29,4 @@ include(
     ":core:datastore",
     ":core:ui"
 )
+include(":feature:auth")

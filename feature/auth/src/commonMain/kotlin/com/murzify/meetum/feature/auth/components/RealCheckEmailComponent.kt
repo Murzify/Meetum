@@ -3,8 +3,8 @@ package com.murzify.meetum.feature.auth.components
 import com.arkivanov.decompose.ComponentContext
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.common.componentCoroutineScope
+import com.murzify.meetum.core.common.meetumDispatchers
 import com.murzify.meetum.core.domain.repository.FirebaseRepository
-import com.murzify.meetum.meetumDispatchers
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.delay

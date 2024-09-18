@@ -28,6 +28,7 @@ ktor = "2.3.12"
 napier = "2.7.1"
 kottie = "1.9.6"
 firebaseDatabase = "21.0.0"
+firebaseCommonKtx = "21.0.0"
 
 [libraries]
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
@@ -71,6 +72,7 @@ ktor-logging-jvm = { module = "io.ktor:ktor-client-logging-jvm", version.ref = "
 
 napier = { group = "io.github.aakira", name = "napier", version.ref = "napier" }
 google-firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
+firebase-common-ktx = { group = "com.google.firebase", name = "firebase-common-ktx", version.ref = "firebaseCommonKtx" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }
