@@ -20,11 +20,11 @@ kotlin {
                 implementation(compose.foundation)
                 implementation(compose.components.resources)
                 implementation(compose.material3)
+                implementation(libs.calendar)
                 implementation(libs.window.size)
                 implementation(libs.decompose)
                 implementation(libs.decompose.extensions)
                 implementation(libs.koin.core)
-                implementation(libs.firebase.auth)
                 implementation(libs.kottie)
                 implementation(libs.kotlinx.serialization)
                 implementation(libs.uuid)
@@ -34,7 +34,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.murzify.meetum.feature.services"
+    namespace = "com.murzify.meetum.feature.calendar"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

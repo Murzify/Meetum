@@ -29,5 +29,6 @@ include(
     ":core:datastore",
     ":core:ui",
     ":feature:auth",
-    ":feature:services"
+    ":feature:services",
+    ":feature:calendar"
 )

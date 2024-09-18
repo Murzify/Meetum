@@ -1,6 +1,5 @@
 package com.murzify.meetum.feature.calendar.ui
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,13 +11,10 @@ import com.murzify.meetum.core.domain.model.Record
 import com.murzify.meetum.core.ui.resources.Res
 import com.murzify.meetum.core.ui.resources.telegram
 import com.murzify.meetum.core.ui.resources.whatsapp
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import java.awt.Desktop
 import java.net.URI
 
-@OptIn(ExperimentalResourceApi::class)
-@Preview
 @Composable
 actual fun SocialBar(record: Record) {
     Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {

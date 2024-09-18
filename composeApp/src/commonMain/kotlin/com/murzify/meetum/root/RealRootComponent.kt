@@ -6,12 +6,12 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.*
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.common.componentCoroutineScope
+import com.murzify.meetum.core.common.meetumDispatchers
 import com.murzify.meetum.core.common.toStateFlow
 import com.murzify.meetum.core.domain.repository.FirebaseRepository
 import com.murzify.meetum.feature.auth.components.createLoginComponent
 import com.murzify.meetum.feature.calendar.components.createCalendarComponent
 import com.murzify.meetum.feature.services.components.createServicesComponent
-import com.murzify.meetum.meetumDispatchers
 import com.murzify.meetum.root.navigation.Screen
 import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.flow.MutableStateFlow

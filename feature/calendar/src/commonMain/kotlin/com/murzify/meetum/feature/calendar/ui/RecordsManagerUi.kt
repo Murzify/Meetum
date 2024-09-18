@@ -3,7 +3,6 @@ package com.murzify.meetum.feature.calendar.ui
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -47,7 +46,7 @@ import java.time.ZoneId
 import java.time.format.TextStyle
 import java.util.*
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class,
+@OptIn(
     ExperimentalMaterial3WindowSizeClassApi::class
 )
 @Composable

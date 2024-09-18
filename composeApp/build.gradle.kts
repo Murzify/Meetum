@@ -45,6 +45,7 @@ kotlin {
 
                 implementation(projects.feature.auth)
                 implementation(projects.feature.services)
+                implementation(projects.feature.calendar)
 
                 // Compose
                 implementation(compose.runtime)

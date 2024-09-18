@@ -20,7 +20,6 @@ kotlin {
                 implementation(compose.foundation)
                 implementation(compose.components.resources)
                 implementation(compose.material3)
-                implementation(libs.calendar)
                 implementation(libs.window.size)
                 implementation(libs.decompose)
                 implementation(libs.decompose.extensions)
