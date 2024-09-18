@@ -3,9 +3,9 @@ package com.murzify.meetum.feature.services.components
 import com.arkivanov.decompose.ComponentContext
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.common.componentCoroutineScope
+import com.murzify.meetum.core.common.meetumDispatchers
 import com.murzify.meetum.core.domain.model.Service
 import com.murzify.meetum.core.domain.usecase.GetServicesUseCase
-import com.murzify.meetum.meetumDispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.get

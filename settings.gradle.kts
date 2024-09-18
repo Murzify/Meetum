@@ -27,6 +27,7 @@ include(
     ":core:data",
     ":core:common",
     ":core:datastore",
-    ":core:ui"
+    ":core:ui",
+    ":feature:auth",
+    ":feature:services"
 )
-include(":feature:auth")

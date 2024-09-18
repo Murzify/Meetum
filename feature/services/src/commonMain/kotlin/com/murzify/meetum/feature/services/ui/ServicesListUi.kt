@@ -5,7 +5,6 @@ import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -25,11 +24,9 @@ import com.murzify.meetum.core.ui.resources.Res
 import com.murzify.meetum.core.ui.resources.add_service
 import com.murzify.meetum.core.ui.resources.round_add_24
 import com.murzify.meetum.feature.services.components.ServicesListComponent
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalResourceApi::class, ExperimentalFoundationApi::class)
 @Composable
 internal fun ServicesListUi(
     component: ServicesListComponent

@@ -44,6 +44,7 @@ kotlin {
                 implementation(projects.core.ui)
 
                 implementation(projects.feature.auth)
+                implementation(projects.feature.services)
 
                 // Compose
                 implementation(compose.runtime)
