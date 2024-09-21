@@ -17,6 +17,6 @@ fun Project.androidMainDependencies(block: KotlinDependencyHandler.() -> Unit) {
 
 fun Project.desktopMainDependencies(block: KotlinDependencyHandler.() -> Unit) {
     kotlinMultiplatformConfig {
-        sourceSets.jvmMain.dependencies(block)
+        sourceSets.getByName("desktopMain").dependencies(block)
     }
 }
