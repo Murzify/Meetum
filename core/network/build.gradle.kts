@@ -1,6 +1,5 @@
 import com.murzify.meetum.buildlogic.convention.commonMainDependencies
-import java.io.FileInputStream
-import java.util.*
+import com.murzify.meetum.buildlogic.convention.keystore
 
 plugins {
     alias(libs.plugins.serialization)
@@ -8,13 +7,9 @@ plugins {
     id("core")
 }
 
-val keystorePropertiesFile = rootProject.file("keystore.properties")
-val keystoreProperties = Properties()
-keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-
 buildConfig {
     packageName("com.murzify.meetum.kmp")
-    buildConfigField("API_KEY", keystoreProperties["apiKey"] as String )
+    buildConfigField("API_KEY", keystore["apiKey"] as String )
 }
 
 commonMainDependencies {
