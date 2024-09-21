@@ -1,8 +1,10 @@
+import com.murzify.meetum.buildlogic.convention.androidMainDependencies
+import com.murzify.meetum.buildlogic.convention.commonMainDependencies
+import com.murzify.meetum.buildlogic.convention.desktopMainDependencies
+
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.serialization)
-    alias(libs.plugins.com.android.library)
     alias(libs.plugins.sqldelight)
+    id("core")
 }
 
 sqldelight {
@@ -13,49 +15,19 @@ sqldelight {
     }
 }
 
-kotlin {
-    androidTarget()
-    jvm("desktop")
-    sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation(projects.core.domain)
-                implementation(projects.core.common)
+commonMainDependencies {
+    implementation(projects.core.domain)
+    implementation(projects.core.common)
 
-                implementation(libs.uuid)
-                implementation(libs.kotlinx.serialization)
-                implementation(libs.kotlinx.datetime)
-                implementation(libs.coroutines)
-                implementation(libs.sqldelight.coroutines)
-                implementation(libs.koin.core)
-            }
-        }
-
-        val androidMain by getting {
-            dependsOn(commonMain)
-            dependencies {
-                implementation(libs.sqldelight.android)
-            }
-        }
-
-        val desktopMain by getting {
-            dependsOn(commonMain)
-            dependencies {
-                implementation(libs.sqldelight.jvm)
-            }
-        }
-    }
+    implementation(libs.uuid)
+    implementation(libs.sqldelight.coroutines)
 }
 
-android {
-    namespace = "com.murzify.meetum.core.database"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    defaultConfig {
-        minSdk = libs.versions.android.minSdk.get().toInt()
-    }
+androidMainDependencies {
+    implementation(libs.sqldelight.android)
 }
+
+desktopMainDependencies {
+    implementation(libs.sqldelight.jvm)
+}
+
