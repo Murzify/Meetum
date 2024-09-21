@@ -1,6 +1,7 @@
 rootProject.name = "Meetum"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         mavenLocal()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
