@@ -6,9 +6,6 @@ plugins {
 }
 
 commonMainDependencies {
-    implementation(projects.core.domain)
-    implementation(projects.core.common)
-
     implementation(libs.calendar)
     implementation(libs.kottie)
     implementation(libs.uuid)

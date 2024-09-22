@@ -6,6 +6,8 @@ plugins {
 
 commonMainDependencies { kmpExtension ->
     implementation(project(":core:ui"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:common"))
 
     implementation(kmpExtension.compose.components.resources)
     implementation(libs.kotlinx.serialization)

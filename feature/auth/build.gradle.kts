@@ -6,9 +6,6 @@ plugins {
 }
 
 commonMainDependencies {
-    implementation(projects.core.domain)
-    implementation(projects.core.common)
-
     implementation(libs.firebase.auth)
     implementation(libs.kottie)
 }
