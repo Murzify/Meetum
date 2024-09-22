@@ -12,7 +12,6 @@ import com.murzify.meetum.feature.auth.components.SignInComponent.Model
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.FirebaseAuthInvalidCredentialsException
 import dev.gitlive.firebase.auth.auth
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -61,8 +60,14 @@ class RealSignInComponent(
     override fun onSignInClick() {
         model.update { it.copy(loading = true) }
         model.value.let {
-            CoroutineScope(meetumDispatchers.io).launch(meetumDispatchers.io) {
+            scope.launch(meetumDispatchers.io) {
                 try {
+                    if (it.email.isEmpty() || it.password.isEmpty()) {
+                        val error = if (it.email.isEmpty()) Error.MISSING_EMAIL else Error.INVALID_CREDENTIALS
+                        model.update { it.copy(error = error, loading = false) }
+                        return@launch
+                    }
+
                     auth.signInWithEmailAndPassword(it.email, it.password)
                     val idToken = auth.currentUser?.getIdToken(false) ?: return@launch
                     if (firebaseRepo.getUserData(idToken).emailVerified) {
