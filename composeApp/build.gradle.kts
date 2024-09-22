@@ -51,14 +51,11 @@ kotlin {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.components.resources)
-                implementation(libs.calendar)
 
                 // Material design
-                implementation(compose.material)
                 implementation(compose.material3)
 
                 // Kotlin libs
-                implementation(libs.kotlinx.datetime)
                 implementation(libs.kotlinx.serialization)
                 implementation(libs.coroutines)
 
@@ -69,7 +66,6 @@ kotlin {
                 // Koin
                 implementation(libs.koin.core)
 
-                implementation(libs.uuid)
                 implementation(libs.window.size)
 
                 // Sentry
@@ -77,13 +73,8 @@ kotlin {
 
                 // Firebase
                 implementation(libs.firebase.auth)
-                implementation(libs.firebase.database)
-
-                implementation(libs.datastore.prefs)
 
                 implementation(libs.napier)
-                implementation(libs.kottie)
-
             }
         }
         val desktopMain by getting {
