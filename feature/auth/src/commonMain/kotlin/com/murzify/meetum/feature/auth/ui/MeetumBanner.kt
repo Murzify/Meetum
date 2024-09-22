@@ -1,0 +1,40 @@
+package com.murzify.meetum.feature.auth.ui
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
+import com.murzify.meetum.core.ui.resources.Res
+import com.murzify.meetum.core.ui.resources.app_title
+import com.murzify.meetum.core.ui.resources.meetum_banner
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+
+@OptIn(ExperimentalResourceApi::class)
+@Composable
+fun ColumnScope.MeetumBanner() {
+    val isImeVisible = rememberUpdatedState(WindowInsets.ime.getBottom(LocalDensity.current) > 0)
+    Box() {
+        this@MeetumBanner.AnimatedVisibility(
+            visible = !isImeVisible.value,
+            enter = scaleIn(),
+            exit = scaleOut()
+        ) {
+            Icon(
+                painter = painterResource(Res.drawable.meetum_banner),
+                stringResource(Res.string.app_title),
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(bottom = 32.dp)
+            )
+        }
+        Spacer(modifier = Modifier.height(111.dp))
+    }
+}

@@ -9,9 +9,9 @@ import com.murzify.meetum.core.data.dataModule
 import com.murzify.meetum.core.database.databaseModule
 import com.murzify.meetum.core.database.driverModule
 import com.murzify.meetum.core.datastore.dataStoreModule
-import com.murzify.meetum.core.di.domainModule
 import com.murzify.meetum.core.network.networkModule
 import com.murzify.meetum.di.KoinProvider
+import domainModule
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import org.koin.core.Koin

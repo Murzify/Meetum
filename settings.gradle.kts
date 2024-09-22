@@ -1,6 +1,7 @@
 rootProject.name = "Meetum"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         mavenLocal()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
@@ -19,4 +20,16 @@ dependencyResolutionManagement {
     }
 }
 
-include(":composeApp")
+include(
+    ":composeApp",
+    ":core:network",
+    ":core:domain",
+    ":core:database",
+    ":core:data",
+    ":core:common",
+    ":core:datastore",
+    ":core:ui",
+    ":feature:auth",
+    ":feature:services",
+    ":feature:calendar"
+)

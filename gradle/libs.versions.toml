@@ -2,10 +2,12 @@
 android-minSdk = "27"
 android-compileSdk = "34"
 android-targetSdk = "34"
+java = "17"
 agp = "8.2.2"
 compose-plugin = "1.7.0-beta02"
+compose-plugin-dep = "1.7.0-beta02"
 activity-compose = "1.9.2"
-compose = "1.7.1"
+compose = "1.7.2"
 kotlin = "2.0.20"
 calendar = "2.6.0-SNAPSHOT"
 coroutines = "1.9.0-RC.2"
@@ -28,6 +30,7 @@ ktor = "2.3.12"
 napier = "2.7.1"
 kottie = "1.9.6"
 firebaseDatabase = "21.0.0"
+firebaseCommonKtx = "21.0.0"
 
 [libraries]
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
@@ -71,6 +74,13 @@ ktor-logging-jvm = { module = "io.ktor:ktor-client-logging-jvm", version.ref = "
 
 napier = { group = "io.github.aakira", name = "napier", version.ref = "napier" }
 google-firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
+firebase-common-ktx = { group = "com.google.firebase", name = "firebase-common-ktx", version.ref = "firebaseCommonKtx" }
+
+# Plugins for composite build
+gradleplugin-android = { module = "com.android.tools.build:gradle", version.ref = "agp" }
+gradleplugin-compose = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose-plugin-dep" }
+gradleplugin-composeCompiler = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "compose-plugin-dep" }
+gradleplugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }
@@ -84,3 +94,4 @@ sentry = { id = "io.sentry.jvm.gradle", version.ref = "sentry" }
 buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
