@@ -9,6 +9,7 @@ plugins {
 dependencies {
     implementation(libs.gradleplugin.android)
     implementation(libs.gradleplugin.composeCompiler)
+    implementation(libs.gradleplugin.compose)
     implementation(libs.gradleplugin.kotlin)
     // Workaround for version catalog working inside precompiled scripts
     // Issue - https://github.com/gradle/gradle/issues/15383
