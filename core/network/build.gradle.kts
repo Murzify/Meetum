@@ -8,7 +8,7 @@ plugins {
 }
 
 buildConfig {
-    packageName("com.murzify.meetum.kmp")
+    packageName("com.murzify.meetum.core.network")
     buildConfigField("API_KEY", keystore["apiKey"] as String )
 }
 

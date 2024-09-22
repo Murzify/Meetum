@@ -4,7 +4,6 @@ import com.murzify.meetum.core.network.model.EmailPasswordAuth
 import com.murzify.meetum.core.network.model.EmailVerification
 import com.murzify.meetum.core.network.model.LookupRequest
 import com.murzify.meetum.core.network.model.ResetPassword
-import com.murzify.meetum.kmp.BuildConfig
 import io.github.aakira.napier.Napier
 import io.ktor.client.*
 import io.ktor.client.plugins.*

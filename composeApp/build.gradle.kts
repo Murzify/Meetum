@@ -17,7 +17,7 @@ val keystoreProperties = Properties()
 keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 
 buildConfig {
-    packageName("com.murzify.meetum.kmp")
+    packageName("com.murzify.meetum")
     buildConfigField("PROJECT_ID", keystoreProperties["projectId"] as String )
     buildConfigField("APP_ID", keystoreProperties["applicationId"] as String )
     buildConfigField("API_KEY", keystoreProperties["apiKey"] as String )
@@ -73,6 +73,7 @@ kotlin {
 
                 // Firebase
                 implementation(libs.firebase.auth)
+                implementation(libs.firebase.database)
 
                 implementation(libs.napier)
             }
@@ -122,7 +123,6 @@ android {
     }
     buildFeatures {
         compose = true
-        buildConfig = true
     }
     packaging {
         resources {
