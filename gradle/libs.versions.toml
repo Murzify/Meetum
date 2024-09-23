@@ -1,9 +1,9 @@
 [versions]
 android-minSdk = "27"
-android-compileSdk = "34"
-android-targetSdk = "34"
+android-compileSdk = "35"
+android-targetSdk = "35"
 java = "17"
-agp = "8.2.2"
+agp = "8.5.2"
 compose-plugin = "1.7.0-beta02"
 compose-plugin-dep = "1.7.0-beta02"
 activity-compose = "1.9.2"
