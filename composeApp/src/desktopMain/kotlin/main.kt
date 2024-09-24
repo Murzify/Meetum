@@ -7,6 +7,7 @@ import androidx.compose.ui.window.application
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.google.firebase.FirebasePlatform
+import com.murzify.meetum.BuildConfig
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.data.dataModule
 import com.murzify.meetum.core.database.databaseModule
@@ -18,7 +19,6 @@ import com.murzify.meetum.core.ui.resources.Res
 import com.murzify.meetum.core.ui.resources.app_title
 import com.murzify.meetum.core.ui.resources.ic_launcher
 import com.murzify.meetum.initSentry
-import com.murzify.meetum.kmp.BuildConfig
 import com.murzify.meetum.root.RealRootComponent
 import com.murzify.meetum.root.RootUi
 import dev.gitlive.firebase.Firebase
@@ -27,13 +27,12 @@ import dev.gitlive.firebase.database.database
 import dev.gitlive.firebase.initialize
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.core.Koin
 import java.awt.Dimension
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalResourceApi::class)
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 fun main() = application {
     val koin = createKoin()
     initSentry()

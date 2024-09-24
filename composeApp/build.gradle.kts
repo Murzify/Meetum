@@ -153,7 +153,7 @@ compose.desktop {
         mainClass = "MainKt"
         nativeDistributions {
             packageVersion = "1.0.0"
-            copyright = "© 2023 Murzify. All rights reserved."
+            copyright = "© 2024 Murzify. All rights reserved."
             vendor = "Murzify"
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Exe)
             linux {
@@ -168,6 +168,7 @@ compose.desktop {
             windows {
                 packageName = "Meetum"
                 shortcut = true
+                includeAllModules = true
                 iconFile = project.file("src/commonMain/resources/drawable/ic_launcher.ico")
             }
             modules("java.instrument", "java.prefs", "java.sql", "jdk.unsupported","jdk.crypto.ec","jdk.localedata")
