@@ -24,7 +24,7 @@
     <string name="cancel">Отмена</string>
     <string name="this_appointment">Эту запись</string>
     <string name="entire_series">Всю серию</string>
-    <string name="ending">Окончание: %s</string>
+    <string name="ending">Окончание: %1$s</string>
     <string name="after_times">после</string>
 
 

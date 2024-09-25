@@ -20,7 +20,7 @@
     <string name="repeat_every">Repeat every</string>
     <string name="repetitive_events">Repetitive events</string>
     <string name="end_of_repetition">End of repetition</string>
-    <string name="ending">Ending: %s</string>
+    <string name="ending">Ending: %1$s</string>
     <string name="after_times">after</string>
     <string name="delete_series_alert">This appointment is part of a series of events. Do you want to delete just this appointment, or the entire series?</string>
     <string name="cancel">Cancel</string>

@@ -353,7 +353,7 @@ private fun RepeatText(repeat: Repeat, modifier: Modifier) {
             DateFormat.DEFAULT, Locale.getDefault()
         )
         val dateFormatted = dateFormat.format(
-            repeat.repeatToDate
+            Date.from(repeat.repeatToDate!!.toJavaInstant())
         )
         stringResource(Res.string.ending, dateFormatted)
     }

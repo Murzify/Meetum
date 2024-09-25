@@ -1,45 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="day">
-        <item quantity="one">
-            day
-        </item>
-        <item quantity="other">
-            days
-        </item>
+        <item quantity="one">day</item>
+        <item quantity="other">days</item>
     </plurals>
+
     <plurals name="week">
-        <item quantity="one">
-            week
-        </item>
-        <item quantity="other">
-            weeks
-        </item>
+        <item quantity="one">week</item>
+        <item quantity="other">weeks</item>
     </plurals>
+
     <plurals name="month">
-        <item quantity="one">
-            month
-        </item>
-        <item quantity="other">
-            months
-        </item>
+        <item quantity="one">month</item>
+        <item quantity="other">months</item>
     </plurals>
+
     <plurals name="year">
-        <item quantity="one">
-            year
-        </item>
-        <item quantity="other">
-            years
-        </item>
+        <item quantity="one">year</item>
+        <item quantity="other">years</item>
     </plurals>
 
     <plurals name="times">
-        <item quantity="one">
-            time
-        </item>
-        <item quantity="other">
-            times
-        </item>
+        <item quantity="one">time</item>
+        <item quantity="other">times</item>
     </plurals>
 
+    <plurals name="hour">
+        <item quantity="one">hour</item>
+        <item quantity="other">hours</item>
+    </plurals>
+
+    <plurals name="minute">
+        <item quantity="one">minute</item>
+        <item quantity="other">minutes</item>
+    </plurals>
+
+    <plurals name="second">
+        <item quantity="one">second</item>
+        <item quantity="other">seconds</item>
+    </plurals>
 </resources>
