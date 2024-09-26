@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,11 +17,9 @@ import com.murzify.meetum.core.ui.resources.Res
 import com.murzify.meetum.core.ui.resources.sms
 import com.murzify.meetum.core.ui.resources.telegram
 import com.murzify.meetum.core.ui.resources.whatsapp
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 actual fun SocialBar(record: Record) {
     val packageManager = LocalContext.current.packageManager
@@ -37,8 +34,7 @@ actual fun SocialBar(record: Record) {
                 }
             )
         }
-
-        if (record.phone != null && isPackageInstalled("org.telegram.messenger", packageManager)) {
+        if (record.phone != null && context.checkScheme("tg://resolve")) {
             Image(
                 painter = painterResource(Res.drawable.telegram),
                 contentDescription = null,
@@ -75,10 +71,15 @@ private fun Context.openTg(phone: String) {
 
 private fun Context.openWA(phone: String) {
     val number = phone.replace(Regex("^\\d"), "")
-    Log.d("whatsapp", number)
     val waIntent = Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:$number"))
     waIntent.setPackage("com.whatsapp")
     startActivity(waIntent)
+}
+
+private fun Context.checkScheme(scheme: String): Boolean {
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(scheme))
+    val activities = packageManager.queryIntentActivities(intent, 0)
+    return activities.isNotEmpty()
 }
 
 private fun isPackageInstalled(packageName: String, packageManager: PackageManager): Boolean {
