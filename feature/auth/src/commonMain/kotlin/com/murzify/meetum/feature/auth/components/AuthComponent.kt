@@ -13,6 +13,8 @@ interface AuthComponent {
         class SignIn(val component: SignInComponent): Child
 
         class CheckEmail(val component: CheckEmailComponent): Child
+
+        class ResetPassword(val component: ResetPasswordComponent): Child
     }
 
 }

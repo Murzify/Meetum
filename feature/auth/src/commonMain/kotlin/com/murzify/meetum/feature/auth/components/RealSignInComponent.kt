@@ -22,13 +22,15 @@ fun ComponentFactory.createSignInComponent(
     componentContext: ComponentContext,
     navigateToRegister: () -> Unit,
     navigateToCalendar: () -> Unit,
-    navigateToCheckEmail: () -> Unit
+    navigateToCheckEmail: () -> Unit,
+    navigateToResetPassword: () -> Unit
 ): SignInComponent = RealSignInComponent(
     componentContext,
     get(),
     navigateToRegister,
     navigateToCalendar,
-    navigateToCheckEmail
+    navigateToCheckEmail,
+    navigateToResetPassword
 )
 
 class RealSignInComponent(
@@ -36,7 +38,8 @@ class RealSignInComponent(
     private val firebaseRepo: FirebaseRepository,
     private val navigateToRegister: () -> Unit,
     private val navigateToCalendar: () -> Unit,
-    private val navigateToCheckEmail: () -> Unit
+    private val navigateToCheckEmail: () -> Unit,
+    private val navigateToResetPassword: () -> Unit
 ): ComponentContext by componentContext, SignInComponent {
 
     override val model = MutableStateFlow(Model(
@@ -98,6 +101,7 @@ class RealSignInComponent(
         scope.launch {
             try {
                 firebaseRepo.resetPassword(model.value.email)
+                navigateToResetPassword()
             } catch (e: ErrorEntity.MissingEmail) {
                 model.update { it.copy(error = Error.MISSING_EMAIL) }
             } catch (e: ErrorEntity.InvalidEmail) {

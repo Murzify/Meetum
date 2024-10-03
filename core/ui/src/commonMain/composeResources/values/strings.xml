@@ -53,6 +53,7 @@
     <string name="user_exists_error">User already exists</string>
     <string name="incorrect_email">Incorrect Email</string>
     <string name="check_email">Check your mail</string>
+    <string name="reset_url_email">A link to reset your password has been sent to your email</string>
     <string name="invalid_credentials">Incorrect login or password</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="enter_email">Enter email</string>

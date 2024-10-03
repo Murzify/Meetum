@@ -24,6 +24,7 @@ fun AuthUi(
             is AuthComponent.Child.Register -> RegisterUi(instance.component)
             is AuthComponent.Child.SignIn -> SignInUi(instance.component)
             is AuthComponent.Child.CheckEmail -> CheckEmailUi(instance.component)
+            is AuthComponent.Child.ResetPassword -> ResetPasswordUi(instance.component)
         }
     }
 

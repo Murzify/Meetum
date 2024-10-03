@@ -53,6 +53,9 @@ class RealAuthComponent(
                 navigateToCalendar,
                 navigateToCheckEmail = {
                     navigation.replaceAll(ChildConfig.CheckEmail)
+                },
+                navigateToResetPassword = {
+                    navigation.replaceAll(ChildConfig.ResetPassword)
                 }
             )
         )
@@ -63,6 +66,15 @@ class RealAuthComponent(
                 navigateToCalendar = navigateToCalendar,
                 navigateToRegister = {
                     navigation.bringToFront(ChildConfig.Register)
+                }
+            )
+        )
+
+        ChildConfig.ResetPassword -> Child.ResetPassword(
+            componentFactory.createResetPasswordComponent(
+                componentContext,
+                navigateToSingIn = {
+                    navigation.bringToFront(ChildConfig.SignIn)
                 }
             )
         )
@@ -79,5 +91,8 @@ class RealAuthComponent(
 
         @Serializable
         data object CheckEmail : ChildConfig
+
+        @Serializable
+        data object ResetPassword : ChildConfig
     }
 }
