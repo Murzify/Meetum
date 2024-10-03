@@ -23,7 +23,7 @@ fun CheckEmailUi(component: CheckEmailComponent) {
     var animation by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit){
-        animation = Res.readBytes("lottie/email_verif.json").decodeToString()
+        animation = Res.readBytes("files/lottie/email_verif.json").decodeToString()
     }
     val composition = rememberKottieComposition(
         spec = KottieCompositionSpec.File(animation)
