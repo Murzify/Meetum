@@ -1,6 +1,7 @@
 package com.murzify.meetum.feature.calendar.components
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.slot.*
 import com.arkivanov.decompose.router.stack.*
 import com.murzify.meetum.core.common.ComponentFactory
 import com.murzify.meetum.core.common.toStateFlow
@@ -28,6 +29,7 @@ class RealCalendarComponent(
 ) : ComponentContext by componentContext, CalendarComponent {
 
     private val navigation = StackNavigation<ChildConfig>()
+    private val slotNavigation = SlotNavigation<ChildConfig>()
 
     override val childStack: StateFlow<ChildStack<*, CalendarComponent.Child>> = childStack(
         source = navigation,
@@ -37,6 +39,15 @@ class RealCalendarComponent(
         childFactory = ::createChild
     ).toStateFlow(lifecycle)
 
+    override val childSlot: StateFlow<ChildSlot<*, CalendarComponent.Child>> = childSlot(
+        source = slotNavigation,
+        serializer = ChildConfig.serializer(),
+        handleBackButton = true,
+        childFactory = ::createChild
+    ).toStateFlow(lifecycle)
+
+    override var isMediumWindow: Boolean = false
+
     private fun createChild(
         config: ChildConfig,
         componentContext: ComponentContext
@@ -45,10 +56,10 @@ class RealCalendarComponent(
             componentFactory.createRecordsManagerComponent(
                 componentContext,
                 navigateToAddRecord = { date, record ->
-                    navigation.push(ChildConfig.AddRecord(date, record))
+                    navigate(ChildConfig.AddRecord(date, record))
                 },
                 navigateToRecordInfo = { record, date ->
-                    navigation.push(ChildConfig.RecordInfo(record, date))
+                    navigate(ChildConfig.RecordInfo(record, date))
                 }
             )
         )
@@ -57,9 +68,9 @@ class RealCalendarComponent(
                 componentContext,
                 config.recordTime,
                 config.record,
-                navigateBack = navigation::pop,
-                navigateToCalendar = { navigation.replaceAll(ChildConfig.RecordsManager) },
-                navigateToRepeat = { navigation.push(ChildConfig.RepetitiveEvents) },
+                navigateBack = ::navigateBack,
+                navigateToCalendar = { navigate(ChildConfig.RecordsManager, replace = true) },
+                navigateToRepeat = { navigate(ChildConfig.RepetitiveEvents) },
                 navigateToAddService = navigateToAddService
             )
         )
@@ -68,9 +79,9 @@ class RealCalendarComponent(
                 componentContext,
                 config.record,
                 recordTime = config.recordTime,
-                navigateBack = navigation::pop,
+                navigateBack = ::navigateBack,
                 navigateToEdit = {
-                    navigation.push(
+                    navigate(
                         ChildConfig.AddRecord(
                             config.recordTime,
                             config.record
@@ -83,15 +94,36 @@ class RealCalendarComponent(
         ChildConfig.RepetitiveEvents -> CalendarComponent.Child.RepetitiveEvents(
             RealRepetitiveEventsComponent(
                 componentContext,
-                navigateBack = navigation::pop,
+                navigateBack = ::navigateBack,
                 finish = { repeat ->
-                    navigation.pop()
+                    navigateBack()
                     val addRecordComponent = (
                             childStack.value.active.instance as CalendarComponent.Child.AddRecord)
                     addRecordComponent.component.onRepeatReceived(repeat)
                 }
             )
         )
+    }
+
+    private fun navigate(config: ChildConfig, replace: Boolean = false) {
+        if (replace) {
+            slotNavigation.dismiss()
+            navigation.replaceAll(config)
+            return
+        }
+        if (isMediumWindow) {
+            slotNavigation.activate(config)
+        } else {
+            navigation.push(config)
+        }
+    }
+
+    private fun navigateBack() {
+        if (isMediumWindow) {
+            slotNavigation.dismiss()
+        } else {
+            navigation.pop()
+        }
     }
 
     @Serializable

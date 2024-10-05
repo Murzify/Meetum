@@ -20,12 +20,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kizitonwose.calendar.compose.CalendarState
 import com.kizitonwose.calendar.compose.HorizontalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.core.*
@@ -54,11 +55,22 @@ fun RecordsManagerUi(
     component: RecordsManagerComponent
 ) {
     val model by component.model.collectAsState()
-    val splitScreen = if (LocalInspectionMode.current) {
-        false
-    } else {
-        calculateWindowSizeClass().widthSizeClass != WindowWidthSizeClass.Compact
-    }
+    var scaffoldWidth by remember { mutableStateOf(0.dp) }
+    val isCompact = calculateWindowSizeClass().widthSizeClass == WindowWidthSizeClass.Compact
+    val splitScreen = scaffoldWidth > 600.dp && !isCompact
+
+    val currentMonth = remember { YearMonth.now() }
+    val startMonth = remember { currentMonth.minusMonths(100) } // Adjust as needed
+    val endMonth = remember { currentMonth.plusMonths(100) } // Adjust as needed
+    val firstDayOfWeek = remember { firstDayOfWeekFromLocale() } // Available from the library
+
+    val calendarState = rememberCalendarState(
+        startMonth = startMonth,
+        endMonth = endMonth,
+        firstVisibleMonth = currentMonth,
+        firstDayOfWeek = firstDayOfWeek,
+        outDateStyle = OutDateStyle.EndOfGrid
+    )
 
     Scaffold(
         floatingActionButton = {
@@ -73,6 +85,9 @@ fun RecordsManagerUi(
                     contentDescription = stringResource(Res.string.add_record)
                 )
             }
+        },
+        modifier = Modifier.onGloballyPositioned { coordinates ->
+            scaffoldWidth = coordinates.size.width.dp
         }
     ) { paddingValues ->
         Row(
@@ -80,6 +95,7 @@ fun RecordsManagerUi(
         ) {
             if (splitScreen) {
                 Calendar(
+                    state = calendarState,
                     weight = 1f,
                     allRecords = model.allRecords,
                     selectedDate = model.selectedDate,
@@ -97,6 +113,7 @@ fun RecordsManagerUi(
                 if (!splitScreen) {
                     item {
                         Calendar(
+                            state = calendarState,
                             weight = 1f,
                             selectDate = component::onDateClick,
                             allRecords = model.allRecords,
@@ -127,7 +144,7 @@ fun RecordsManagerUi(
                             } else false
                         }
                     )
-                    Column(modifier = Modifier.animateItem()) {
+                    Column(modifier = Modifier) {
                         SwipeToDismissBox(
                             state = dismissSate,
                             backgroundContent = {
@@ -186,24 +203,13 @@ private fun DismissBackground(dismissSate: SwipeToDismissBoxState) {
 
 @Composable
 private fun RowScope.Calendar(
+    state: CalendarState,
     weight: Float,
     allRecords: List<Record>,
     selectedDate: LocalDate,
     modifier: Modifier = Modifier,
     selectDate: (LocalDate) -> Unit
 ) {
-    val currentMonth = remember { YearMonth.now() }
-    val startMonth = remember { currentMonth.minusMonths(100) } // Adjust as needed
-    val endMonth = remember { currentMonth.plusMonths(100) } // Adjust as needed
-    val firstDayOfWeek = remember { firstDayOfWeekFromLocale() } // Available from the library
-
-    val state = rememberCalendarState(
-        startMonth = startMonth,
-        endMonth = endMonth,
-        firstVisibleMonth = currentMonth,
-        firstDayOfWeek = firstDayOfWeek,
-        outDateStyle = OutDateStyle.EndOfGrid
-    )
     val tz = TimeZone.currentSystemDefault()
 
 
@@ -231,7 +237,7 @@ private fun RowScope.Calendar(
         monthHeader = {
             Month(month = it)
             DaysOfWeekTitle(
-                daysOfWeek = daysOfWeek(firstDayOfWeek = firstDayOfWeek)
+                daysOfWeek = daysOfWeek(firstDayOfWeek = state.firstDayOfWeek)
             )
         },
         monthBody = { _, container ->

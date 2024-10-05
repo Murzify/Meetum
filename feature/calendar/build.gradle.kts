@@ -9,4 +9,5 @@ commonMainDependencies {
     implementation(libs.calendar)
     implementation(libs.kottie)
     implementation(libs.uuid)
+    implementation(libs.napier)
 }
