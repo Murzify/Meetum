@@ -20,3 +20,4 @@
 -keep class com.google.firebase.database.DatabaseRegistrar { *; }
 -keep class io.ktor.client.engine.cio.CIOEngineContainer { *; }
 -keep class io.ktor.serialization.kotlinx.json.KotlinxSerializationJsonExtensionProvider { *; }
+-keep class com.murzify.meetum.core.network.model.* { *; }

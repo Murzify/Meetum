@@ -4,13 +4,13 @@ android-compileSdk = "35"
 android-targetSdk = "35"
 java = "17"
 agp = "8.5.2"
-compose-plugin = "1.7.0-beta02"
-compose-plugin-dep = "1.7.0-beta02"
-activity-compose = "1.9.2"
-compose = "1.7.2"
-kotlin = "2.0.20"
-calendar = "2.6.0-SNAPSHOT"
-coroutines = "1.9.0-RC.2"
+compose-plugin = "1.7.0"
+compose-compiler-plugin = "2.0.21"
+activity-compose = "1.9.3"
+compose = "1.7.5"
+kotlin = "2.0.21"
+calendar = "2.6.0-beta01"
+coroutines = "1.9.0"
 lottie = "6.4.0"
 decompose = "3.1.0"
 koin = "3.5.6"
@@ -78,8 +78,8 @@ firebase-common-ktx = { group = "com.google.firebase", name = "firebase-common-k
 
 # Plugins for composite build
 gradleplugin-android = { module = "com.android.tools.build:gradle", version.ref = "agp" }
-gradleplugin-compose = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose-plugin-dep" }
-gradleplugin-composeCompiler = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "compose-plugin-dep" }
+gradleplugin-compose = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose-plugin" }
+gradleplugin-composeCompiler = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "compose-compiler-plugin" }
 gradleplugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 
 [plugins]
