@@ -63,11 +63,23 @@ class RealRecordsManagerComponent (
         }
 
         coroutineScope.launch(meetumDispatchers.io) {
-            recordRepository.getAllRecords().collect { allRecords ->
-                model.update { it.copy(allRecords = allRecords) }
+            val selectedDate = model.value.selectedDate
+            getRecordsUseCase(selectedDate.toInstant()).collect { currentRecords ->
+                val tz = TimeZone.currentSystemDefault()
+                val filteredRecords = currentRecords.mapNotNull { record ->
+                    record.dates.firstOrNull { recordTime ->
+                        recordTime.time.toLocalDateTime(tz).date == selectedDate
+                    }?.let {
+                        return@mapNotNull CurrentRecord(
+                            record,
+                            it
+                        )
+                    }
+                    return@mapNotNull null
+                }
+                model.update { it.copy(currentRecords = filteredRecords) }
             }
         }
-
 
     }
 
