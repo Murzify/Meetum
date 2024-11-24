@@ -77,11 +77,16 @@ fun RecordsManagerUi(
             if (splitScreen) {
                 HorizontalCalendar(
                     showCalendarFlipButtons,
-                    currentMonth,
                     calendarState,
                     model,
                     component,
-                    paddingValues
+                    paddingValues,
+                    flipNext = {
+                        currentMonth = currentMonth.plusMonths(1)
+                    },
+                    flipBack = {
+                        currentMonth = currentMonth.minusMonths(1)
+                    }
                 )
             }
             LazyColumn(
@@ -137,13 +142,13 @@ fun RecordsManagerUi(
 @Composable
 private fun RowScope.HorizontalCalendar(
     showCalendarFlipButtons: Boolean,
-    currentMonth: YearMonth,
     calendarState: CalendarState,
     model: RecordsManagerComponent.Model,
     component: RecordsManagerComponent,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    flipNext: () -> Unit,
+    flipBack: () -> Unit
 ) {
-    var currentMonth1 = currentMonth
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
@@ -153,9 +158,7 @@ private fun RowScope.HorizontalCalendar(
     ) {
         if (showCalendarFlipButtons) {
             IconButton(
-                onClick = {
-                    currentMonth1 = currentMonth1.minusMonths(1)
-                },
+                onClick = flipBack,
             ) {
                 Icon(
                     painter = painterResource(Res.drawable.arrow_back_ios_24px),
@@ -177,9 +180,7 @@ private fun RowScope.HorizontalCalendar(
         )
         if (showCalendarFlipButtons) {
             IconButton(
-                onClick = {
-                    currentMonth1 = currentMonth1.plusMonths(1)
-                },
+                onClick = flipNext,
             ) {
                 Icon(
                     painter = painterResource(Res.drawable.arrow_forward_ios_24px),
